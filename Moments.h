@@ -62,7 +62,7 @@ public:
     void setFunctionValue (double *Fval);
 
     // set the function definition for computation
-    void setFunction (double (*f) (double));
+    void setFunctionDef (double (*f) (double));
 
     // compute the B-moments using the values already assigned in the object
     void compute_moments ();

@@ -99,7 +99,7 @@ void BMoment1D::setFunctionValue (double *Fval)
 }
 
 // set the function definition for computation
-void BMoment1D::setFunction (double (*function) (double))
+void BMoment1D::setFunctionDef (double (*function) (double))
 {
     f = function;
     fDefSet = true;
@@ -138,7 +138,7 @@ void BMoment1D::compute_moments ()
     // compute the b-moments for the specified f function
     void BMoment1D::compute_moments (double (*f) (double))
 {
-    setFunction(f);
+    setFunctionDef(f);
     compute_moments();
 }
 
