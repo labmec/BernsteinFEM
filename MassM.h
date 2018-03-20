@@ -3,9 +3,33 @@
 #ifndef MASSM_H
 #define MASSM_H
 
-/*to implement yet
-  About computing the Element-Mass matrix
-*/
+#ifndef BINOM_PRECOMP
+// Usual factorial coefficient
+int factorial (int n)
+{
+    if (n > 1)
+        return n * factorial(n-1);
+    else
+        return 1;
+}
+	
+// Overloaded factorial coefficient = factorial(n) / factorial(b),
+// used for computing binomial coefficient
+int factorial (int a, int b)
+{
+	if (a > b)
+		return a * factorial(a-1, b);
+	else
+		return 1;
+}
+
+// Usual binomial coefficient
+int binomial (int a, int b)
+{
+	return factorial(a, b) / factorial(a - b);
+}
+#endif
+
 class BMass1D : public BMoment1D
 {
 	int q;
@@ -17,17 +41,11 @@ class BMass1D : public BMoment1D
 	// alloc matrix linearly
 	double** create_matrix();
 
+	void delete_matrix(double** matrix);
+
+	// precompute the binomial cofficients necessary
+	// not yet implemented in this way
 	void compute_binomials();
-
-	// Usual factorial coefficient
-	int factorial (int n);
-	
-	// Overloaded factorial coefficient = factorial(n) / factorial(b),
-	// used for computing binomial coefficient
-	int factorial (int a, int b);
-
-	// Usual binomial coefficient
-	double binomial (int a, int b);
 
 public:
 	BMass1D (int q, int n);
@@ -51,6 +69,15 @@ class BMass2DTri : public BMoment2DTri
 	int n;
 	double **Matrix;
 
+	//alloc matrix linearly
+	double** create_matrix ();
+
+	void delete_matrix(double** matrix);
+
+	// precompute the binomial cofficients necessary
+	// not yet implemented in this way
+	void compute_binomials ();
+
 public:
     BMass2DTri (int q, int n);
 
@@ -58,10 +85,14 @@ public:
 
 	~BMass2DTri ();
 
+	// return the mass matrix values at indexes (i1, j1) and (i2, j2) for 2 triangle coordinates
+	double getMatrixValue (int i1, int j1, int i2, int j2);
+
+	// compute the mass matrix
 	void compute_matrix ();
 
+	// sets the function definition or value before computing the mass matrix
 	void compute_matrix (double (*f) (double));
-
 	void compute_matrix (double *Fval);
 };
 

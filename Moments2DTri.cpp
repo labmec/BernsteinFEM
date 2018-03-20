@@ -3,38 +3,39 @@
 #include "JacobiGaussNodes.h"
 
 #ifndef MAX
-#define MAX(a,b) ( (a) > (b) ? (a) : (b) )
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
-BMoment2DTri::BMoment2DTri ()
+BMoment2DTri::BMoment2DTri()
 {
     std::cout << "Enter a value for the polynomial order n:";
     std::cin >> n;
-    std::cout << std::endl << "Enter a value for the quadrature order q:";
+    std::cout << std::endl
+              << "Enter a value for the quadrature order q:";
     std::cin >> q;
     std::cout << std::endl;
-    if (q>80)
+    if (q > 80)
     {
-	    std::cerr<<"The polynomial order is too large.\n";
-	    exit (EXIT_FAILURE);
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
     }
 
     quadraWN = create_quadraWN();
     assignQuadra();
 
-    int m = MAX(n, q-1);
-    lenMoments = (m+1) * (m+1);
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
 }
 
 // quadrature and polynomial order constructor;
-BMoment2DTri::BMoment2DTri (int q, int n)
+BMoment2DTri::BMoment2DTri(int q, int n)
 {
-    if (q>80)
+    if (q > 80)
     {
-	    std::cerr<<"The polynomial order is too large.\n";
-	    exit (EXIT_FAILURE);
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
     }
     this->q = q;
     this->n = n;
@@ -42,19 +43,19 @@ BMoment2DTri::BMoment2DTri (int q, int n)
     quadraWN = create_quadraWN();
     assignQuadra();
 
-    int m = MAX(n, q-1);
-    lenMoments = (m+1) * (m+1);
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
 }
 
 // constructor setting the triangle vertices
-BMoment2DTri::BMoment2DTri (int q, int n, double T[][2])
+BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
 {
-    if (q>80)
+    if (q > 80)
     {
-	    std::cerr<<"The polynomial order is too large.\n";
-	    exit (EXIT_FAILURE);
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
     }
     this->q = q;
     this->n = n;
@@ -62,24 +63,25 @@ BMoment2DTri::BMoment2DTri (int q, int n, double T[][2])
     quadraWN = create_quadraWN();
     assignQuadra();
 
-    int m = MAX(n, q-1);
-    lenMoments = (m+1) * (m+1);
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
 
     setTriangle(T[0], T[1], T[2]);
 }
 
-BMoment2DTri::~BMoment2DTri ()
+BMoment2DTri::~BMoment2DTri()
 {
     delete_Bmoment(Bmoment);
     delete quadraWN[0];
     delete quadraWN;
-    if(fValSet) delete CVal;
+    if (fValSet)
+        delete CVal;
 }
 
 // alloc the Bmoment Vectors linearly
-double** BMoment2DTri::create_Bmoment()
+double **BMoment2DTri::create_Bmoment()
 {
     double **Bmoment = new double *[lenMoments];
     double *Bmoment_array = new double[nb_Array * lenMoments];
@@ -87,7 +89,7 @@ double** BMoment2DTri::create_Bmoment()
     double *p1 = Bmoment_array;
 
     for (int i = 0; i < lenMoments; p1 += nb_Array, i++)
-    Bmoment[i] = p1;
+        Bmoment[i] = p1;
 
     return Bmoment;
 }
@@ -100,21 +102,21 @@ void BMoment2DTri::delete_Bmoment(double **Bmoment)
 }
 
 // index (i,j) on the square {0,...,n}^2
-int BMoment2DTri::position (int i, int j, int n)
+int BMoment2DTri::position(int i, int j, int n)
 {
     return i * (n + 1) + j;
 }
 
-double** BMoment2DTri::create_quadraWN ()
+double **BMoment2DTri::create_quadraWN()
 {
     double **quadraWN = new double *[4];
-    double *quadraWN_array = new double[4 * (q+1)];
+    double *quadraWN_array = new double[4 * (q + 1)];
 
     double *p_quadra = quadraWN_array;
-    for (int i = 0; i < 4; p_quadra += (q+1), i++)
-        {
+    for (int i = 0; i < 4; p_quadra += (q + 1), i++)
+    {
         quadraWN[i] = p_quadra;
-        }
+    }
     return quadraWN;
 }
 
@@ -125,24 +127,24 @@ void BMoment2DTri::assignQuadra()
     double *x = quadraWN[1]; // x is pointer which points to the address l_x, thus the effective MODIFICATION of l_x entries
     double *w = quadraWN[0];
 
-    for (k = 0; k < q ; k++)
+    for (k = 0; k < q; k++)
     {
-        x[k] = ( 1.0 + jacobi[1][q-2][k] ) * 0.5;
-        w[k] = jacobi[0][q-2][k] * 0.25;
+        x[k] = (1.0 + jacobi[1][q - 2][k]) * 0.5;
+        w[k] = jacobi[0][q - 2][k] * 0.25;
     }
 
     x = quadraWN[3];
     w = quadraWN[2];
 
-    for (k = 0; k < q ; k++)
+    for (k = 0; k < q; k++)
     {
-        x[k] = ( 1.0 + legendre[1][q-2][k] ) * 0.5;                
-        w[k] = legendre[0][q-2][k] * 0.5;
+        x[k] = (1.0 + legendre[1][q - 2][k]) * 0.5;
+        w[k] = legendre[0][q - 2][k] * 0.5;
     }
 }
 
 // computes area of triangle < v1,v2,v3 >
-double BMoment2DTri::Area2d (double v1[2], double v2[2], double v3[2]) 
+double BMoment2DTri::Area2d(double v1[2], double v2[2], double v3[2])
 {
     double x1 = v1[0];
     double y1 = v1[1];
@@ -155,14 +157,14 @@ double BMoment2DTri::Area2d (double v1[2], double v2[2], double v3[2])
 }
 
 //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
-void BMoment2DTri::bary2cart2d (double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2])
+void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2])
 {
     v[0] = b1 * v1[0] + b2 * v2[0] + b3 * v3[0];
     v[1] = b1 * v1[1] + b2 * v2[1] + b3 * v3[1];
 }
 
 // initialize Bmoment by the values of the function f at the quadrature points of order q
-void BMoment2DTri::init_BmomentC_Bmom2d ()
+void BMoment2DTri::init_BmomentC_Bmom2d()
 {
     double b1, b2, b3;
     int index_ij = 0;
@@ -177,24 +179,24 @@ void BMoment2DTri::init_BmomentC_Bmom2d ()
         {
             double v[2];
 
-            index_ij = position(i, j, q-1);
-                        
+            index_ij = position(i, j, q - 1);
+
             b2 = quadraWN[3][j] * (1 - b1);
             b3 = 1 - b1 - b2;
             //b1, b2, b3 are the barycentric coordinates using the Duffy Transformation
 
-            bary2cart2d (b1, b2, b3, v1, v2, v3, v);        // stores b1*v1+b2*v2+b3*v3 into v;
+            bary2cart2d(b1, b2, b3, v1, v2, v3, v); // stores b1*v1+b2*v2+b3*v3 into v;
 
-            double functVal = (*f) (v[0], v[1]);
+            double functVal = (*f)(v[0], v[1]);
             Bmoment[index_ij][0] = scalingConst * functVal;
         }
     }
 }
 
-void BMoment2DTri::init_Bmoment2d_Cval () 
+void BMoment2DTri::init_Bmoment2d_Cval()
 {
     double scalingConst = 2 * Area2d(v1, v2, v3); // Jacobian of Duffy transformation
-        
+
     int index_ij = 0;
     double *val = CVal;
 
@@ -210,17 +212,17 @@ void BMoment2DTri::init_Bmoment2d_Cval ()
 }
 
 //get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-double BMoment2DTri::get_bmoment (int a1, int a2)
+double BMoment2DTri::get_bmoment(int a1, int a2)
 {
     int i = position(a1, a2, n);
     return Bmoment[i][0];
 }
 
 //get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-double BMoment2DTri::get_bmoment (int a1, int a2, int dim)
+double BMoment2DTri::get_bmoment(int a1, int a2, int dim)
 {
     int i = position(a1, a2, n);
-    return Bmoment[i][dim-1];
+    return Bmoment[i][dim - 1];
 }
 
 // set the function value at quadrature points, as in Fval
@@ -233,50 +235,53 @@ void BMoment2DTri::setFunctionValue(double *Fval)
 }
 
 // set the function definition for computations
-void BMoment2DTri::setFunction (double (*function) (double,double))
+void BMoment2DTri::setFunction(double (*function)(double, double))
 {
     f = function;
     fDefSet = true;
 }
 
 // set the element triangle vertices
-void BMoment2DTri::setTriangle (double v1[2], double v2[2], double v3[2])
+void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
 {
-    this->v1[0] = v1[0]; this->v1[1] = v1[1];
-    this->v2[0] = v2[0]; this->v2[1] = v2[1];
-    this->v3[0] = v3[0]; this->v3[1] = v3[1];
+    this->v1[0] = v1[0];
+    this->v1[1] = v1[1];
+    this->v2[0] = v2[0];
+    this->v2[1] = v2[1];
+    this->v3[0] = v3[0];
+    this->v3[1] = v3[1];
 }
 
 //compute the b-moments
-void BMoment2DTri::compute_moments ()
+void BMoment2DTri::compute_moments()
 {
-    if(functVal== 0 && !fValSet)
+    if (functVal == 0 && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 1  && ! fDefSet)
+    else if (functVal == 1 && !fDefSet)
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
-    else {
+    else
+    {
         double **BmomentInter = create_Bmoment(); //intermediate matrix for computation
 
-        int m = MAX (n, q-1); // m will be used for indexing
+        int m = MAX(n, q - 1); // m will be used for indexing
 
         //initialize Bmoment with function values
         if (functVal == 1)
-            if(fValSet)
-                init_Bmoment2d_Cval ();
+            if (fValSet)
+                init_Bmoment2d_Cval();
             else
                 std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
+        else if (fDefSet)
+            init_BmomentC_Bmom2d();
         else
-            if(fDefSet)
-                init_BmomentC_Bmom2d ();
-            else
-                std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
+            std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
 
         //  initialize BmomentInter, at this point, array Bmoment has been initialized with function values
         for (int i = 0; i <= m; i++)
         {
             for (int j = 0; j <= m; j++)
             {
-                int index_ij = position (i, j, m);
+                int index_ij = position(i, j, m);
 
                 for (int ell = 0; ell < nb_Array; ell++)
                     BmomentInter[index_ij][ell] = 0;
@@ -285,43 +290,43 @@ void BMoment2DTri::compute_moments ()
 
         double xi, wgt, s, r, B;
 
-        double *fact = new double [nb_Array];
+        double *fact = new double[nb_Array];
 
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
-        {  
+        {
             xi = quadraWN[1][i];
-            wgt = quadraWN[0][i];   
-        
+            wgt = quadraWN[0][i];
+
             s = 1 - xi;
             r = xi / (1 - xi);
 
-            B = wgt * pow (s, n);
+            B = wgt * pow(s, n);
             for (int mu1 = 0; mu1 <= n; mu1++)
             {
                 for (int j = 0; j < q; j++)
                 {
-                int index_mu1j = position (mu1, j, m);
+                    int index_mu1j = position(mu1, j, m);
 
-                int index_ij = position (i, j, q-1);  // init_BmomentC uses this indexing
+                    int index_ij = position(i, j, q - 1); // init_BmomentC uses this indexing
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
                         fact[ell] = B * Bmoment[index_ij][ell];
-                                
+
                         BmomentInter[index_mu1j][ell] += fact[ell];
                     }
                 }
                 B *= r * (n - mu1) / (1 + mu1);
             }
         }
-        
+
         // reset the Bmoment array
         for (int mu1 = 0; mu1 <= n; mu1++)
         {
             for (int mu2 = 0; mu2 <= n - mu1; mu2++)
             {
-                int index_mu1mu2 = position (mu1, mu2, m);
+                int index_mu1mu2 = position(mu1, mu2, m);
 
                 for (int ell = 0; ell < nb_Array; ell++)
                     Bmoment[index_mu1mu2][ell] = 0;
@@ -330,27 +335,27 @@ void BMoment2DTri::compute_moments ()
 
         // convert second index (l=1)
         for (int j = 0; j < q; j++)
-        {	
-            xi  = quadraWN[3][j];
+        {
+            xi = quadraWN[3][j];
             wgt = quadraWN[2][j];
-        
+
             s = 1 - xi;
             r = xi / (1 - xi);
 
             for (int mu1 = 0; mu1 <= n; mu1++)
             {
-                B = wgt * pow (s, n - mu1);
+                B = wgt * pow(s, n - mu1);
                 for (int mu2 = 0; mu2 <= n - mu1; mu2++)
                 {
-                    int index_mu1mu2 = position (mu1, mu2, m);
-                    int index_mu1j = position (mu1, j, m);
+                    int index_mu1mu2 = position(mu1, mu2, m);
+                    int index_mu1j = position(mu1, j, m);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
                         fact[ell] = B * BmomentInter[index_mu1j][ell];
                         Bmoment[index_mu1mu2][ell] += fact[ell];
                     }
-                B *= r * (n - mu1 - mu2) / (1 + mu2);
+                    B *= r * (n - mu1 - mu2) / (1 + mu2);
                 }
             }
         }
@@ -359,13 +364,13 @@ void BMoment2DTri::compute_moments ()
     }
 }
 
-void BMoment2DTri::compute_moments (double (*f) (double, double))
+void BMoment2DTri::compute_moments(double (*f)(double, double))
 {
     setFunction(f);
     compute_moments();
 }
 
-void BMoment2DTri::compute_moments (double *Fval)
+void BMoment2DTri::compute_moments(double *Fval)
 {
     setFunctionValue(Fval);
     compute_moments();
