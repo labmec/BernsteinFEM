@@ -147,12 +147,12 @@ class BMoment2DTri
 
     // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
     void setFunctionValue(double *Fval);
-
+    
+    // set the function that multiplies the B-polynomial by definition
+    void setFunctionDef(double (*function)(double, double));
+    
     // set the element triangle vertices
-    void setTriangle(double v1[2], double v2[2], double v3[2]);
-
-    // set the function that multiplies the B-polynomial
-    void setFunction(double (*function)(double, double));
+    void setTriangle(double v1[2], double v2[2], double v3[2]);    
 
     // compute the b-moments using the values already assigned in the object
     void compute_moments();

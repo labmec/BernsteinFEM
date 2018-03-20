@@ -235,7 +235,7 @@ void BMoment2DTri::setFunctionValue(double *Fval)
 }
 
 // set the function definition for computations
-void BMoment2DTri::setFunction(double (*function)(double, double))
+void BMoment2DTri::setFunctionDef(double (*function)(double, double))
 {
     f = function;
     fDefSet = true;
@@ -366,7 +366,7 @@ void BMoment2DTri::compute_moments()
 
 void BMoment2DTri::compute_moments(double (*f)(double, double))
 {
-    setFunction(f);
+    setFunctionDef(f);
     compute_moments();
 }
 
