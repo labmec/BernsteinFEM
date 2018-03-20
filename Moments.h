@@ -139,6 +139,9 @@ class BMoment2DTri
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
     double get_bmoment(int a1, int a2, int dim);
 
+    // get the i-th Bmoment in the array, only use if you really know what you're doing
+    double get_bmoment(int i) { return Bmoment[i][0]; }
+
     // call if you're going to use the function definition as parameters instead of the function value (as in default)
     void useFunctionDef() { functVal = 0; }
 
@@ -147,12 +150,12 @@ class BMoment2DTri
 
     // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
     void setFunctionValue(double *Fval);
-    
+
     // set the function that multiplies the B-polynomial by definition
     void setFunctionDef(double (*function)(double, double));
-    
+
     // set the element triangle vertices
-    void setTriangle(double v1[2], double v2[2], double v3[2]);    
+    void setTriangle(double v1[2], double v2[2], double v3[2]);
 
     // compute the b-moments using the values already assigned in the object
     void compute_moments();
@@ -217,6 +220,12 @@ class BMoment2DQuad
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2
     double get_bmoment(int a1, int a2);
+
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+    double get_bmoment(int a1, int a2, int dim);
+
+    // get the i-th Bmoment in the array, only use if you really know what you're doing
+    double get_bmoment(int i) { return Bmoment[i][0]; }
 
     // call if you're going to use the function definition as parameters instead of the function value (as in default)
     void useFunctionDef() { functVal = 0; }

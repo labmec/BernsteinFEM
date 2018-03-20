@@ -18,8 +18,7 @@ BMass1D::BMass1D(int q, int n) : BMoment1D(q, 2 * n)
 
 BMass1D::~BMass1D()
 {
-    delete Matrix[0];
-    delete Matrix;
+    delete_matrix(Matrix);
 }
 
 double **BMass1D::create_matrix()
