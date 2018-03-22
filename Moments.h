@@ -5,6 +5,9 @@
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
+/*****************************************************************************
+ * 1-dimensional Bernstein moments                                           *
+ *****************************************************************************/
 class BMoment1D
 {
     int q;                // number of quadrature points in one dimension
@@ -73,8 +76,9 @@ class BMoment1D
     void compute_moments(double *Fval);
 };
 
-// classes defined for triangle elements
-// it is still only defined for scalar valued functions
+/*****************************************************************************
+ * Bernstein moments for triangles/simpleces (2-dimensional)                 *
+ *****************************************************************************/
 class BMoment2DTri
 {
     int q;                // number of quadrature points in one dimension
@@ -167,6 +171,9 @@ class BMoment2DTri
     void compute_moments(double *Fval);
 };
 
+/*****************************************************************************
+ * Bernstein moments for quadrilaterals (2-dimensional)                      *
+ *****************************************************************************/
 class BMoment2DQuad
 {
     int q;                // number of quadrature points in one dimension
@@ -224,7 +231,7 @@ class BMoment2DQuad
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
     double get_bmoment(int a1, int a2, int dim);
 
-    // get the i-th Bmoment in the array, only use if you really know what you're doing
+    // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
     double get_bmoment(int i) { return Bmoment[i][0]; }
 
     // call if you're going to use the function definition as parameters instead of the function value (as in default)
