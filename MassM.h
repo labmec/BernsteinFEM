@@ -3,33 +3,6 @@
 #ifndef MASSM_H
 #define MASSM_H
 
-#ifndef BINOM_PRECOMP
-// Usual factorial coefficient
-int factorial(int n)
-{
-	if (n > 1)
-		return n * factorial(n - 1);
-	else
-		return 1;
-}
-
-// Overloaded factorial coefficient = factorial(n) / factorial(b),
-// used for computing binomial coefficient
-int factorial(int a, int b)
-{
-	if (a > b)
-		return a * factorial(a - 1, b);
-	else
-		return 1;
-}
-
-// Usual binomial coefficient
-int binomial(int a, int b)
-{
-	return factorial(a, b) / factorial(a - b);
-}
-#endif
-
 /*****************************************************************************
  * Bernstein Mass Matrix for 1-dimensional elements                          *
  *****************************************************************************/
@@ -46,6 +19,11 @@ class BMass1D : public BMoment1D
 	double **create_matrix();
 
 	void delete_matrix(double **matrix);
+
+	// alloc binomial matrix
+	int **create_binomialMat();
+
+	void delete_binomialMat(int **binomialMat);
 
 	// computes a Pascal Matrix with size lenBinomialMat
 	void compute_binomials();

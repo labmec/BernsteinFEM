@@ -37,6 +37,23 @@ void BMass1D::delete_matrix(double **matrix)
     delete matrix;
 }
 
+int **BMass2DTri::create_binomialMat()
+{
+    int *aux = new int[lenBinomialMat * lenBinomialMat];
+    int **matrix = new int *[lenBinomialMat];
+
+    for (int i = 0; i < lenBinomialMat; aux += lenBinomialMat, i++)
+        matrix[i] = aux;
+
+    return matrix;
+}
+
+void BMass2DTri::delete_binomialMat(int **binomialMat)
+{
+    delete binomialMat[0];
+    delete binomialMat;
+}
+
 void BMass1D::compute_binomials()
 {
     for (int i = 0; i < lenBinomialMat; i++)
