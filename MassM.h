@@ -30,20 +30,24 @@ int binomial(int a, int b)
 }
 #endif
 
+/*****************************************************************************
+ * Bernstein Mass Matrix for 1-dimensional elements                          *
+ *****************************************************************************/
 class BMass1D : public BMoment1D
 {
-	int q;			 // number of quadrature points
-	int n;			 // polynomial order
-	int lenMass;	 // length of the mass matrix
-	double **Matrix; // mass matrix
+	int q;				// number of quadrature points ( recommended: 2*(n+1) )
+	int n;				// polynomial order
+	int lenMass;		// length of the mass matrix
+	double **Matrix;	// mass matrix
+	int lenBinomialMat; // length of the binomial matrix
+	int **BinomialMat;  // Pascal Matrix
 
 	// alloc matrix linearly
 	double **create_matrix();
 
 	void delete_matrix(double **matrix);
 
-	// precompute the binomial cofficients necessary
-	// not yet implemented in this way
+	// computes a Pascal Matrix with size lenBinomialMat
 	void compute_binomials();
 
   public:
@@ -62,9 +66,12 @@ class BMass1D : public BMoment1D
 	void compute_matrix(double *Fval);
 };
 
+/*****************************************************************************
+ * Bernstein Mass Matrix for triangular elements (2-dimensional)             *
+ *****************************************************************************/
 class BMass2DTri : public BMoment2DTri
 {
-	int q;				// number of quadrature points
+	int q;				// number of quadrature points ( recommended: 2*(n+1) )
 	int n;				// polynomial order
 	int lenMass;		// length of the matrix
 	double **Matrix;	// mass matrix
@@ -91,11 +98,6 @@ class BMass2DTri : public BMoment2DTri
 
 	~BMass2DTri();
 
-	static int position(int i1, int j1, int i2, int j2, int n)
-	{
-		return (i1 + i2) * (n + 1) + (j1 + j2);
-	}
-
 	// return the mass matrix values at indexes (i1, j1) and (i2, j2) for 2 triangle coordinates
 	double getMatrixValue(int i1, int j1, int i2, int j2);
 
@@ -107,11 +109,30 @@ class BMass2DTri : public BMoment2DTri
 	void compute_matrix(double *Fval);
 };
 
+/*****************************************************************************
+ * Bernstein Mass Matrix for quadrilateral elements (2-dimensional)          *
+ *****************************************************************************/
 class BMass2DQuad : public BMoment2DQuad
 {
-	int q;
-	int n;
-	double **Matrix;
+	int q;				// number of quadrature points ( recommended: 2*(n+1) )
+	int n;				// polynomial order
+	int lenMass;		// length of the matrix
+	double **Matrix;	// mass matrix
+	int lenBinomialMat; // length of the binomials matrix
+	int **BinomialMat;  // Pascal Matrix, BinomialMat[i, j] == binomial(i+j, i);
+
+	//alloc matrix linearly
+	double **create_matrix();
+
+	void delete_matrix(double **matrix);
+
+	// alloc binomial matrix
+	int **create_binomialMat();
+
+	void delete_binomialMat(int **binomialMat);
+
+	// computes a Pascal Matrix with size lenBinomialMat
+	void compute_binomials();
 
   public:
 	BMass2DQuad(int q, int n);
@@ -122,7 +143,7 @@ class BMass2DQuad : public BMoment2DQuad
 
 	void compute_matrix();
 
-	void compute_matrix(double (*f)(double));
+	void compute_matrix(double (*f)(double, double));
 
 	void compute_matrix(double *Fval);
 };
