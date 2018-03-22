@@ -12,6 +12,7 @@ BMass1D::BMass1D(int q, int n) : BMoment1D(q, 2 * n)
     this->n = n;
 
     lenMass = n + 1;
+    lenBinomialMat = n + 1;
 
     Matrix = create_matrix();
 }
@@ -38,18 +39,42 @@ void BMass1D::delete_matrix(double **matrix)
 
 void BMass1D::compute_binomials()
 {
+    for (int i = 0; i < lenBinomialMat; i++)
+    {
+        for (int j = 0; j < lenBinomialMat; j++)
+        {
+            BinomialMat[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < lenBinomialMat; i++)
+        BinomialMat[i][0] += 1;
+
+    for (int j = 1; j < lenBinomialMat; j++)
+        BinomialMat[0][j] += 1;
+
+    for (int k = 1; k < lenBinomialMat; k++)
+    {
+        for (int l = 1; l < lenBinomialMat; l++)
+        {
+            BinomialMat[k][l] += BinomialMat[k][l - 1] + BinomialMat[k - 1][l];
+        }
+    }
 }
 
 void BMass1D::compute_matrix()
 {
     compute_moments();
-    //compute_binomials();
+    compute_binomials();
+
+    double Const = 1.0 / BinomialMat[n][n];
+    double binom;
 
     for (int i = 0; i < lenMass; i++)
     {
         for (int j = 0; j < lenMass; j++)
         {
-            Matrix[i][j] = (binomial(i + j, i) / binomial(2 * n, n)) * binomial(2 * n - (i + j), n - i) * get_bmoment(i);
+            binom = Const * BinomialMat[i][j] * BinomialMat[n - i][n - j];
+            Matrix[i][j] = binom * get_bmoment(i + j);
         }
     }
 }
