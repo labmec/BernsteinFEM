@@ -15,11 +15,13 @@ BMass1D::BMass1D(int q, int n) : BMoment1D(q, 2 * n)
     lenBinomialMat = n + 1;
 
     Matrix = create_matrix();
+    BinomialMat = create_binomialMat();
 }
 
 BMass1D::~BMass1D()
 {
     delete_matrix(Matrix);
+    delete_binomialMat(BinomialMat);
 }
 
 double **BMass1D::create_matrix()
@@ -37,7 +39,7 @@ void BMass1D::delete_matrix(double **matrix)
     delete matrix;
 }
 
-int **BMass2DTri::create_binomialMat()
+int **BMass1D::create_binomialMat()
 {
     int *aux = new int[lenBinomialMat * lenBinomialMat];
     int **matrix = new int *[lenBinomialMat];
@@ -48,7 +50,7 @@ int **BMass2DTri::create_binomialMat()
     return matrix;
 }
 
-void BMass2DTri::delete_binomialMat(int **binomialMat)
+void BMass1D::delete_binomialMat(int **binomialMat)
 {
     delete binomialMat[0];
     delete binomialMat;
