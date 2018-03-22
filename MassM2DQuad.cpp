@@ -83,8 +83,7 @@ void BMass2DQuad::compute_matrix()
 
     double Const = 1.0 / BinomialMat[n][n];
 
-    int M = MAX(2 * n, q - 1);
-
+    // because it is a simple tensor product, this is just like in the 1D case
     for (int i = 0; i < lenMass; i++)
     {
         for (int j = 0; j < lenMass; j++)
