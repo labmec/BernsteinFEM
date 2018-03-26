@@ -92,7 +92,12 @@ void BStiff2DQuad::compute_matrix()
 
             for (int k = 1; k <= 2; k++)
                 for (int l = 1; l <= 2; l++)
-                    Matrix[i][j] += (n * n) * w * BStiff1D::normalize(k, l, get_bmoment(i + j));
+                    for (int k2 = 1; k2 <= 2; k2++)
+                        for (int l2 = 1; l2 <= 2; l2++)
+                        {
+                            double grad = BStiff1D::grad(k, l) * BStiff1D::grad(k2, l2);
+                            Matrix[i][j] += (n * n) * w * grad * get_bmoment(i + j);
+                        }
         }
     }
 }
