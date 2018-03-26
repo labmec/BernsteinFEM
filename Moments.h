@@ -54,7 +54,7 @@ public:
 
   ~BMoment1D();
 
-  // sets the dimension number of the function multiplying the Bernstein basis polynomial
+  // sets the dimension number of the function multiplying the Bernstein basis polynomial (default value: 1)
   void setNbArray(int nb_Array)
   {
     this->nb_Array = nb_Array;

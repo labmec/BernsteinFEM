@@ -27,6 +27,7 @@ BMoment2DQuad::BMoment2DQuad()
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    Cval = create_Cval();
 }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n)
@@ -54,8 +55,8 @@ BMoment2DQuad::~BMoment2DQuad()
     delete_Bmoment(Bmoment);
     delete quadraWN[0];
     delete quadraWN;
-    if (fValSet)
-        delete Cval;
+    delete Cval[0];
+    delete Cval;
 }
 
 double **BMoment2DQuad::create_Bmoment()

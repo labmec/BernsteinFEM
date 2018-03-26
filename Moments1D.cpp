@@ -28,6 +28,7 @@ BMoment1D::BMoment1D()
     lenMoments = (m + 1);
 
     Bmoment = create_Bmoment();
+    Cval = create_Cval();
 }
 
 // quadrature and polynomial order constructor
@@ -48,15 +49,13 @@ BMoment1D::BMoment1D(int q, int n)
     lenMoments = (m + 1);
 
     Bmoment = create_Bmoment();
+    Cval = create_Cval();
 }
 
 BMoment1D::~BMoment1D()
 {
-    if (fValSet)
-    {
-        delete Cval[0];
-        delete Cval;
-    }
+    delete Cval[0];
+    delete Cval;
     delete Bmoment;
     delete quadraWN[0];
     delete quadraWN;

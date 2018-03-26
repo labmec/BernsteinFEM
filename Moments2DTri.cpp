@@ -27,6 +27,7 @@ BMoment2DTri::BMoment2DTri()
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    CVal = create_Cval();
 }
 
 // quadrature and polynomial order constructor;
@@ -47,6 +48,7 @@ BMoment2DTri::BMoment2DTri(int q, int n)
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    CVal = create_Cval();
 }
 
 // constructor setting the triangle vertices
@@ -69,6 +71,7 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
     Bmoment = create_Bmoment();
 
     setTriangle(T[0], T[1], T[2]);
+    create_Cval();
 }
 
 BMoment2DTri::~BMoment2DTri()
@@ -76,11 +79,8 @@ BMoment2DTri::~BMoment2DTri()
     delete_Bmoment(Bmoment);
     delete quadraWN[0];
     delete quadraWN;
-    if (fValSet)
-    {
-        delete CVal[0];
-        delete CVal;
-    }
+    delete CVal[0];
+    delete CVal;
 }
 
 // alloc the Bmoment Vectors linearly
