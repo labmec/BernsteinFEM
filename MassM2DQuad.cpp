@@ -81,15 +81,17 @@ void BMass2DQuad::compute_matrix()
     compute_moments();
     compute_binomials();
 
-    double Const = 1.0 / BinomialMat[n][n];
+    double Const = 1.0 / (BinomialMat[n][n] * BinomialMat[n][n]);
 
-    // because it is a simple tensor product, this is just like in the 1D case
+    // since it is a simple tensor product, this is just like in the 1D case
+    // except it's doubled
     for (int i = 0; i < lenMass; i++)
     {
         for (int j = 0; j < lenMass; j++)
         {
-            double binom = Const * BinomialMat[i][j] * BinomialMat[n - i][n - j];
-            Matrix[i][j] = binom * get_bmoment(i + j);
+            double w = Const * BinomialMat[i][j] * BinomialMat[i][j];
+            w *= (BinomialMat[n - i][n - j] * BinomialMat[n - i][n - j]);
+            Matrix[i][j] = w * get_bmoment(i + j);
         }
     }
 }
