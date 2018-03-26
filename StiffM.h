@@ -34,13 +34,13 @@ class BStiff1D : public BMoment1D
     ~BStiff1D();
 
     // computes the normalized moment
-    static double normalize(int k, int l, double moment)
+    static double grad(int k, int l)
     {
         // gradient is always 1 or -1 in the 1-dimensional case
         if (k == l)
-            return moment;
+            return 1.0;
         else
-            return moment * (-1);
+            return -1.0;
     }
 
     void compute_matrix();

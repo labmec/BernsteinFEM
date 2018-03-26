@@ -92,7 +92,7 @@ void BStiff1D::compute_matrix()
 
             for (int k = 1; k <= 2; k++)
                 for (int l = 1; l <= 2; l++)
-                    Matrix[i][j] += (n * n) * w * normalize(k, l, get_bmoment(i + j));
+                    Matrix[i][j] += (n * n) * w * grad(k, l) * get_bmoment(i + j);
         }
     }
 }
