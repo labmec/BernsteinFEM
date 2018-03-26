@@ -151,8 +151,12 @@ public:
   // quadrature and polynomial order constructor;
   BMoment2DTri(int q, int n);
 
+  BMoment2DTri(int q, int n, int nb_Array);
+
   // constructor setting q, n and the triangle vertices
   BMoment2DTri(int q, int n, double T[][2]);
+
+  BMoment2DTri(int q, int n, int nb_Array, double T[][2]);
 
   ~BMoment2DTri();
 

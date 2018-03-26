@@ -74,6 +74,51 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
     create_Cval();
 }
 
+BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
+{
+    if (q > 80)
+    {
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
+    }
+    this->q = q;
+    this->n = n;
+    this->nb_Array = nb_Array;
+
+    quadraWN = create_quadraWN();
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
+
+    Bmoment = create_Bmoment();
+    CVal = create_Cval();
+}
+
+// constructor setting the triangle vertices
+BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array, double T[][2])
+{
+    if (q > 80)
+    {
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
+    }
+    this->q = q;
+    this->n = n;
+    this->nb_Array = nb_Array;
+
+    quadraWN = create_quadraWN();
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
+
+    Bmoment = create_Bmoment();
+
+    setTriangle(T[0], T[1], T[2]);
+    create_Cval();
+}
+
 BMoment2DTri::~BMoment2DTri()
 {
     delete_Bmoment(Bmoment);
