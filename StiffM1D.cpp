@@ -78,7 +78,11 @@ void BStiff1D::compute_binomials()
 
 void BStiff1D::compute_matrix()
 {
+    compute_moments();
+    compute_binomials();
+
     double Const = 1 / BinomialMat[n - 1][n - 1];
+    
     for (int i = 0; i < lenStiff - 1; i++)
     {
         for (int j = 0; j < lenStiff - 1; j++)
