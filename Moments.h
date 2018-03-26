@@ -61,7 +61,7 @@ public:
     delete_Bmoment(Bmoment);
     delete_Bmoment(Cval);
     Bmoment = create_Bmoment();
-    CVal = create_Cval();
+    Cval = create_Cval();
   }
 
   int getNbArray() { return nb_Array; }
@@ -70,7 +70,8 @@ public:
   int position(int i, int n) { return i; }
 
   // returns the value of the i-th indexed B-moment
-  double get_bmoment(int i) { return Bmoment[i]; }
+  double get_bmoment(int i) { return Bmoment[i][0]; }
+  double get_bmoment(int i, int dim) { return Bmoment[i][dim - 1]; }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
@@ -108,6 +109,9 @@ class BMoment2DTri
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
 
+  // function definition for the computation of the b-moments
+  double (*f)(double, double) = 0x0;
+
   // alloc the Bmoment Vectors linearly
   double **create_Bmoment();
 
@@ -141,8 +145,8 @@ protected:
   double v1[2], v2[2], v3[2]; // triangle vertices coordinates
   double **quadraWN;          // quadrature points and weights
 
-  // function definition for the computation of the b-moments
-  double (*f)(double, double) = 0x0;
+  // routine used to pre-multiply normals with the Bmoments
+  void transform_BmomentC_Stiff2d (double **Bmomentab, double normalMat[][2]);
 
 public:
   // default constructor
