@@ -10,70 +10,89 @@
  *****************************************************************************/
 class BMoment1D
 {
-    int q;                // number of quadrature points in one dimension
-    int n;                // Bernstein polynomial order
-    int lenMoments;       // length of the Bmoment vector
-    double *Bmoment;      // vector where the b-moments are stored
-    double *Cval;         // vector where the function values are stored
-    bool fValSet = false; // is true if the function value is set
-    bool fDefSet = false; // is true if the function definition is set
+  int q;                // number of quadrature points in one dimension
+  int n;                // Bernstein polynomial order
+  int lenMoments;       // length of the Bmoment vector
+  double **Bmoment;     // vector where the b-moments are stored
+  double **Cval;        // vector where the function values are stored
+  bool fValSet = false; // is true if the function value is set
+  bool fDefSet = false; // is true if the function definition is set
 
-    // function definition for the computation of the b-moments
-    double (*f)(double) = 0x0;
+  // function definition for the computation of the b-moments
+  double (*f)(double) = 0x0;
 
-    // alloc Bmoment vector
-    double *create_Bmoment();
+  // alloc Bmoment vector
+  double **create_Bmoment();
 
-    // free Bmoment vector memory
-    void delete_Bmoment(double *Bmoment);
+  // alloc Cval similarly to the Bmoment
+  double **create_Cval();
 
-    // alloc memory for the quadrature points and weights
-    double **create_quadraWN();
+  // free Bmoment vector memory
+  void delete_Bmoment(double **Bmoment);
 
-    // assign the quadrature points and weights
-    void assignQuadra();
+  // alloc memory for the quadrature points and weights
+  double **create_quadraWN();
 
-  protected:
-    int functVal = 1;  // determines if will use function value or function definition (use function dvalue by default)
-    int nb_Array = 1;  // dimension of function Image (function is scalar valued by default)
-    double a, b;       // interval [a, b] variables
-    double **quadraWN; // quadrature points and weights
+  // assign the quadrature points and weights
+  void assignQuadra();
 
-  public:
-    // default constructor
-    BMoment1D();
+  // loads the function definition values at quadrature points into Cval
+  void loadFunctionDef();
 
-    // quadrature and polynomial order constructor
-    BMoment1D(int q, int n);
+protected:
+  int functVal = 1;  // determines if will use function value or function definition (use function dvalue by default)
+  int nb_Array = 1;  // dimension of function Image (function is scalar valued by default)
+  double a, b;       // interval [a, b] variables
+  double **quadraWN; // quadrature points and weights
 
-    ~BMoment1D();
+public:
+  // default constructor
+  BMoment1D();
 
-    // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-    int position(int i, int n) { return i; }
+  // quadrature and polynomial order constructor
+  BMoment1D(int q, int n);
 
-    // returns the value of the i-th indexed B-moment
-    double get_bmoment(int i) { return Bmoment[i]; }
+  ~BMoment1D();
 
-    // call if you're going to use the function definition as parameters instead of the function value (as in default)
-    void useFunctionDef() { functVal = 0; }
+  // sets the dimension number of the function multiplying the Bernstein basis polynomial
+  void setNbArray(int nb_Array)
+  {
+    this->nb_Array = nb_Array;
+    delete_Bmoment(Bmoment);
+    delete_Bmoment(Cval);
+    Bmoment = create_Bmoment();
+    CVal = create_Cval();
+  }
 
-    // call if you're going back to using the function values
-    void useFunctionValue() { functVal = 1; }
+  int getNbArray() { return nb_Array; }
 
-    // set the function values for computation
-    void setFunctionValue(double *Fval);
+  // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
+  int position(int i, int n) { return i; }
 
-    // set the function definition for computation
-    void setFunctionDef(double (*f)(double));
+  // returns the value of the i-th indexed B-moment
+  double get_bmoment(int i) { return Bmoment[i]; }
 
-    // compute the B-moments using the values already assigned in the object
-    void compute_moments();
+  // call if you're going to use the function definition as parameters instead of the function value (as in default)
+  void useFunctionDef() { functVal = 0; }
 
-    // compute the b-moments for the specified f function
-    void compute_moments(double (*f)(double));
+  // call if you're going back to using the function values
+  void useFunctionValue() { functVal = 1; }
 
-    // compute the b-moments for the Fval function values
-    void compute_moments(double *Fval);
+  // set the function values for computation
+  void setFunctionValue(double *Fval);
+  void setFunctionValue(double **Fval);
+
+  // set the function definition for computation
+  void setFunctionDef(double (*f)(double));
+
+  // compute the B-moments using the values already assigned in the object
+  void compute_moments();
+
+  // compute the b-moments for the specified f function
+  void compute_moments(double (*f)(double));
+
+  // compute the b-moments for the Fval function values
+  void compute_moments(double *Fval);
 };
 
 /*****************************************************************************
@@ -81,94 +100,108 @@ class BMoment1D
  *****************************************************************************/
 class BMoment2DTri
 {
-    int q;                // number of quadrature points in one dimension
-    int n;                // Bernstein polynomial order
-    int lenMoments;       //length of the Bmoment vectors
-    double *CVal;         // stores function values at quadrature points
-    double **Bmoment;     // Vectors to store the Bernstein Moments
-    bool fValSet = false; // is true if the function value is set
-    bool fDefSet = false; // is true if the function definition is set
+  int q;                // number of quadrature points in one dimension
+  int n;                // Bernstein polynomial order
+  int lenMoments;       //length of the Bmoment vectors
+  double **CVal;        // stores function values at quadrature points
+  double **Bmoment;     // Vectors to store the Bernstein Moments
+  bool fValSet = false; // is true if the function value is set
+  bool fDefSet = false; // is true if the function definition is set
 
-    // alloc the Bmoment Vectors linearly
-    double **create_Bmoment();
+  // alloc the Bmoment Vectors linearly
+  double **create_Bmoment();
 
-    // free memory allocated to B-moments
-    void delete_Bmoment(double **Bmoment);
+  // alloc Cval similarly to the Bmoment
+  double **create_Cval();
 
-    // alloc the quadrature points matrix
-    double **create_quadraWN();
+  // free memory allocated to B-moments
+  void delete_Bmoment(double **Bmoment);
 
-    // map to obtain Gauss-Jacobi rule on unit interval
-    void assignQuadra();
+  // alloc the quadrature points matrix
+  double **create_quadraWN();
 
-    // computes area of triangle < v1,v2,v3 >
-    double Area2d(double v1[2], double v2[2], double v3[2]);
+  // map to obtain Gauss-Jacobi rule on unit interval
+  void assignQuadra();
 
-    //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
-    void bary2cart2d(double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2]);
+  // computes area of triangle < v1,v2,v3 >
+  double Area2d(double v1[2], double v2[2], double v3[2]);
 
-    //initialize Bmoment by the values of the function f at the quadrature points of order q
-    void init_BmomentC_Bmom2d();
+  //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
+  void bary2cart2d(double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2]);
 
-    //initialize Bmoment with the values of the function f, stored at CVal
-    void init_Bmoment2d_Cval();
+  //initialize Bmoment by the values of the function f at the quadrature points of order q
+  void init_BmomentC_Bmom2d();
 
-  protected:
-    int functVal = 1;           // determines if will use function value or function definition (use function value by default)
-    int nb_Array = 1;           // dimension of function Image (function is scalar valued by default)
-    double v1[2], v2[2], v3[2]; // triangle vertices coordinates
-    double **quadraWN;          // quadrature points and weights
+  //initialize Bmoment with the values of the function f, stored at CVal
+  void init_Bmoment2d_Cval();
 
-    // function definition for the computation of the b-moments
-    double (*f)(double, double) = 0x0;
+protected:
+  int functVal = 1;           // determines if will use function value or function definition (use function value by default)
+  int nb_Array = 1;           // dimension of function Image (function is scalar valued by default)
+  double v1[2], v2[2], v3[2]; // triangle vertices coordinates
+  double **quadraWN;          // quadrature points and weights
 
-  public:
-    // default constructor
-    BMoment2DTri();
+  // function definition for the computation of the b-moments
+  double (*f)(double, double) = 0x0;
 
-    // quadrature and polynomial order constructor;
-    BMoment2DTri(int q, int n);
+public:
+  // default constructor
+  BMoment2DTri();
 
-    // constructor setting q, n and the triangle vertices
-    BMoment2DTri(int q, int n, double T[][2]);
+  // quadrature and polynomial order constructor;
+  BMoment2DTri(int q, int n);
 
-    ~BMoment2DTri();
+  // constructor setting q, n and the triangle vertices
+  BMoment2DTri(int q, int n, double T[][2]);
 
-    // return the index for the (i, j, n-i-j) triangle coordinate
-    static int position(int i, int j, int n) { return i * (n + 1) + j; }
+  ~BMoment2DTri();
 
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-    double get_bmoment(int a1, int a2);
+  // sets the dimension number of the function multiplying the Bernstein basis polynomial
+  void setNbArray(int nb_Array)
+  {
+    this->nb_Array = nb_Array;
+    delete_Bmoment(Bmoment);
+    Bmoment = create_Bmoment();
+  }
 
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-    double get_bmoment(int a1, int a2, int dim);
+  int getNbArray() { return nb_Array; }
 
-    // get the i-th Bmoment in the array, only use if you really know what you're doing
-    double get_bmoment(int i) { return Bmoment[i][0]; }
+  // return the index for the (i, j, n-i-j) triangle coordinate
+  static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-    // call if you're going to use the function definition as parameters instead of the function value (as in default)
-    void useFunctionDef() { functVal = 0; }
+  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
+  double get_bmoment(int a1, int a2);
 
-    // call if you're going back to using the function values
-    void useFunctionValue() { functVal = 1; }
+  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+  double get_bmoment(int a1, int a2, int dim);
 
-    // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-    void setFunctionValue(double *Fval);
+  // get the i-th Bmoment in the array, only use if you really know what you're doing
+  double get_bmoment(int i) { return Bmoment[i][0]; }
 
-    // set the function that multiplies the B-polynomial by definition
-    void setFunctionDef(double (*function)(double, double));
+  // call if you're going to use the function definition as parameters instead of the function value (as in default)
+  void useFunctionDef() { functVal = 0; }
 
-    // set the element triangle vertices
-    void setTriangle(double v1[2], double v2[2], double v3[2]);
+  // call if you're going back to using the function values
+  void useFunctionValue() { functVal = 1; }
 
-    // compute the b-moments using the values already assigned in the object
-    void compute_moments();
+  // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
+  void setFunctionValue(double *Fval);
+  void setFunctionValue(double **Fval);
 
-    // compute the b-moments for the specified f function
-    void compute_moments(double (*f)(double, double));
+  // set the function that multiplies the B-polynomial by definition
+  void setFunctionDef(double (*function)(double, double));
 
-    // compute the b-moments for the Fval function values
-    void compute_moments(double *Fval);
+  // set the element triangle vertices
+  void setTriangle(double v1[2], double v2[2], double v3[2]);
+
+  // compute the b-moments using the values already assigned in the object
+  void compute_moments();
+
+  // compute the b-moments for the specified f function
+  void compute_moments(double (*f)(double, double));
+
+  // compute the b-moments for the Fval function values
+  void compute_moments(double *Fval);
 };
 
 /*****************************************************************************
@@ -176,87 +209,101 @@ class BMoment2DTri
  *****************************************************************************/
 class BMoment2DQuad
 {
-    int q;                // number of quadrature points in one dimension
-    int n;                // Bernstein polynomial order
-    int lenMoments;       // length of the Bmoment vector
-    double **Bmoment;     // vector where the b-moments are stored
-    double *Cval;         // vector where the function values are stored
-    bool fValSet = false; // is true if the function value is set
-    bool fDefSet = false; // is true if the function definition is set
+  int q;                // number of quadrature points in one dimension
+  int n;                // Bernstein polynomial order
+  int lenMoments;       // length of the Bmoment vector
+  double **Bmoment;     // vector where the b-moments are stored
+  double **Cval;        // vector where the function values are stored
+  bool fValSet = false; // is true if the function value is set
+  bool fDefSet = false; // is true if the function definition is set
 
-    // function definition for the computation of the b-moments
-    double (*f)(double, double) = 0x0;
+  // function definition for the computation of the b-moments
+  double (*f)(double, double) = 0x0;
 
-    //functions
+  // methods
 
-    // alloc the Bmoment Vectors linearly
-    double **create_Bmoment();
+  // alloc the Bmoment Vectors linearly
+  double **create_Bmoment();
 
-    // free memory allocated to B-moments
-    void delete_Bmoment(double **Bmoment);
+  // alloc Cval similarly to the Bmoment
+  double **create_Cval();
 
-    // alloc the quadrature points matrix
-    double **create_quadraWN();
+  // free memory allocated to B-moments
+  void delete_Bmoment(double **Bmoment);
 
-    // map to obtain Gauss-Jacobi rule on unit interval
-    void assignQuadra();
+  // alloc the quadrature points matrix
+  double **create_quadraWN();
 
-    // maps the quadrilatera to the master element
-    void nodalShape(double X[], double &dX, double xi, double eta);
+  // map to obtain Gauss-Jacobi rule on unit interval
+  void assignQuadra();
 
-    // computes the function by the definition and stores it in Cval
-    void computeFunctionDef();
+  // maps the quadrilatera to the master element
+  void nodalShape(double X[], double &dX, double xi, double eta);
 
-  protected:
-    int functVal = 1;                  // determines if will use function value or function definition (use function value by default)
-    int nb_Array = 1;                  // dimension of function Image (function is scalar valued by default)
-    double v1[2], v2[2], v3[2], v4[2]; // vertices of the quadrilateral element
-    double **quadraWN;                 // quadrature points and weights
+  // computes the function by the definition and stores it in Cval
+  void computeFunctionDef();
 
-  public:
-    // default constructor
-    BMoment2DQuad();
+protected:
+  int functVal = 1;                  // determines if will use function value or function definition (use function value by default)
+  int nb_Array = 1;                  // dimension of function Image (function is scalar valued by default)
+  double v1[2], v2[2], v3[2], v4[2]; // vertices of the quadrilateral element
+  double **quadraWN;                 // quadrature points and weights
 
-    // quadrature and polynomial order constructor;
-    BMoment2DQuad(int q, int n);
+public:
+  // default constructor
+  BMoment2DQuad();
 
-    ~BMoment2DQuad();
+  // quadrature and polynomial order constructor;
+  BMoment2DQuad(int q, int n);
 
-    // return the index for the (i, j, n-i-j) triangle coordinate
-    static int position(int i, int j, int n) { return i * (n + 1) + j; }
+  ~BMoment2DQuad();
 
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2
-    double get_bmoment(int a1, int a2);
+  // sets the dimension number of the function multiplying the Bernstein basis polynomial
+  void setNbArray(int nb_Array)
+  {
+    this->nb_Array = nb_Array;
+    delete_Bmoment(Bmoment);
+    Bmoment = create_Bmoment();
+  }
 
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-    double get_bmoment(int a1, int a2, int dim);
+  int getNbArray() { return nb_Array; }
 
-    // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
-    double get_bmoment(int i) { return Bmoment[i][0]; }
+  // return the index for the (i, j, n-i-j) triangle coordinate
+  static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-    // call if you're going to use the function definition as parameters instead of the function value (as in default)
-    void useFunctionDef() { functVal = 0; }
+  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2
+  double get_bmoment(int a1, int a2);
 
-    // call if you're going back to using the function values
-    void useFunctionValue() { functVal = 1; }
+  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+  double get_bmoment(int a1, int a2, int dim);
 
-    // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-    void setFunctionValue(double *Fval);
+  // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
+  double get_bmoment(int i) { return Bmoment[i][0]; }
 
-    // set the function that multiplies the B-polynomial
-    void setFunctionDef(double (*function)(double, double));
+  // call if you're going to use the function definition as parameters instead of the function value (as in default)
+  void useFunctionDef() { functVal = 0; }
 
-    // set the element triangle vertices
-    void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
+  // call if you're going back to using the function values
+  void useFunctionValue() { functVal = 1; }
 
-    // compute the b-moments using the values already assigned in the object
-    void compute_moments();
+  // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
+  void setFunctionValue(double *Fval);
+  void setFunctionValue(double **Fval);
 
-    // compute the b-moments for the specified f function
-    void compute_moments(double (*f)(double, double));
+  // set the function that multiplies the B-polynomial
+  void setFunctionDef(double (*function)(double, double));
 
-    // compute the b-moments for the Fval function values
-    void compute_moments(double *Fval);
+  // set the element triangle vertices
+  void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
+
+  // compute the b-moments using the values already assigned in the object
+  void compute_moments();
+
+  // compute the b-moments for the specified f function
+  void compute_moments(double (*f)(double, double));
+
+  // compute the b-moments for the Fval function values
+  void compute_moments(double *Fval);
 };
 
 class BMoment3D
