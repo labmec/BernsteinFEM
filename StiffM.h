@@ -28,6 +28,11 @@ class BStiff1D : public BMoment1D
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
 
+  public:
+    BStiff1D(int q, int n);
+
+    ~BStiff1D();
+
     // computes the normalized moment
     static double normalize(int k, int l, double moment)
     {
@@ -37,11 +42,6 @@ class BStiff1D : public BMoment1D
         else
             return moment * (-1);
     }
-
-  public:
-    BStiff1D(int q, int n);
-
-    ~BStiff1D();
 
     void compute_matrix();
 
@@ -62,10 +62,31 @@ class BStiff2DTri : public BMoment2DTri
     int lenBinomialMat; // length of the binomial Pascal matrix
     int **BinomialMat;  // Pascal Matrix
 
+    // alloc matrix linearly
+    double **create_matrix();
+
+    void delete_matrix(double **matrix);
+
+    // alloc binomial matrix
+    int **create_binomialMat();
+
+    void delete_binomialMat(int **binomialMat);
+
+    // computes a Pascal Matrix with size lenBinomialMat
+    void compute_binomials();
+
   public:
     BStiff2DTri(int q, int n);
 
     BStiff2DTri(int q, int n, double T[][2]);
+
+    ~BStiff2DTri();
+
+    void compute_matrix();
+
+    void compute_matrix(double *Fval);
+
+    void compute_matrix(double (*f)(double, double));
 };
 
 /*****************************************************************************
@@ -80,8 +101,29 @@ class BStiff2DQuad : public BMoment2DQuad
     int lenBinomialMat; // length of the binomial Pascal matrix
     int **BinomialMat;  // Pascal Matrix
 
+    // alloc matrix linearly
+    double **create_matrix();
+
+    void delete_matrix(double **matrix);
+
+    // alloc binomial matrix
+    int **create_binomialMat();
+
+    void delete_binomialMat(int **binomialMat);
+
+    // computes a Pascal Matrix with size lenBinomialMat
+    void compute_binomials();
+
   public:
     BStiff2DQuad(int q, int n);
+
+    ~BStiff2DQuad();
+
+    void compute_matrix();
+
+    void compute_matrix(double *Fval);
+
+    void compute_matrix(double (*f)(double, double));
 };
 
 class BStiff3D : public BMoment3D
