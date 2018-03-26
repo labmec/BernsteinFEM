@@ -27,6 +27,7 @@ BMoment2DTri::BMoment2DTri()
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    CVal = create_Cval();
 }
 
 // quadrature and polynomial order constructor;
@@ -47,6 +48,7 @@ BMoment2DTri::BMoment2DTri(int q, int n)
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    CVal = create_Cval();
 }
 
 // constructor setting the triangle vertices
@@ -69,6 +71,52 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
     Bmoment = create_Bmoment();
 
     setTriangle(T[0], T[1], T[2]);
+    create_Cval();
+}
+
+BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
+{
+    if (q > 80)
+    {
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
+    }
+    this->q = q;
+    this->n = n;
+    this->nb_Array = nb_Array;
+
+    quadraWN = create_quadraWN();
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
+
+    Bmoment = create_Bmoment();
+    CVal = create_Cval();
+}
+
+// constructor setting the triangle vertices
+BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array, double T[][2])
+{
+    if (q > 80)
+    {
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
+    }
+    this->q = q;
+    this->n = n;
+    this->nb_Array = nb_Array;
+
+    quadraWN = create_quadraWN();
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
+
+    Bmoment = create_Bmoment();
+
+    setTriangle(T[0], T[1], T[2]);
+    create_Cval();
 }
 
 BMoment2DTri::~BMoment2DTri()
@@ -76,22 +124,29 @@ BMoment2DTri::~BMoment2DTri()
     delete_Bmoment(Bmoment);
     delete quadraWN[0];
     delete quadraWN;
-    if (fValSet)
-        delete CVal;
+    delete CVal[0];
+    delete CVal;
 }
 
 // alloc the Bmoment Vectors linearly
 double **BMoment2DTri::create_Bmoment()
 {
-    double **Bmoment = new double *[lenMoments];
-    double *Bmoment_array = new double[nb_Array * lenMoments];
+    double *aux = new double[lenMoments * nb_Array];
+    double **bmoment = new double *[lenMoments];
 
-    double *p1 = Bmoment_array;
-
-    for (int i = 0; i < lenMoments; p1 += nb_Array, i++)
-        Bmoment[i] = p1;
+    for (int i = 0; i < lenMoments; aux += nb_Array, i++)
+        bmoment[i] = aux;
 
     return Bmoment;
+}
+
+double **BMoment2DQuad::create_Cval()
+{
+    int aux = lenMoments;
+    lenMoments = q;
+    double **p = create_Bmoment();
+    lenMoments = aux;
+    return p;
 }
 
 // free memory allocated to B-moments
@@ -166,6 +221,11 @@ void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], do
 // initialize Bmoment by the values of the function f at the quadrature points of order q
 void BMoment2DTri::init_BmomentC_Bmom2d()
 {
+    if (nb_Array > 1)
+    {
+        std::cerr << "Function definition may be used only scalar-valued" << std::endl;
+        nb_Array = 1;
+    }
     double b1, b2, b3;
     int index_ij = 0;
 
@@ -198,14 +258,13 @@ void BMoment2DTri::init_Bmoment2d_Cval()
     double scalingConst = 2 * Area2d(v1, v2, v3); // Jacobian of Duffy transformation
 
     int index_ij = 0;
-    double *val = CVal;
 
     for (int i = 0; i < q; i++)
     {
         for (int j = 0; j < q; j++)
         {
             for (int ell = 0; ell < nb_Array; ell++)
-                Bmoment[index_ij][ell] = scalingConst * (*val++);
+                Bmoment[index_ij][ell] = scalingConst * CVal[index_ij][ell];
             index_ij++;
         }
     }
@@ -225,12 +284,22 @@ double BMoment2DTri::get_bmoment(int a1, int a2, int dim)
     return Bmoment[i][dim - 1];
 }
 
-// set the function value at quadrature points, as in Fval
+// set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
 void BMoment2DTri::setFunctionValue(double *Fval)
 {
-    CVal = new double[q * nb_Array];
-    for (int i = 0; i < q * nb_Array; i++)
-        CVal[i] = Fval[i];
+    for (int i = 0; i < q; i++)
+        for (int el = 0; el < nb_Array; el++)
+            CVal[i][el] = Fval[i + el * q];
+
+    fValSet = true;
+}
+// Fval must have at least q X nb_Array elements
+void BMoment2DTri::setFunctionValue(double **Fval)
+{
+    for (int i = 0; i < q; i++)
+        for (int el = 0; el < nb_Array; el++)
+            CVal[i][el] = Fval[i][el];
+
     fValSet = true;
 }
 
