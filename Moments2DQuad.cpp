@@ -46,6 +46,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment = create_Bmoment();
+    Cval = create_Cval();
 }
 
 BMoment2DQuad::~BMoment2DQuad()
@@ -68,6 +69,15 @@ double **BMoment2DQuad::create_Bmoment()
         Bmoment[i] = p1;
 
     return Bmoment;
+}
+
+double **BMoment2DQuad::create_Cval()
+{
+    int aux = lenMoments;
+    lenMoments = q;
+    double **p = create_Bmoment();
+    lenMoments = aux;
+    return p;
 }
 
 void BMoment2DQuad::delete_Bmoment(double **Bmoment)
@@ -134,7 +144,7 @@ void BMoment2DQuad::computeFunctionDef()
         {
             nodalShape(X, dX, quadraWN[1][i], quadraWN[1][j]);
             index_ij = position(i, j, q);
-            Cval[index_ij] = (*f)(X[0], X[1]) * dX;
+            Cval[index_ij][0] = (*f)(X[0], X[1]) * dX;
         }
     }
 
@@ -146,13 +156,24 @@ double BMoment2DQuad::get_bmoment(int a1, int a2)
     return Bmoment[position(a1, a2, n)][0];
 }
 
+// it is expected that Fval has the function values mapped to the
+// master element already multiplied by the Jacobian
+// and has q * nb_Array elements
 void BMoment2DQuad::setFunctionValue(double *Fval)
 {
-    // it is expected that Fval has the function values mapped to the
-    // master element already multiplied by the Jacobian
-    Cval = new double[q * nb_Array];
-    for (int i = 0; i < q * nb_Array; i++)
-        Cval[i] = Fval[i];
+    for (int i = 0; i < q; i++)
+        for (int el = 0; el < nb_Array; el++)
+            Cval[i][el] = Fval[i + el * q];
+
+    fValSet = true;
+}
+// Fval must have at least q X nb_Array elements
+void BMoment2DQuad::setFunctionValue(double **Fval)
+{
+    for (int i = 0; i < q; i++)
+        for (int el = 0; el < nb_Array; el++)
+            Cval[i][el] = Fval[i][el];
+
     fValSet = true;
 }
 
@@ -214,7 +235,8 @@ void BMoment2DQuad::compute_moments()
                         // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
                         index_ij = position(i, j, q);
                         index_a1a2 = position(a1, a2, n);
-                        Bmoment[index_a1a2][0] += w1 * w2 * Cval[index_ij];
+                        for (int el = 0; el < nb_Array; el ++)
+                            Bmoment[index_a1a2][el] += w1 * w2 * Cval[index_ij][el];
                         w2 *= r2 * ((n - a2) / (1.0 + a2));
                     }
                     w1 *= r1 * ((n - a1) / (1.0 + a1));
