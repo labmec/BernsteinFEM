@@ -1,8 +1,6 @@
 #ifndef MOMENTS_H
 #define MOMENTS_H
 
-#include "JacobiGaussNodes.h"
-
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
 /*****************************************************************************

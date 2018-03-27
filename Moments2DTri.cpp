@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
@@ -157,12 +159,6 @@ void BMoment2DTri::delete_Bmoment(double **Bmoment)
     delete Bmoment;
 }
 
-// index (i,j) on the square {0,...,n}^2
-int BMoment2DTri::position(int i, int j, int n)
-{
-    return i * (n + 1) + j;
-}
-
 double **BMoment2DTri::create_quadraWN()
 {
     double **quadraWN = new double *[4];
@@ -197,19 +193,6 @@ void BMoment2DTri::assignQuadra()
         x[k] = (1.0 + legendre[1][q - 2][k]) * 0.5;
         w[k] = legendre[0][q - 2][k] * 0.5;
     }
-}
-
-// computes area of triangle < v1,v2,v3 >
-double BMoment2DTri::Area2d(double v1[2], double v2[2], double v3[2])
-{
-    double x1 = v1[0];
-    double y1 = v1[1];
-    double x2 = v2[0];
-    double y2 = v2[1];
-    double x3 = v3[0];
-    double y3 = v3[1];
-
-    return (x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
 }
 
 //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
