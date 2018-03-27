@@ -271,13 +271,6 @@ void BMoment2DTri::init_Bmoment2d_Cval()
     }
 }
 
-//get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-double BMoment2DTri::get_bmoment(int a1, int a2)
-{
-    int i = position(a1, a2, n);
-    return Bmoment[i][0];
-}
-
 //get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
 double BMoment2DTri::get_bmoment(int a1, int a2, int dim)
 {
