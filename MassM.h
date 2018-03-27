@@ -76,8 +76,7 @@ class BMass2DTri : public BMoment2DTri
 
 	~BMass2DTri();
 
-	// return the mass matrix values at indexes (i1, j1) and (i2, j2) for 2 triangle coordinates
-	double getMatrixValue(int i1, int j1, int i2, int j2);
+	double getMatrixValue(int i, int j) { return Matrix[i][j]; }
 
 	// compute the mass matrix
 	void compute_matrix();
@@ -118,6 +117,8 @@ class BMass2DQuad : public BMoment2DQuad
 	BMass2DQuad(int q, int n, double T[][2]);
 
 	~BMass2DQuad();
+
+	double getMatrixValue(int i, int j) { return Matrix[i][j]; }
 
 	void compute_matrix();
 
