@@ -59,8 +59,11 @@ class BStiff2DTri : public BMoment2DTri
     int n;              // polynomial order
     int lenStiff;       // length of the stiffness matrix
     double **Matrix;    // stiffness matrix
+    double normalMat[3][2]; // the normals of the triangle
     int lenBinomialMat; // length of the binomial Pascal matrix
     int **BinomialMat;  // Pascal Matrix
+    BMoment2DTri* Moments; // this is used instead of the inherited object
+    // the inherited object is used to compute other parts of the matrix
 
     // alloc matrix linearly
     double **create_matrix();
@@ -74,6 +77,9 @@ class BStiff2DTri : public BMoment2DTri
 
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
+
+    // computes the normals of the triangle
+    void compute_normals();
 
   public:
     BStiff2DTri(int q, int n);
