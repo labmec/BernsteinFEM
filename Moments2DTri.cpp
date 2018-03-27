@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
@@ -443,4 +444,51 @@ void BMoment2DTri::compute_moments(double *Fval)
 {
     setFunctionValue(Fval);
     compute_moments();
+}
+
+/* modified from 'bbfem.cpp' to fit into this implementation */
+void BMoment2DTri::transform_BmomentC_Stiff2d (BMoment2DTri *Bmomentab, double normalMat[][2])
+{
+    int m, mm;
+
+    //m = MAX (2 * n - 2, q-1);
+    m = MAX (n, q-1); // n from this object is already expected to be (2 * n - 2) from the StiffM2DTri object
+  
+    mm = (m + 1) * (m + 1); // with no storing algorithm, required Bmoment size is determined by MAX( Bmoment order, number of quadrature points )
+
+    for (int mu = 0; mu < mm; mu++)
+    {
+        double Mat[2][2];
+
+        Mat[0][0] = Bmoment[mu][0]; // Mat is used to store Bmoment[mu] entries
+        Mat[0][1] = Mat[1][0] = Bmoment[mu][1];
+        Mat[1][1] = Bmoment[mu][2];
+
+        double matVectMult[2];
+
+        matVectMult[0] = Mat[0][0] * normalMat[0][0] + Mat[0][1] * normalMat[0][1];
+        matVectMult[1] = Mat[1][0] * normalMat[0][0] + Mat[1][1] * normalMat[0][1];
+
+
+        Bmomentab->Bmoment[mu][0] = normalMat[0][0] * matVectMult[0] + normalMat[0][1] * matVectMult[1];   //alfa=[1,0,0], beta=[1,0,0]
+        Bmomentab->Bmoment[mu][1] = normalMat[1][0] * matVectMult[0] + normalMat[1][1] * matVectMult[1];   //alfa=[0,1,0], beta=[1,0,0]
+        Bmomentab->Bmoment[mu][2] = normalMat[2][0] * matVectMult[0] + normalMat[2][1] * matVectMult[1];   //alfa=[0,0,1], beta=[1,0,0]
+
+
+        matVectMult[0] = Mat[0][0] * normalMat[1][0] + Mat[0][1] * normalMat[1][1];
+        matVectMult[1] = Mat[1][0] * normalMat[1][0] + Mat[1][1] * normalMat[1][1];
+
+        //Bmomentab->Bmoment[mu][1] = normalMat[0][0]*matVectMult[0] + normalMat[0][1]*matVectMult[1]; //alfa=[1,0,0], beta=[0,1,0] // redundancy
+        Bmomentab->Bmoment[mu][3] = normalMat[1][0] * matVectMult[0] + normalMat[1][1] * matVectMult[1];   //alfa=[0,1,0], beta=[0,1,0]
+        Bmomentab->Bmoment[mu][4] = normalMat[2][0] * matVectMult[0] + normalMat[2][1] * matVectMult[1];   //alfa=[0,0,1], beta=[0,1,0]
+
+
+        matVectMult[0] = Mat[0][0] * normalMat[2][0] + Mat[0][1] * normalMat[2][1];
+        matVectMult[1] = Mat[1][0] * normalMat[2][0] + Mat[1][1] * normalMat[2][1];
+
+
+        //Bmomentab->Bmoment[mu][2] = normalMat[0][0]*matVectMult[0] + normalMat[0][1]*matVectMult[1]; //alfa=[1,0,0], beta=[0,0,1] // redundancy
+        //Bmomentab->Bmoment[mu][4] = normalMat[1][0]*matVectMult[0] + normalMat[1][1]*matVectMult[1]; //alfa=[0,1,0], beta=[0,0,1]
+        Bmomentab->Bmoment[mu][5] = normalMat[2][0] * matVectMult[0] + normalMat[2][1] * matVectMult[1];   //alfa=[0,0,1], beta=[0,0,1]
+    }
 }
