@@ -262,7 +262,7 @@ double BMoment2DTri::get_bmoment(int a1, int a2, int dim)
 }
 
 // set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
-void BMoment2DTri::setFunctionValue(double *Fval)
+void BMoment2DTri::setFunction(double *Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -271,7 +271,7 @@ void BMoment2DTri::setFunctionValue(double *Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment2DTri::setFunctionValue(double **Fval)
+void BMoment2DTri::setFunction(double **Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -281,7 +281,7 @@ void BMoment2DTri::setFunctionValue(double **Fval)
 }
 
 // set the function definition for computations
-void BMoment2DTri::setFunctionDef(double (*function)(double, double))
+void BMoment2DTri::setFunction(double (*function)(double, double))
 {
     f = function;
     fDefSet = true;
@@ -412,13 +412,13 @@ void BMoment2DTri::compute_moments()
 
 void BMoment2DTri::compute_moments(double (*f)(double, double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_moments();
 }
 
 void BMoment2DTri::compute_moments(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_moments();
 }
 

@@ -133,7 +133,7 @@ void BMoment1D::loadFunctionDef()
 }
 
 // set the function values for computation (Fval must have at least q * nb_Array elements)
-void BMoment1D::setFunctionValue(double *Fval)
+void BMoment1D::setFunction(double *Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -142,7 +142,7 @@ void BMoment1D::setFunctionValue(double *Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment1D::setFunctionValue(double **Fval)
+void BMoment1D::setFunction(double **Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -152,7 +152,7 @@ void BMoment1D::setFunctionValue(double **Fval)
 }
 
 // set the function definition for computation
-void BMoment1D::setFunctionDef(double (*function)(double))
+void BMoment1D::setFunction(double (*function)(double))
 {
     f = function;
     fDefSet = true;
@@ -199,13 +199,13 @@ void BMoment1D::compute_moments()
 // compute the b-moments for the specified f function
 void BMoment1D::compute_moments(double (*f)(double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_moments();
 }
 
 // compute the b-moments for the Fval function values
 void BMoment1D::compute_moments(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_moments();
 }

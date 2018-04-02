@@ -78,11 +78,11 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function values for computation
-  void setFunctionValue(double *Fval);
-  void setFunctionValue(double **Fval);
+  void setFunction(double *Fval);
+  void setFunction(double **Fval);
 
   // set the function definition for computation
-  void setFunctionDef(double (*f)(double));
+  void setFunction(double (*f)(double));
 
   // compute the B-moments using the values already assigned in the object
   void compute_moments();
@@ -201,11 +201,11 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunctionValue(double *Fval);
-  void setFunctionValue(double **Fval);
+  void setFunction(double *Fval);
+  void setFunction(double **Fval);
 
   // set the function that multiplies the B-polynomial by definition
-  void setFunctionDef(double (*function)(double, double));
+  void setFunction(double (*function)(double, double));
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
@@ -303,11 +303,11 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunctionValue(double *Fval);
-  void setFunctionValue(double **Fval);
+  void setFunction(double *Fval);
+  void setFunction(double **Fval);
 
   // set the function that multiplies the B-polynomial
-  void setFunctionDef(double (*function)(double, double));
+  void setFunction(double (*function)(double, double));
 
   // set the element triangle vertices
   void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);

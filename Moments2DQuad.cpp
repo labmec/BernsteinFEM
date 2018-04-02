@@ -162,7 +162,7 @@ double BMoment2DQuad::get_bmoment(int a1, int a2)
 // it is expected that Fval has the function values mapped to the
 // master element already multiplied by the Jacobian
 // and has q * nb_Array elements
-void BMoment2DQuad::setFunctionValue(double *Fval)
+void BMoment2DQuad::setFunction(double *Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -171,7 +171,7 @@ void BMoment2DQuad::setFunctionValue(double *Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment2DQuad::setFunctionValue(double **Fval)
+void BMoment2DQuad::setFunction(double **Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -180,7 +180,7 @@ void BMoment2DQuad::setFunctionValue(double **Fval)
     fValSet = true;
 }
 
-void BMoment2DQuad::setFunctionDef(double (*function)(double, double))
+void BMoment2DQuad::setFunction(double (*function)(double, double))
 {
     f = function;
     fDefSet = true;
@@ -251,12 +251,12 @@ void BMoment2DQuad::compute_moments()
 
 void BMoment2DQuad::compute_moments(double (*f)(double, double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_moments();
 }
 
 void BMoment2DQuad::compute_moments(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_moments();
 }

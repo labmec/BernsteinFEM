@@ -172,12 +172,12 @@ void BStiff2DTri::compute_matrix()
 
 void BStiff2DTri::compute_matrix(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_matrix();
 }
 
 void BStiff2DTri::compute_matrix(double (*f)(double, double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_matrix();
 }

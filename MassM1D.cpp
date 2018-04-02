@@ -100,12 +100,12 @@ void BMass1D::compute_matrix()
 
 void BMass1D::compute_matrix(double (*f)(double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_matrix();
 }
 
 void BMass1D::compute_matrix(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_matrix();
 }

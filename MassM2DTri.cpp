@@ -136,12 +136,12 @@ void BMass2DTri::compute_matrix()
 
 void BMass2DTri::compute_matrix(double (*f)(double, double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_matrix();
 }
 
 void BMass2DTri::compute_matrix(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_matrix();
 }

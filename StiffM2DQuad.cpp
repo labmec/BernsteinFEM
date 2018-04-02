@@ -104,12 +104,12 @@ void BStiff2DQuad::compute_matrix()
 
 void BStiff2DQuad::compute_matrix(double *Fval)
 {
-    setFunctionValue(Fval);
+    setFunction(Fval);
     compute_matrix();
 }
 
 void BStiff2DQuad::compute_matrix(double (*f)(double, double))
 {
-    setFunctionDef(f);
+    setFunction(f);
     compute_matrix();
 }
