@@ -33,6 +33,16 @@ class BStiff1D : public BMoment1D
 
     ~BStiff1D();
 
+    int getLen() { return lenStiff; }
+
+    double getMatrixValue(int i, int j)
+    {
+        if (i < lenStiff && j < lenStiff)
+            return Matrix[i][j];
+        else
+            return 0.0;
+    }
+
     // computes the normalized moment
     static double grad(int k, int l)
     {
@@ -55,14 +65,14 @@ class BStiff1D : public BMoment1D
  *****************************************************************************/
 class BStiff2DTri : public BMoment2DTri
 {
-    int q;              // number of quadrature points ( recommended: 2*(n+1) )
-    int n;              // polynomial order
-    int lenStiff;       // length of the stiffness matrix
-    double **Matrix;    // stiffness matrix
+    int q;                  // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                  // polynomial order
+    int lenStiff;           // length of the stiffness matrix
+    double **Matrix;        // stiffness matrix
     double normalMat[3][2]; // the normals of the triangle
-    int lenBinomialMat; // length of the binomial Pascal matrix
-    int **BinomialMat;  // Pascal Matrix
-    BMoment2DTri* Moments; // this is used instead of the inherited object
+    int lenBinomialMat;     // length of the binomial Pascal matrix
+    int **BinomialMat;      // Pascal Matrix
+    BMoment2DTri *Moments;  // this is used instead of the inherited object
     // the inherited object is used to compute other parts of the matrix
 
     // alloc matrix linearly
@@ -87,6 +97,16 @@ class BStiff2DTri : public BMoment2DTri
     BStiff2DTri(int q, int n, double T[][2]);
 
     ~BStiff2DTri();
+
+    int getLen() { return lenStiff; }
+
+    double getMatrixValue(int i, int j)
+    {
+        if (i < lenStiff && j < lenStiff)
+            return Matrix[i][j];
+        else
+            return 0.0;
+    }
 
     void compute_matrix();
 
@@ -124,6 +144,16 @@ class BStiff2DQuad : public BMoment2DQuad
     BStiff2DQuad(int q, int n);
 
     ~BStiff2DQuad();
+
+    int getLen() { return lenStiff; }
+
+    double getMatrixValue(int i, int j)
+    {
+        if (i < lenStiff && j < lenStiff)
+            return Matrix[i][j];
+        else
+            return 0.0;
+    }
 
     void compute_matrix();
 
