@@ -181,8 +181,8 @@ void BMoment2DTri::assignQuadra()
 
     for (k = 0; k < q; k++)
     {
-        x[k] = (1.0 + jacobi[1][q - 2][k]) * 0.5;
-        w[k] = jacobi[0][q - 2][k] * 0.25;
+        x[k] = (1.0 + jacobi_xi(q, k)) * 0.5;
+        w[k] = jacobi_w(q, k) * 0.25;
     }
 
     x = quadraWN[3];
@@ -190,8 +190,8 @@ void BMoment2DTri::assignQuadra()
 
     for (k = 0; k < q; k++)
     {
-        x[k] = (1.0 + legendre[1][q - 2][k]) * 0.5;
-        w[k] = legendre[0][q - 2][k] * 0.5;
+        x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
+        w[k] = legendre_w(q, k) * 0.5;
     }
 }
 
