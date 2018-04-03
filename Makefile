@@ -3,7 +3,7 @@
 OBJ= -c
 FLAGS= -g -std=c++17 -lm
 
-all: moments mass stiff elem lib
+all: moments mass stiff elem lib clean
 
 lib:
 	ar -r BernsteinFEM.a *.o
