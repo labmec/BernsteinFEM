@@ -158,6 +158,12 @@ void BMoment1D::setFunction(double (*function)(double))
     fDefSet = true;
 }
 
+void BMoment1D::setInterval(double a, double b)
+{
+    this->a = a;
+    this->b = b;
+}
+
 // compute the B-moments using the values already assigned in the object
 void BMoment1D::compute_moments()
 {

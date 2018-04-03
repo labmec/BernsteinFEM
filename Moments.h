@@ -84,6 +84,8 @@ public:
   // set the function definition for computation
   void setFunction(double (*f)(double));
 
+  void setInterval(double a, double b);
+
   // compute the B-moments using the values already assigned in the object
   void compute_moments();
 
