@@ -143,7 +143,7 @@ double **BMoment2DTri::create_Bmoment()
     return Bmoment;
 }
 
-double **BMoment2DQuad::create_Cval()
+double **BMoment2DTri::create_Cval()
 {
     int aux = lenMoments;
     lenMoments = q;
