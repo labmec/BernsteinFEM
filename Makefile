@@ -5,7 +5,7 @@ FLAGS= -g -std=c++17 -lm
 
 all: moments mass stiff elem lib clean
 
-lib:
+lib: moments mass stiff elem
 	ar -r BernsteinFEM.a *.o
 
 clean:
