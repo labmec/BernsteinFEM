@@ -61,4 +61,4 @@ elem2dtri:
 	g++ $(OBJ) $(FLAGS) Elem2DTri.cpp
 
 elem2dquad:
-	g++$(OBJ) $(FLAGS) Elem2DQuad.cpp
+	g++ $(OBJ) $(FLAGS) Elem2DQuad.cpp
