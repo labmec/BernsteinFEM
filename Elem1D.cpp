@@ -39,6 +39,29 @@ BElement1D::~BElement1D()
     delete_el_mat(ElMat);
 }
 
+double **BElement1D::create_el_mat()
+{
+    double *aux = new double[length * length];
+    double **mat = new double *[length];
+    for (int i = 0; i < length; aux += length, i++)
+        mat[i] = aux;
+    return mat;
+}
+
+void BElement1D::delete_el_mat(double **ElMat)
+{
+    delete ElMat[0];
+    delete ElMat;
+}
+
+void BElement1D::setInterval (double a, double b)
+{
+    MassMat->setInterval(a, b);
+    //ConvecMat->setInterval(a, b);
+    StiffMat->setInterval(a, b);
+    LoadVec->setInterval(a, b);
+}
+
 double *BElement1D::evaluate()
 {
     // initialize with 0's
@@ -48,7 +71,7 @@ double *BElement1D::evaluate()
     // evaluate routine, utilizes the recurrence relation of Bernstein Polynomials
     for (int i = 0; i < length; i++)
     {
-        double xi = legendre[1][q - 2][i]; // see JacobiGaussNodes.h for reference
+        double xi = legendre_xi(q, i);
         double s = 1 - xi;
         double r = xi / s; // recurrence relation constant
         double w = pow(s, n);
@@ -68,5 +91,8 @@ void BElement1D::makeSystem()
     StiffMat->compute_matrix();
     LoadVec->compute_moments();
 
-    //ElMat = MassMat + StiffMat; //still gonna define the operator overloading
+    for (int i = 0; i < length; i++) // length is equal to lenMass and lenStiff
+        for (int j = 0; j < length; j++)
+            ElMat[i][j] = MassMat->getMatrixValue(i, j)
+                          + StiffMat->getMatrixValue(i, j);
 }

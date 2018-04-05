@@ -33,7 +33,15 @@ public:
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
 
-  double getQuadVector(int i) { if (i < q) return QuadVector[i]; else return 0.0;}
+  double getLoadVector (int i) { if (i < length) return LoadVec->get_bmoment(i); else return 0.0; }
+
+  double getQuadVector(int i) { if (i < q) return QuadVector[i]; else return 0.0; }
+
+  // sets element interval
+  void setInterval (double a, double b);
+
+  // sets the BBVector
+  void setBBVector (double* vec) { for (int i = 0; i < length; i++) BBVector[i] = vec[i]; }
 
   // sets functions by function value
   void setMassFunction (double* Fval) { MassMat->setFunction(Fval); }
@@ -77,7 +85,17 @@ public:
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
 
+  double getLoadVector(int i) { if (i < length) return LoadVec->get_bmoment(i); else return 0.0; }
+
+  double getLoadVector(int a1, int a2) { return LoadVec->get_bmoment(a1, a2); }
+
   double getQuadVector(int i) { if (i < q) return QuadVector[i]; else return 0.0;}
+
+  // sets element triangle
+  void setTriangle (double v1[2], double v2[2], double v3[2]);
+
+  // sets the BBVector
+  void setBBVector (double* vec) { for (int i = 0; i < length; i++) BBVector[i] = vec[i]; }
 
   // sets functions by function value
   void setMassFunction (double* Fval) { MassMat->setFunction(Fval); }
@@ -121,7 +139,17 @@ public:
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
 
+  double getLoadVector(int i) { if (i < length) return LoadVec->get_bmoment(i); else return 0.0; }
+
+  double getLoadVector(int a1, int a2) { return LoadVec->get_bmoment(a1, a2); }
+
   double getQuadVector(int i) { if (i < q) return QuadVector[i]; else return 0.0;}
+
+  // sets element quadrilateral
+  void setQuad (double v1[2], double v2[2], double v3[2], double v4[2]);
+
+  // sets the BBVector
+  void setBBVector (double* vec) { for (int i = 0; i < length; i++) BBVector[i] = vec[i]; }
 
   // sets functions by function value
   void setMassFunction (double* Fval) { MassMat->setFunction(Fval); }

@@ -40,6 +40,29 @@ BElement2DTri::~BElement2DTri()
     delete_el_mat(ElMat);
 }
 
+double **BElement2DTri::create_el_mat()
+{
+    double *aux = new double[length * length];
+    double **mat = new double *[length];
+    for (int i = 0; i < length; aux += length, i++)
+        mat[i] = aux;
+    return mat;
+}
+
+void BElement2DTri::delete_el_mat(double **ElMat)
+{
+    delete ElMat[0];
+    delete ElMat;
+}
+
+void BElement2DTri::setTriangle (double v1[2], double v2[2], double v3[2])
+{
+    MassMat->setTriangle(v1, v2, v3);
+    //ConvecMat->setTriangle(v1, v2, v3);
+    StiffMat->setTriangle(v1, v2, v3);
+    LoadVec->setTriangle(v1, v2, v3);
+}
+
 double *BElement2DTri::evaluate()
 {
     int Length = ((n + 1) * (n + 2)) / 2;
@@ -50,7 +73,7 @@ double *BElement2DTri::evaluate()
     // convert first index
     for (int i = 0; i < q; i++)
     {
-        double xi = legendre[1][q - 2][i]; // see JacobiGaussNodes.h for reference
+        double xi = legendre_xi(q, i);
         double s = 1 - xi;
         double r = xi / s;
 
@@ -68,7 +91,7 @@ double *BElement2DTri::evaluate()
     // convert second index
     for (int i = 0; i < q; i++)
     {
-        double xi = jacobi[1][q - 2][i]; // see JacobiGaussNodes.h for reference
+        double xi = jacobi_xi(q, i);
         double s = 1 - xi;
         double r = xi / s;
         double w = pow(s, n);
@@ -94,5 +117,8 @@ void BElement2DTri::makeSystem()
     StiffMat->compute_matrix();
     LoadVec->compute_moments();
 
-    //ElMat = MassMat + StiffMat; //still gonna define the operator overloading
+    for (int i = 0; i < length; i++)
+        for (int j = 0; j < length; j++)
+            ElMat[i][j] = MassMat->getMatrixValue(i, j)
+                          + StiffMat->getMatrixValue(i, j);
 }

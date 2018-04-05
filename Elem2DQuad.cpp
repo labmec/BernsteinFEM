@@ -27,6 +27,21 @@ BElement2DQuad::BElement2DQuad(int q, int n)
     ElMat = create_el_mat();
 }
 
+double **BElement2DQuad::create_el_mat()
+{
+    double *aux = new double[length * length];
+    double **mat = new double *[length];
+    for (int i = 0; i < length; aux += length, i++)
+        mat[i] = aux;
+    return mat;
+}
+
+void BElement2DQuad::delete_el_mat(double **ElMat)
+{
+    delete ElMat[0];
+    delete ElMat;
+}
+
 BElement2DQuad::~BElement2DQuad()
 {
     delete MassMat;
@@ -39,6 +54,14 @@ BElement2DQuad::~BElement2DQuad()
     delete_el_mat(ElMat);
 }
 
+void BElement2DQuad::setQuad(double v1[2], double v2[2], double v3[2], double v4[2])
+{
+    MassMat->setQuadrilateral(v1, v2, v3, v4);
+    //ConvecMat->setQuadrilateral(v1, v2, v3, v4);
+    StiffMat->setQuadrilateral(v1, v2, v3, v4);
+    LoadVec->setQuadrilateral(v1, v2, v3, v4);
+}
+
 double *BElement2DQuad::evaluate()
 {
     // initialize QuadVector with 0's
@@ -48,13 +71,13 @@ double *BElement2DQuad::evaluate()
     // EvalStep routine, same as the 1D with tensor product
     for (int i = 0; i < q; i++)
     {
-        double xi1 = legendre[1][q - 2][i]; // see JacobiGaussNodes.h for reference
+        double xi1 = legendre_xi(q, i);
         double s1 = 1 - xi1;
         double r1 = xi1 / s1;
         double w1 = pow(s1, n);
         for (int j = 0; j < q; j++)
         {
-            double xi2 = legendre[1][q - 2][j];
+            double xi2 = legendre_xi(q, j);
             double s2 = 1 - xi2;
             double r2 = xi2 / s2;
             double w2 = pow(s2, n);
@@ -80,5 +103,8 @@ void BElement2DQuad::makeSystem()
     StiffMat->compute_matrix();
     LoadVec->compute_moments();
 
-    //ElMat = MassMat + StiffMat; //still gonna define the operator overloading
+    for (int i = 0; i < length; i++)
+        for (int j = 0; j < length; j++)
+            ElMat[i][j] = MassMat->getMatrixValue(i, j)
+                          + StiffMat->getMatrixValue(i, j);
 }
