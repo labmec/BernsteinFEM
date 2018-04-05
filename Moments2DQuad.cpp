@@ -95,6 +95,7 @@ double **BMoment2DQuad::create_quadraWN()
     double **quadraWN = new double *[2];
     quadraWN[0] = aux;
     quadraWN[1] = aux + q + 1;
+    return quadraWN;
 }
 
 void BMoment2DQuad::assignQuadra()

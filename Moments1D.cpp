@@ -97,7 +97,8 @@ double **BMoment1D::create_quadraWN()
     double *aux = new double[2 * (q + 1)];
     double **quadraWN = new double *[2];
     quadraWN[0] = aux;
-    quadraWN[1] = aux + q + 1;
+    quadraWN[1] = aux + (q + 1);
+    return quadraWN;
 }
 
 void BMoment1D::assignQuadra()
