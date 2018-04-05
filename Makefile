@@ -1,7 +1,7 @@
 # Makefile
 
 OBJ= -c
-FLAGS= -g -std=c++17 -lm
+FLAGS= -g -std=c++17 -lm -Wall
 
 all: quadra moments mass stiff elem lib clean
 
