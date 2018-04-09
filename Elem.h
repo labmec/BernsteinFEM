@@ -29,11 +29,14 @@ public:
   BElement1D(int q, int n);
   ~BElement1D();
 
-  static int sysLen(int n, int nElem) { return n * nElem + 1; }
-
-  int len() { return length; }
+  static int sysLen(int n, int nElem)
+  {
+    return n * nElem + 1;
+  }
 
   //double** getElementMatrix() { return ElMat; }
+
+  int len() { return length; }
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
 
@@ -86,6 +89,8 @@ public:
   ~BElement2DTri();
 
   //double** getElementMatrix() { return ElMat; }
+
+  int len() { return length; }
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
 
