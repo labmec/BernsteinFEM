@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI verified="false" xmi.version="1.2" timestamp="2018-04-08T19:16:37" xmlns:UML="http://schema.omg.org/spec/UML/1.4">
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://umbrello.kde.org</XMI.exporter>
+   <XMI.exporterVersion>1.6.13</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.metamodel xmi.version="1.4" href="UML.xml" xmi.name="UML"/>
+ </XMI.header>
+ <XMI.content>
+  <UML:Model isSpecification="false" isAbstract="false" isLeaf="false" xmi.id="m1" isRoot="false" name="UML Model">
+   <UML:Namespace.ownedElement>
+    <UML:Stereotype visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="folder" name="folder"/>
+    <UML:Model visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Logical_View" name="Logical View">
+     <UML:Namespace.ownedElement>
+      <UML:Package stereotype="folder" visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Datatypes" name="Datatypes">
+       <UML:Namespace.ownedElement>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ue9WX6fZolDh9" name="char"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uSd3jUwnspOhA" name="int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u2diEccllwnk5" name="float"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uCHxnpau1IdgP" name="double"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uuHxL5nPGjlb2" name="bool"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="unIvPsKqrIgw4" name="string"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u8k0urp7Qemid" name="unsigned char"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uCu22mv8UWrtI" name="signed char"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="utVZxQ53AASvP" name="unsigned int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uEFIQbochcmU0" name="signed int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u30ZD1WyZvYI1" name="short int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uVsq4j1adl6Sp" name="unsigned short int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uxj8H6TmmJOoE" name="signed short int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uYKWDb2WBTKB1" name="long int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ue4aJw3qBIv8G" name="signed long int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uhyE60tfgK9Yk" name="unsigned long int"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uOC7zRoxW0xxV" name="long double"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uGfJ2R0yI08Gm" name="wchar_t"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="uCHxnpau1IdgP" isRoot="false" xmi.id="u6mebymEn1VmE" name="double**"/>
+        <UML:DataType visibility="public" isSpecification="false" namespace="Datatypes" isAbstract="false" isLeaf="false" elementReference="uSd3jUwnspOhA" isRoot="false" xmi.id="uL1qyczPXgSPT" name="int**"/>
+       </UML:Namespace.ownedElement>
+      </UML:Package>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u1IKv6qzAmiZU" name="BMoment">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="uRawhr1kv7JDB"/>
+        <UML:Generalization xmi.idref="uWBiClpoizWti"/>
+        <UML:Generalization xmi.idref="uMGcfbm7Yptvv"/>
+        <UML:Generalization xmi.idref="uqxROVNl1uQDO"/>
+        <UML:Generalization xmi.idref="uNZUaKNwvU0zv"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ulMmpQOYHhXyh" type="uSd3jUwnspOhA" comment="Number of quadrature points" name="q"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uoYaeRfTaHVgs" type="uSd3jUwnspOhA" comment="Berntein polynomial order" name="n"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uPCfUkfAPWjJX" type="uSd3jUwnspOhA" comment="Length of the moments vector" name="lenMoments"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uISueikkzJoqB" type="u6mebymEn1VmE" comment="Bernstein moments vector" name="Bmoment"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uDKg5J5LZKCHB" type="u6mebymEn1VmE" comment="Function values at quadrature points" name="Cval"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uJf3nPO2cRWp8" type="u6pxLXLI5TukP" comment="function definition" name="f"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="u3l5gnKOtPvnd" type="uSd3jUwnspOhA" comment="Determines whether to use function values of definition for computation" name="functVal"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="uqJ3EqE7hMThn" type="uSd3jUwnspOhA" comment="Number of arrays of Bmoment and Cval&#xa;Also the dimension of the image of the function" name="nb_Array"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="uOdHoHumWv7XF" type="uCHxnpau1IdgP" comment="Interval variables" name="a, b"/>
+        <UML:Attribute visibility="protected" isSpecification="false" xmi.id="uv477zoGB3r6l" type="u6mebymEn1VmE" comment="Quadrature points and weight" name="quadraWN"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" ownerScope="classifier" isRoot="false" xmi.id="ujQWralkBwyHz" comment="returns the position in the vector of the i-th point in and element with polynomial order of n" isOverride="false" name="position">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uPwWKDlAGkVw1" type="uSd3jUwnspOhA"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uVNm4iKwqSzMF" type="uSd3jUwnspOhA" value="" comment="element i-th point" name="i"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u0XoFvImjARgL" type="uSd3jUwnspOhA" value="" comment="polynomial order" name="n"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uLwfQXWhzgO08" comment="Gets the BMoment of the i-th point, whether it is previously computed or not" isOverride="false" name="get_bmoment">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uZAuKwDhaIEZx" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uHvqCqdRIsfgU" type="uSd3jUwnspOhA" value="" comment="i-th point in the element" name="i"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="undOsqkpjMmuV" comment="Get the BMoment of the i-th point and dimension 'dim', whether it is previously computed or not" isOverride="false" name="get_bmoment">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uxYVVKqiKR2aM" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u2gAxd7aSFh91" type="uSd3jUwnspOhA" value="" name="i"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uJn60pFosZbCt" type="uSd3jUwnspOhA" value="" name="dim"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uhU8jB9k2vNYq" comment="Specifies that you'll be using function definition for computation" isOverride="false" name="useFunctionDef"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uYesgafa5UgfB" comment="Specifies that you'll be using function values for computation (default)" isOverride="false" name="useFunctionValue"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uDqg2rSss3kAJ" comment="Sets the function values vector with the values in the vector passed as Fval" isOverride="false" name="setFunction">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uFVKTElQZJ0Re" type="udsymJC88kVm1" value="" comment="Function values" name="Fval"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ugEhcbQoRETlt" comment="Sets the function definition as the function specified as 'function'" isOverride="false" name="setFunction">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uY3B2YuBr9xVH" type="u6pxLXLI5TukP" value="" comment="function definition" name="function"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uWra6IJLM6rsM" comment="Sets interval for computation of the BMoments" isOverride="false" name="setInterval">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uEJYw0890ycB0" type="uCHxnpau1IdgP" value="" comment="Beggining of the interval" name="a"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="unTxzLAnEGeVz" type="uCHxnpau1IdgP" value="" comment="End of the interval" name="b"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uRWvRVIsYZQI7" comment="Computes the BMoments with the parameters already set" isOverride="false" name="compute_moments"/>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uhoQ6zbyctHow" name="BMass">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="uvHDPKPWuZwXX"/>
+        <UML:Generalization xmi.idref="uD5iJbVQ7JBaN"/>
+        <UML:Generalization xmi.idref="ugJRFhSk5aVGp"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uymR8nY3AGLXV" type="uSd3jUwnspOhA" comment="Number of quadrature points" name="q"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="umXYwqYbY5oQI" type="uSd3jUwnspOhA" comment="Bernstein polynomial order" name="n"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uTjHQX9lnbr9T" type="uSd3jUwnspOhA" comment="Length of the (square) mass matrix" name="lenMass"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uhVDVbQy8bz23" type="u6mebymEn1VmE" comment="Mass matrix" name="Matrix"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="upFOkVM25U1Fe" type="uSd3jUwnspOhA" comment="Length of the binomial (Pascal) matrix" name="lenBinomialMat"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uy8HVG8QyLo4Y" type="uL1qyczPXgSPT" comment="Binomials (Pascal) matrix" name="BinomialMat"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uHiwC515fQMe0" comment="Gets mass matrix value at line 'i' and 'j' column" isOverride="false" name="getMatrixValue">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uqDnoegP1H1N3" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="udQMpNv8XaxLy" type="uSd3jUwnspOhA" value="" name="i"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uVMvPDhhP2uwO" type="uSd3jUwnspOhA" value="" name="j"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uUAMKhp0cOY0Y" comment="Computes the mass matrix with the parameters already set" isOverride="false" name="compute_matrix"/>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u0N8g73Xd2WXG" name="BStiff">
+       <UML:GeneralizableElement.generalization>
+        <UML:Generalization xmi.idref="ukYU3uHUvVynt"/>
+       </UML:GeneralizableElement.generalization>
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="u4N8okppbiCcY" type="uSd3jUwnspOhA" comment="Number of quadrature points" name="q"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="ukmlBbfjhrSOH" type="uSd3jUwnspOhA" comment="Bernstein polynomial order" name="n"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uGA5T0sMf7BnE" type="uSd3jUwnspOhA" comment="Length of the stiffness (square) matrix" name="lenStiff"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uu95LosM1WhA6" type="u6mebymEn1VmE" comment="Stiffness matrix" name="Matrix"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uvMBcz1SzPPve" type="uSd3jUwnspOhA" comment="Length of the binomials (Pascal) matrix" name="lenBinomialMat"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uA1KfzxjmEKHM" type="uL1qyczPXgSPT" comment="Binomials (Pascal) matrix" name="BinomialMat"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" ownerScope="classifier" isRoot="false" xmi.id="uyhygcQKEoH4A" comment="&quot;Computes the gradient&quot;" isOverride="false" name="grad">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uxaOrrZCzZkDM" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u2lQVUkulnLgb" type="uSd3jUwnspOhA" value="" name="k"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uuE3UX1ySdOZv" type="uSd3jUwnspOhA" value="" name="l"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uFcny6dDmz7Ao" comment="Gets the stiffness matrix value at line 'i' and 'j' column" isOverride="false" name="getMatrixValue">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="u6T4YX4ZpicqB" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uDj4mFYdpCbjL" type="uSd3jUwnspOhA" value="" name="i"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ukLLgeVwp24sy" type="uSd3jUwnspOhA" value="" name="j"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="unNklKhhGqbn2" comment="Computes the stiffness matrix with the parameters already set" isOverride="false" name="compute_matrix"/>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical_View" xmi.id="uyGqO4bn9Qgm2" name="">
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="false" isSpecification="false" xmi.id="urPfMKtPsmFzr" type="u1IKv6qzAmiZU" name="" aggregation="none"/>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="uOW6zqVx8nMNE" type="uhoQ6zbyctHow" name="" aggregation="none"/>
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u1IKv6qzAmiZU" xmi.id="uRawhr1kv7JDB" parent="uhoQ6zbyctHow" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="uhoQ6zbyctHow" xmi.id="uvHDPKPWuZwXX" parent="u1IKv6qzAmiZU" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u1IKv6qzAmiZU" xmi.id="uWBiClpoizWti" parent="u0N8g73Xd2WXG" name=""/>
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical_View" xmi.id="ungll5Yqw8sBh" name="">
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="false" isSpecification="false" xmi.id="ux7EpCXa2z2lo" type="uhoQ6zbyctHow" name="" aggregation="none"/>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="utOy8n5J3SQiC" type="u1IKv6qzAmiZU" name="" aggregation="none"/>
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Dependency visibility="public" isSpecification="false" namespace="Logical_View" supplier="u1IKv6qzAmiZU" xmi.id="uOkimPFhAJtgq" client="uhoQ6zbyctHow" name=""/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uIkwj8DrQs18i" name="BElement">
+       <UML:Classifier.feature>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uFD0scqWGXknl" type="uSd3jUwnspOhA" comment="Number of quadrature points" name="q"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="u3QUXrOFsTmfg" type="uSd3jUwnspOhA" comment="Bernstein Polynomial order" name="n"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uhooavMPTx4ZG" type="uSd3jUwnspOhA" comment="Length of the element's (square) matrix" name="length"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uFyAaZV8rtOsH" type="uhoQ6zbyctHow" name="MassMat"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="u3yi3Fp1kyBVn" type="u0N8g73Xd2WXG" name="StiffMat"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uE2vUAnDwzrI1" type="u1IKv6qzAmiZU" name="LoadVec"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uhChUxnXWeh6B" type="udsymJC88kVm1" comment="Vector with the coefficients that multiply the Bernstein-Beziér Basis" name="BBVector"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uKKiN08P6wckr" type="udsymJC88kVm1" comment="Vector of the BBVector evaluated at each quadrature points&#xa;&#xa;QuadVector[i] is the BBVector evaluated at the i-th quadrature point" name="QuadVector"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="uh5BW3hZnutQk" type="u6mebymEn1VmE" comment="Element's matrix (ElMat = MassMat + StiffMat)" name="ElMat"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" ownerScope="classifier" isRoot="false" xmi.id="u6Z4QfjRvxkq8" comment="Returns the length of the linear system that will be made from 'nElem' elements, each with 'n' polynomial order" isOverride="false" name="sysLen">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uLjWwfhBFhs19" type="uSd3jUwnspOhA"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uZUXvBKDPKrYA" type="uSd3jUwnspOhA" value="" comment="Bernstein polynomial order" name="n"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u9e66PXPpcqrZ" type="uSd3jUwnspOhA" value="" comment="Number of elements used" name="nElem"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u3RBeGMYCUGPh" comment="Gets element's matrix value at line 'i' and 'j' column" isOverride="false" name="getMatrixValue">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="uJtbtA7BIlpeT" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u1wKDPmoUGDt9" type="uSd3jUwnspOhA" value="" name="i"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ugH9VNdkoXYer" type="uSd3jUwnspOhA" value="" name="j"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uaGpjqWVsETGP" comment="Gets the load vector i-th coefficient" isOverride="false" name="getLoadVector">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="u43wmOWlUBFls" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uVAK3fbklDQub" type="uSd3jUwnspOhA" value="" name="i"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ubMM66DjdEFVA" comment="Gets the QuadVector i-th coefficient.&#xa;&#xa;QuadVector[i] equals the element polynomial evaluated at the i-th quadrature point, use to compute the element's L2 norm" isOverride="false" name="getQuadVector">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="u2lQA5VI8yG2S" type="uCHxnpau1IdgP"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ucxHlBQ3eEfIv" type="uSd3jUwnspOhA" value="" name="i"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ufArcSOyb9HTe" comment="Sets the element's interval" isOverride="false" name="setInterval">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ucxorZOVVM3ZN" type="uCHxnpau1IdgP" value="" comment="Beggining of the interval" name="a"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uszpxY5jW09pi" type="uCHxnpau1IdgP" value="" comment="End of the interval" name="b"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ukNeRW9Xjuoxn" comment="Sets the BBVector, should be called after linear system has been solved" isOverride="false" name="setBBVector">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uvMGwQhhAAFRk" type="udsymJC88kVm1" value="" name="BBVector"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u5xwtG4MKnf97" comment="Sets the function for the mass matrix with the values at Fval" isOverride="false" name="setMassFunction">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="ueTdA0KmhwE0h" type="udsymJC88kVm1" value="" name="Fval"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uXqVXVLajmioc" comment="Sets the function for the stiffness matrix with the values at Fval" isOverride="false" name="setStiffMatrix">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="u2rZ1hsT3XaKK" type="udsymJC88kVm1" value="" name="Fval"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uOSml4NV1mf4A" comment="Sets the function for the load vector with the values at Fval" isOverride="false" name="setLoadFunction">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uZwMQmojfK0yA" type="udsymJC88kVm1" value="" name="Fval"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u18iw0mhWetfh" comment="Evaluates the BBVector at the quadrature points and returns it (also sets it in the QuadVector)" isOverride="false" name="evaluate">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="ujg5SKEJcdyHS" type="udsymJC88kVm1"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="udIrQ9M8XMxSm" comment="Computes the ElMat and LoadVec" isOverride="false" name="makeSystem"/>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u1IKv6qzAmiZU" xmi.id="uMGcfbm7Yptvv" parent="uhoQ6zbyctHow" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u1IKv6qzAmiZU" xmi.id="uqxROVNl1uQDO" parent="u0N8g73Xd2WXG" name=""/>
+      <UML:Association visibility="public" isSpecification="false" namespace="Logical_View" xmi.id="uPqoYMMaURZNs" name="">
+       <UML:Association.connection>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="false" isSpecification="false" xmi.id="ujHWuXJkwSv4w" type="uhoQ6zbyctHow" name="" aggregation="none"/>
+        <UML:AssociationEnd changeability="changeable" visibility="public" isNavigable="true" isSpecification="false" xmi.id="uIEayH1WE0Um5" type="u1IKv6qzAmiZU" name="" aggregation="none"/>
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="uhoQ6zbyctHow" xmi.id="uD5iJbVQ7JBaN" parent="u1IKv6qzAmiZU" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u1IKv6qzAmiZU" xmi.id="uNZUaKNwvU0zv" parent="uhoQ6zbyctHow" name=""/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="uhoQ6zbyctHow" xmi.id="ugJRFhSk5aVGp" parent="u1IKv6qzAmiZU" name=""/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="udsymJC88kVm1" name="double*"/>
+      <UML:Class visibility="public" isSpecification="false" namespace="Logical_View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="u6pxLXLI5TukP" name="double (*) (double)"/>
+      <UML:Generalization discriminator="" visibility="public" isSpecification="false" namespace="Logical_View" child="u0N8g73Xd2WXG" xmi.id="ukYU3uHUvVynt" parent="u1IKv6qzAmiZU" name=""/>
+     </UML:Namespace.ownedElement>
+     <XMI.extension xmi.extender="umbrello">
+      <diagrams resolution="96">
+       <diagram showopsig="1" linecolor="#ff0000" snapx="25" showattribassocs="1" snapy="25" linewidth="0" showattsig="1" textcolor="#000000" isopen="1" showpackage="1" showpubliconly="0" showstereotype="1" name="class diagram" font="Sans Serif,9,-1,0,50,0,0,0,0,0" canvasheight="1480.07" canvaswidth="1383.99" localid="-1" snapcsgrid="0" showgrid="0" showops="1" griddotcolor="#d3d3d3" backgroundcolor="#ffffff" usefillcolor="1" fillcolor="#ffff00" zoom="99.43534705965799" xmi.id="uWTlMxhYaMnNN" documentation="" showscope="1" snapgrid="0" showatts="1" type="1">
+        <widgets>
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="0" textcolor="#000000" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-1288" showattsigs="601" showstereotype="1" y="-677" showattributes="1" font="Sans Serif,9,-1,0,50,0,0,0,0,0" localid="uK4veU6K8eNt7" width="247" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="u1IKv6qzAmiZU" autoresize="1" showscope="1" height="300" showopsigs="601"/>
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="0" textcolor="#000000" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-755.949" showattsigs="601" showstereotype="1" y="-778.336" showattributes="1" font="Sans Serif,9,-1,0,50,0,0,0,0,0" localid="ucM5DdaEHbf01" width="210" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="uhoQ6zbyctHow" autoresize="1" showscope="1" height="135" showopsigs="601"/>
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="0" textcolor="#000000" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-755.229" showattsigs="601" showstereotype="1" y="-419.511" showattributes="1" font="Sans Serif,9,-1,0,50,0,0,0,0,0" localid="uyL5OCBPZ9yR0" width="210" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="u0N8g73Xd2WXG" autoresize="1" showscope="1" height="150" showopsigs="601"/>
+         <classwidget linecolor="#ff0000" usesdiagramfillcolor="0" linewidth="0" textcolor="#000000" showoperations="1" usesdiagramusefillcolor="0" showpubliconly="0" showpackage="1" x="-228.107" showattsigs="601" showstereotype="1" y="-685.646" showattributes="1" font="Sans Serif,9,-1,0,50,0,0,0,0,0" localid="uYAi7m6ANGiAV" width="210" isinstance="0" usefillcolor="1" fillcolor="#ffff00" xmi.id="uIkwj8DrQs18i" autoresize="1" showscope="1" height="315" showopsigs="601"/>
+        </widgets>
+        <messages/>
+        <associations>
+         <assocwidget linecolor="#ff0000" indexa="1" usesdiagramfillcolor="1" widgetbid="uhoQ6zbyctHow" indexb="1" linewidth="0" seqnum="" textcolor="none" usesdiagramusefillcolor="1" totalcounta="2" totalcountb="2" widgetaid="uIkwj8DrQs18i" font="Sans Serif,9,-1,0,50,0,0,0,0,0" visibilityA="1" visibilityB="1" usefillcolor="1" fillcolor="none" changeabilityA="900" xmi.id="uFyAaZV8rtOsH" changeabilityB="900" autoresize="1" type="510">
+          <linepath layout="Polyline">
+           <startpoint startx="-228.107" starty="-643.336"/>
+           <endpoint endx="-545.949" endy="-643.336"/>
+          </linepath>
+          <floatingtext linecolor="#ff0000" usesdiagramfillcolor="1" linewidth="0" textcolor="none" usesdiagramusefillcolor="1" x="-455.11" showstereotype="1" y="-631.751" text="MassMat" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" localid="uQf26viopZ0j9" pretext="-" role="710" width="54" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="u8QPoAaUex9OS" autoresize="1" height="17"/>
+         </assocwidget>
+         <assocwidget linecolor="#ff0000" indexa="1" usesdiagramfillcolor="1" widgetbid="u0N8g73Xd2WXG" indexb="1" linewidth="0" seqnum="" textcolor="none" usesdiagramusefillcolor="1" totalcounta="2" totalcountb="2" widgetaid="uIkwj8DrQs18i" font="Sans Serif,9,-1,0,50,0,0,0,0,0" visibilityA="1" visibilityB="1" usefillcolor="1" fillcolor="none" changeabilityA="900" xmi.id="u3yi3Fp1kyBVn" changeabilityB="900" autoresize="1" type="510">
+          <linepath layout="Polyline">
+           <startpoint startx="-228.107" starty="-419.511"/>
+           <endpoint endx="-545.229" endy="-419.511"/>
+          </linepath>
+          <floatingtext linecolor="#ff0000" usesdiagramfillcolor="1" linewidth="0" textcolor="none" usesdiagramusefillcolor="1" x="-362.341" showstereotype="1" y="-453.454" text="StiffMat" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" localid="u9a8PkMFqXynj" pretext="-" role="710" width="50" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="uGCw3y1IiDvvJ" autoresize="1" height="17"/>
+         </assocwidget>
+         <assocwidget linecolor="#ff0000" indexa="1" usesdiagramfillcolor="1" widgetbid="u1IKv6qzAmiZU" indexb="1" linewidth="0" seqnum="" textcolor="none" usesdiagramusefillcolor="1" totalcounta="2" totalcountb="2" widgetaid="uIkwj8DrQs18i" font="Sans Serif,9,-1,0,50,0,0,0,0,0" visibilityA="1" visibilityB="1" usefillcolor="1" fillcolor="none" changeabilityA="900" xmi.id="uE2vUAnDwzrI1" changeabilityB="900" autoresize="1" type="510">
+          <linepath layout="Polyline">
+           <startpoint startx="-228.107" starty="-537.5"/>
+           <endpoint endx="-1041" endy="-537.5"/>
+          </linepath>
+          <floatingtext linecolor="#ff0000" usesdiagramfillcolor="1" linewidth="0" textcolor="none" usesdiagramusefillcolor="1" x="-860.146" showstereotype="1" y="-535" text="LoadVec" font="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" localid="uzbvbSHsC0xGg" pretext="-" role="710" width="51" isinstance="0" posttext="" usefillcolor="1" fillcolor="none" xmi.id="uaImjbI1SvMIF" autoresize="1" height="17"/>
+         </assocwidget>
+         <assocwidget indexa="1" linecolor="#ff0000" indexb="1" usesdiagramfillcolor="1" widgetbid="u1IKv6qzAmiZU" linewidth="0" seqnum="" textcolor="none" usesdiagramusefillcolor="1" totalcounta="2" totalcountb="2" widgetaid="uhoQ6zbyctHow" font="Sans Serif,9,-1,0,50,0,0,0,0,0" usefillcolor="1" fillcolor="none" xmi.id="ugJRFhSk5aVGp" autoresize="1" type="500">
+          <linepath layout="Polyline">
+           <startpoint startx="-755.949" starty="-677"/>
+           <endpoint endx="-1041" endy="-677"/>
+          </linepath>
+         </assocwidget>
+         <assocwidget indexa="1" linecolor="#ff0000" indexb="1" usesdiagramfillcolor="1" widgetbid="u1IKv6qzAmiZU" linewidth="0" seqnum="" textcolor="none" usesdiagramusefillcolor="1" totalcounta="2" totalcountb="2" widgetaid="u0N8g73Xd2WXG" font="Sans Serif,9,-1,0,50,0,0,0,0,0" usefillcolor="1" fillcolor="none" xmi.id="ukYU3uHUvVynt" autoresize="1" type="500">
+          <linepath layout="Polyline">
+           <startpoint startx="-755.229" starty="-377"/>
+           <endpoint endx="-1041" endy="-377"/>
+          </linepath>
+         </assocwidget>
+        </associations>
+       </diagram>
+      </diagrams>
+     </XMI.extension>
+    </UML:Model>
+    <UML:Model visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Use_Case_View" name="Use Case View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Component_View" name="Component View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Deployment_View" name="Deployment View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model visibility="public" isSpecification="false" namespace="m1" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Entity_Relationship_Model" name="Entity Relationship Model">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+   </UML:Namespace.ownedElement>
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello">
+  <docsettings viewid="uWTlMxhYaMnNN" uniqueid="ujg5SKEJcdyHS" documentation=""/>
+  <listview>
+   <listitem open="1" type="800" id="Views">
+    <listitem open="1" type="821" id="Component_View"/>
+    <listitem open="1" type="827" id="Deployment_View"/>
+    <listitem open="1" type="836" id="Entity_Relationship_Model"/>
+    <listitem open="1" type="801" id="Logical_View">
+     <listitem open="1" type="813" id="uIkwj8DrQs18i">
+      <listitem open="0" type="814" id="uhChUxnXWeh6B"/>
+      <listitem open="0" type="814" id="uh5BW3hZnutQk"/>
+      <listitem open="0" type="815" id="u18iw0mhWetfh"/>
+      <listitem open="0" type="815" id="uaGpjqWVsETGP"/>
+      <listitem open="0" type="815" id="u3RBeGMYCUGPh"/>
+      <listitem open="0" type="815" id="ubMM66DjdEFVA"/>
+      <listitem open="0" type="814" id="uhooavMPTx4ZG"/>
+      <listitem open="0" type="814" id="uE2vUAnDwzrI1"/>
+      <listitem open="0" type="815" id="udIrQ9M8XMxSm"/>
+      <listitem open="0" type="814" id="uFyAaZV8rtOsH"/>
+      <listitem open="0" type="814" id="u3QUXrOFsTmfg"/>
+      <listitem open="0" type="814" id="uFD0scqWGXknl"/>
+      <listitem open="0" type="814" id="uKKiN08P6wckr"/>
+      <listitem open="0" type="815" id="ukNeRW9Xjuoxn"/>
+      <listitem open="0" type="815" id="ufArcSOyb9HTe"/>
+      <listitem open="0" type="815" id="uOSml4NV1mf4A"/>
+      <listitem open="0" type="815" id="u5xwtG4MKnf97"/>
+      <listitem open="0" type="815" id="uXqVXVLajmioc"/>
+      <listitem open="0" type="814" id="u3yi3Fp1kyBVn"/>
+      <listitem open="0" type="815" id="u6Z4QfjRvxkq8"/>
+     </listitem>
+     <listitem open="1" type="813" id="uhoQ6zbyctHow">
+      <listitem open="0" type="814" id="uy8HVG8QyLo4Y"/>
+      <listitem open="0" type="815" id="uUAMKhp0cOY0Y"/>
+      <listitem open="0" type="815" id="uHiwC515fQMe0"/>
+      <listitem open="0" type="814" id="upFOkVM25U1Fe"/>
+      <listitem open="0" type="814" id="uTjHQX9lnbr9T"/>
+      <listitem open="0" type="814" id="uhVDVbQy8bz23"/>
+      <listitem open="0" type="814" id="umXYwqYbY5oQI"/>
+      <listitem open="0" type="814" id="uymR8nY3AGLXV"/>
+     </listitem>
+     <listitem open="1" type="813" id="u1IKv6qzAmiZU">
+      <listitem open="0" type="814" id="uOdHoHumWv7XF"/>
+      <listitem open="0" type="814" id="uISueikkzJoqB"/>
+      <listitem open="0" type="815" id="uRWvRVIsYZQI7"/>
+      <listitem open="0" type="814" id="uDKg5J5LZKCHB"/>
+      <listitem open="0" type="814" id="uJf3nPO2cRWp8"/>
+      <listitem open="0" type="814" id="u3l5gnKOtPvnd"/>
+      <listitem open="0" type="815" id="uLwfQXWhzgO08"/>
+      <listitem open="0" type="815" id="undOsqkpjMmuV"/>
+      <listitem open="0" type="814" id="uPCfUkfAPWjJX"/>
+      <listitem open="0" type="814" id="uoYaeRfTaHVgs"/>
+      <listitem open="0" type="814" id="uqJ3EqE7hMThn"/>
+      <listitem open="0" type="815" id="ujQWralkBwyHz"/>
+      <listitem open="0" type="814" id="ulMmpQOYHhXyh"/>
+      <listitem open="0" type="814" id="uv477zoGB3r6l"/>
+      <listitem open="0" type="815" id="ugEhcbQoRETlt"/>
+      <listitem open="0" type="815" id="uDqg2rSss3kAJ"/>
+      <listitem open="0" type="815" id="uWra6IJLM6rsM"/>
+      <listitem open="0" type="815" id="uhU8jB9k2vNYq"/>
+      <listitem open="0" type="815" id="uYesgafa5UgfB"/>
+     </listitem>
+     <listitem open="1" type="813" id="u0N8g73Xd2WXG">
+      <listitem open="0" type="814" id="uA1KfzxjmEKHM"/>
+      <listitem open="0" type="815" id="unNklKhhGqbn2"/>
+      <listitem open="0" type="815" id="uFcny6dDmz7Ao"/>
+      <listitem open="0" type="815" id="uyhygcQKEoH4A"/>
+      <listitem open="0" type="814" id="uvMBcz1SzPPve"/>
+      <listitem open="0" type="814" id="uGA5T0sMf7BnE"/>
+      <listitem open="0" type="814" id="uu95LosM1WhA6"/>
+      <listitem open="0" type="814" id="ukmlBbfjhrSOH"/>
+      <listitem open="0" type="814" id="u4N8okppbiCcY"/>
+     </listitem>
+     <listitem open="0" type="807" id="uWTlMxhYaMnNN" label="class diagram"/>
+     <listitem open="1" type="830" id="Datatypes">
+      <listitem open="1" type="829" id="uuHxL5nPGjlb2"/>
+      <listitem open="1" type="829" id="ue9WX6fZolDh9"/>
+      <listitem open="1" type="829" id="uCHxnpau1IdgP"/>
+      <listitem open="1" type="829" id="u6mebymEn1VmE"/>
+      <listitem open="1" type="829" id="u2diEccllwnk5"/>
+      <listitem open="1" type="829" id="uSd3jUwnspOhA"/>
+      <listitem open="1" type="829" id="uL1qyczPXgSPT"/>
+      <listitem open="1" type="829" id="uOC7zRoxW0xxV"/>
+      <listitem open="1" type="829" id="uYKWDb2WBTKB1"/>
+      <listitem open="1" type="829" id="u30ZD1WyZvYI1"/>
+      <listitem open="1" type="829" id="uCu22mv8UWrtI"/>
+      <listitem open="1" type="829" id="uEFIQbochcmU0"/>
+      <listitem open="1" type="829" id="ue4aJw3qBIv8G"/>
+      <listitem open="1" type="829" id="uxj8H6TmmJOoE"/>
+      <listitem open="1" type="829" id="unIvPsKqrIgw4"/>
+      <listitem open="1" type="829" id="u8k0urp7Qemid"/>
+      <listitem open="1" type="829" id="utVZxQ53AASvP"/>
+      <listitem open="1" type="829" id="uhyE60tfgK9Yk"/>
+      <listitem open="1" type="829" id="uVsq4j1adl6Sp"/>
+      <listitem open="1" type="829" id="uGfJ2R0yI08Gm"/>
+     </listitem>
+     <listitem open="1" type="813" id="u6pxLXLI5TukP"/>
+     <listitem open="1" type="813" id="udsymJC88kVm1"/>
+    </listitem>
+    <listitem open="1" type="802" id="Use_Case_View"/>
+   </listitem>
+  </listview>
+  <codegeneration>
+   <codegenerator language="C++">
+    <sourcecode value="return i;" id="ujQWralkBwyHz"/>
+    <sourcecode value="if ( i &lt; n+1 ) &#xa;return Bmoment[i][0];" id="uLwfQXWhzgO08"/>
+    <sourcecode value="if ( i &lt; n+1 )&#xa;return Bmoment[i][dim]" id="undOsqkpjMmuV"/>
+    <sourcecode value="functVal = 0" id="uhU8jB9k2vNYq"/>
+    <sourcecode value="functVal = 1;" id="uYesgafa5UgfB"/>
+    <sourcecode value="this->a = a;&#xa;this->b = b;" id="uWra6IJLM6rsM"/>
+    <sourcecode value="if ( i &lt; lenMass &amp;&amp; j &lt; lenMass )&#xa;return Matrix[i][j];" id="uHiwC515fQMe0"/>
+    <sourcecode value="if ( i &lt; lenStiff &amp;&amp; j &lt; lenStiff )&#xa;return Matrix[i][j];" id="uFcny6dDmz7Ao"/>
+    <sourcecode value="return LoadVec.get_bmoment(i);" id="uaGpjqWVsETGP"/>
+    <sourcecode value="return QuadVector[i];" id="ubMM66DjdEFVA"/>
+   </codegenerator>
+  </codegeneration>
+ </XMI.extensions>
+</XMI>
