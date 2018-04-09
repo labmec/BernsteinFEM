@@ -29,6 +29,10 @@ public:
   BElement1D(int q, int n);
   ~BElement1D();
 
+  static int sysLen(int n, int nElem) { return n * nElem + 1; }
+
+  int len() { return length; }
+
   //double** getElementMatrix() { return ElMat; }
 
   double getMatrixValue (int i, int j) { if (i < length && j < length) return ElMat[i][j]; else return 0.0;}
