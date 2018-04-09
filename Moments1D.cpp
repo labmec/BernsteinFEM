@@ -180,7 +180,7 @@ void BMoment1D::compute_moments()
         int i, alpha;
         double xi, omega, s, r, w;
 
-        for (i = 0; i <= n; Bmoment[i] = 0, i++)
+        for (i = 0; i <= n; Bmoment[i][0] = 0, i++)
             ; // sets Bmoment to 0 in all entries
 
         for (i = 0; i < q; i++)
