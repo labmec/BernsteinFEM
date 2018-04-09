@@ -3,21 +3,13 @@
 #include "Elem.h"
 #include "JacobiGaussNodes.h"
 
-BElement2DQuad::BElement2DQuad()
-{
-    // get n and q from user, then do the same as the one below
-}
-
-BElement2DQuad::BElement2DQuad(int q, int n)
+BElement2DQuad::BElement2DQuad(int q, int n) :
+    MassMat(q, n), StiffMat(q, n), LoadVec(q, n)
 {
     this->q = q;
     this->n = n;
 
     length = (n + 1) * (n + 1);
-
-    MassMat = new BMass2DQuad(q, n);
-    StiffMat = new BStiff2DQuad(q, n);
-    LoadVec = new BMoment2DQuad(q, n);
 
     QuadVector = new double[q * q];
     BBVector = new double[length];
@@ -44,8 +36,6 @@ void BElement2DQuad::delete_el_mat(double **ElMat)
 
 BElement2DQuad::~BElement2DQuad()
 {
-    delete MassMat;
-    delete StiffMat;
     delete BBVector;
     delete QuadVector;
     delete MassFval;
@@ -56,10 +46,10 @@ BElement2DQuad::~BElement2DQuad()
 
 void BElement2DQuad::setQuad(double v1[2], double v2[2], double v3[2], double v4[2])
 {
-    MassMat->setQuadrilateral(v1, v2, v3, v4);
-    //ConvecMat->setQuadrilateral(v1, v2, v3, v4);
-    StiffMat->setQuadrilateral(v1, v2, v3, v4);
-    LoadVec->setQuadrilateral(v1, v2, v3, v4);
+    MassMat.setQuadrilateral(v1, v2, v3, v4);
+    //ConvecMat.setQuadrilateral(v1, v2, v3, v4);
+    StiffMat.setQuadrilateral(v1, v2, v3, v4);
+    LoadVec.setQuadrilateral(v1, v2, v3, v4);
 }
 
 double *BElement2DQuad::evaluate()
@@ -98,13 +88,13 @@ double *BElement2DQuad::evaluate()
 
 void BElement2DQuad::makeSystem()
 {
-    MassMat->compute_matrix();
-    //ConvecMat->compute_matrix();
-    StiffMat->compute_matrix();
-    LoadVec->compute_moments();
+    MassMat.compute_matrix();
+    //ConvecMat.compute_matrix();
+    StiffMat.compute_matrix();
+    LoadVec.compute_moments();
 
     for (int i = 0; i < length; i++)
         for (int j = 0; j < length; j++)
-            ElMat[i][j] = MassMat->getMatrixValue(i, j)
-                          + StiffMat->getMatrixValue(i, j);
+            ElMat[i][j] = MassMat.getMatrixValue(i, j)
+                          + StiffMat.getMatrixValue(i, j);
 }

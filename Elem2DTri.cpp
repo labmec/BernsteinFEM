@@ -3,22 +3,14 @@
 #include "Elem.h"
 #include "JacobiGaussNodes.h"
 
-BElement2DTri::BElement2DTri()
-{
-    // get n and q from user, then do the same as the one below
-}
-
-BElement2DTri::BElement2DTri(int q, int n)
+BElement2DTri::BElement2DTri(int q, int n) : 
+    MassMat(q, n), StiffMat(q, n), LoadVec(q, n)
 {
     this->q = q;
     this->n = n;
 
     //length = ((n + 1) * (n + 2)) / 2;
     length = (n + 1) * (n + 1); // accounts for positioning
-
-    MassMat = new BMass2DTri(q, n);
-    StiffMat = new BStiff2DTri(q, n);
-    LoadVec = new BMoment2DTri(q, n);
 
     QuadVector = new double[q * q];
     BBVector = new double[length];
@@ -30,8 +22,6 @@ BElement2DTri::BElement2DTri(int q, int n)
 
 BElement2DTri::~BElement2DTri()
 {
-    delete MassMat;
-    delete StiffMat;
     delete BBVector;
     delete QuadVector;
     delete MassFval;
@@ -57,10 +47,10 @@ void BElement2DTri::delete_el_mat(double **ElMat)
 
 void BElement2DTri::setTriangle (double v1[2], double v2[2], double v3[2])
 {
-    MassMat->setTriangle(v1, v2, v3);
-    //ConvecMat->setTriangle(v1, v2, v3);
-    StiffMat->setTriangle(v1, v2, v3);
-    LoadVec->setTriangle(v1, v2, v3);
+    MassMat.setTriangle(v1, v2, v3);
+    //ConvecMat.setTriangle(v1, v2, v3);
+    StiffMat.setTriangle(v1, v2, v3);
+    LoadVec.setTriangle(v1, v2, v3);
 }
 
 double *BElement2DTri::evaluate()
@@ -112,13 +102,13 @@ double *BElement2DTri::evaluate()
 
 void BElement2DTri::makeSystem()
 {
-    MassMat->compute_matrix();
-    //ConvecMat->compute_matrix();
-    StiffMat->compute_matrix();
-    LoadVec->compute_moments();
+    MassMat.compute_matrix();
+    //ConvecMat.compute_matrix();
+    StiffMat.compute_matrix();
+    LoadVec.compute_moments();
 
     for (int i = 0; i < length; i++)
         for (int j = 0; j < length; j++)
-            ElMat[i][j] = MassMat->getMatrixValue(i, j)
-                          + StiffMat->getMatrixValue(i, j);
+            ElMat[i][j] = MassMat.getMatrixValue(i, j)
+                          + StiffMat.getMatrixValue(i, j);
 }
