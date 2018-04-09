@@ -1,23 +1,19 @@
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
 #include <cmath>
 
 #include "Elem.h"
 #include "JacobiGaussNodes.h"
 
-BElement1D::BElement1D()
-{
-    // get n and q from user, then do the same as the one below
-}
-
-BElement1D::BElement1D(int q, int n)
+BElement1D::BElement1D(int q, int n) :
+    MassMat(q, n), StiffMat(q, n), LoadVec(q, n)
 {
     this->q = q;
     this->n = n;
 
     length = n + 1;
-
-    MassMat = new BMass1D(q, n);
-    StiffMat = new BStiff1D(q, n);
-    LoadVec = new BMoment1D(q, n);
 
     QuadVector = new double[q];
     BBVector = new double[length];
@@ -29,8 +25,6 @@ BElement1D::BElement1D(int q, int n)
 
 BElement1D::~BElement1D()
 {
-    delete MassMat;
-    delete StiffMat;
     delete BBVector;
     delete QuadVector;
     delete MassFval;
@@ -56,10 +50,10 @@ void BElement1D::delete_el_mat(double **ElMat)
 
 void BElement1D::setInterval (double a, double b)
 {
-    MassMat->setInterval(a, b);
-    //ConvecMat->setInterval(a, b);
-    StiffMat->setInterval(a, b);
-    LoadVec->setInterval(a, b);
+    MassMat.setInterval(a, b);
+    //ConvecMat.setInterval(a, b);
+    StiffMat.setInterval(a, b);
+    LoadVec.setInterval(a, b);
 }
 
 double *BElement1D::evaluate()
@@ -86,13 +80,13 @@ double *BElement1D::evaluate()
 
 void BElement1D::makeSystem()
 {
-    MassMat->compute_matrix();
-    //ConvecMat->compute_matrix();
-    StiffMat->compute_matrix();
-    LoadVec->compute_moments();
+    MassMat.compute_matrix();
+    //ConvecMat.compute_matrix();
+    StiffMat.compute_matrix();
+    LoadVec.compute_moments();
 
     for (int i = 0; i < length; i++) // length is equal to lenMass and lenStiff
         for (int j = 0; j < length; j++)
-            ElMat[i][j] = MassMat->getMatrixValue(i, j)
-                          + StiffMat->getMatrixValue(i, j);
+            ElMat[i][j] = MassMat.getMatrixValue(i, j)
+                          + StiffMat.getMatrixValue(i, j);
 }
