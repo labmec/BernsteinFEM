@@ -56,11 +56,9 @@ BMoment1D::BMoment1D(int q, int n)
 
 BMoment1D::~BMoment1D()
 {
-    delete Cval[0];
-    delete Cval;
-    delete Bmoment;
-    delete quadraWN[0];
-    delete quadraWN;
+    delete_Bmoment(Bmoment);
+    delete_Bmoment(Cval);
+    delete_Bmoment(quadraWN);
 }
 
 // alloc Bmoment vector
