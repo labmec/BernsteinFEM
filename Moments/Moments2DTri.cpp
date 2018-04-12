@@ -5,10 +5,6 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-#ifndef MAX
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
-
 BMoment2DTri::BMoment2DTri()
 {
     std::cout << "Enter a value for the polynomial order n:";
