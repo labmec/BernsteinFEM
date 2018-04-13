@@ -18,7 +18,7 @@ int main()
     // set element interval
     {
         double a = 0.0;
-        double b = 0.0;
+        double b = 1.0;
         elem.setInterval(a, b);
     }
 
