@@ -27,8 +27,13 @@ add_dependencies(STIFF_TEST Stiff_lib)
 target_link_libraries(STIFF_TEST Stiff_lib)
 set(allTests ${allTests} STIFF_TEST)
 
+add_executable(TEST_1D test1d.cpp)
+add_dependencies(TEST_1D Elem_lib)
+target_link_libraries(TEST_1D Elem_lib Mass_lib Stiff_lib Moments_lib)
+set(allTests ${allTests} TEST_1D)
+
 #all tests
-#add_executable(TESTS_ALL ${sources} ${headers})
+add_executable(ALL_TESTS ${sources} ${headers})
 
 #set(allTests ${allTests} TESTS_ALL)
 
