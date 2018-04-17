@@ -50,4 +50,6 @@ int main()
             cout << scientific << stif.getMatrixValue(i, j) << " ,  ";
         cout << endl;
     }
+
+	return 0;
 }
