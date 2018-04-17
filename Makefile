@@ -2,7 +2,7 @@
 
 # compiler options
 OBJ= -c
-FLAGS= -g -std=c++17 -lm -Wall
+FLAGS= -g -std=c++17 -lm -Wall -O3
 
 # include directories
 INC_MOM=-IMoments/
@@ -15,9 +15,11 @@ INC_ALL=$(INC_MOM) $(INC_MASS) $(INC_STIFF) $(INC_QUADRA) $(INC_ELEM)
 # library name
 LIB=BernsteinFEM.a
 
-all: quadra moments mass stiff elem lib clean
+all: quadra moments mass stiff elem
+	$(MAKE) lib
+	$(MAKE) clean
 
-lib: quadra moments mass stiff elem
+lib:
 	ar -r $(LIB) *.o
 
 clean:
