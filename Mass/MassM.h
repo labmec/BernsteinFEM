@@ -1,3 +1,4 @@
+#include <armadillo>
 #include "Moments.h"
 
 #ifndef MASSM_H

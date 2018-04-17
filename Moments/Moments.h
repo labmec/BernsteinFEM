@@ -1,3 +1,5 @@
+#include <armadillo>
+
 #ifndef MOMENTS_H
 #define MOMENTS_H
 

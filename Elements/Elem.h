@@ -1,8 +1,9 @@
-#ifndef ELEM_H
-#define ELEM_H
-
+#include <armadillo>
 #include "MassM.h"
 #include "StiffM.h"
+
+#ifndef ELEM_H
+#define ELEM_H
 
 class BElement1D
 {
