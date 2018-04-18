@@ -13,25 +13,13 @@ class BMoment1D
   int q;                // number of quadrature points in one dimension
   int n;                // Bernstein polynomial order
   int lenMoments;       // length of the Bmoment vector
-  double **Bmoment;     // vector where the b-moments are stored
-  double **Cval;        // vector where the function values are stored
+  arma::mat Bmoment;     // vector where the b-moments are stored
+  arma::mat Cval;        // vector where the function values are stored
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
   double (*f)(double) = 0x0;
-
-  // alloc Bmoment vector
-  double **create_Bmoment();
-
-  // alloc Cval similarly to the Bmoment
-  double **create_Cval();
-
-  // free Bmoment vector memory
-  void delete_Bmoment(double **Bmoment);
-
-  // alloc memory for the quadrature points and weights
-  double **create_quadraWN();
 
   // assign the quadrature points and weights
   void assignQuadra();
@@ -43,25 +31,25 @@ protected:
   int functVal = 1;  // determines if will use function value or function definition (use function dvalue by default)
   int nb_Array = 1;  // dimension of function Image (function is scalar valued by default)
   double a, b;       // interval [a, b] variables
-  double **quadraWN; // quadrature points and weights
+  arma::mat quadraWN; // quadrature points and weights
 
 public:
+// constructors
   // default constructor
   BMoment1D();
-
   // quadrature and polynomial order constructor
   BMoment1D(int q, int n);
+  BMoment1D(int q, int n, int nb_Array);
 
+// destructor
   ~BMoment1D();
 
   // sets the dimension number of the function multiplying the Bernstein basis polynomial (default value: 1)
   void setNbArray(int nb_Array)
   {
     this->nb_Array = nb_Array;
-    delete_Bmoment(Bmoment);
-    delete_Bmoment(Cval);
-    Bmoment = create_Bmoment();
-    Cval = create_Cval();
+    Bmoment.resize(lenMoments, nb_Array);
+    Cval.resize(q, nb_Array);
   }
 
   int getNbArray() { return nb_Array; }
@@ -70,8 +58,8 @@ public:
   int position(int i, int n) { return i; }
 
   // returns the value of the i-th indexed B-moment
-  double get_bmoment(int i) { return Bmoment[i][0]; }
-  double get_bmoment(int i, int dim) { return Bmoment[i][dim - 1]; }
+  double get_bmoment(int i) { return Bmoment(i, 0); }
+  double get_bmoment(int i, int dim) { return Bmoment(i, dim - 1); }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
@@ -80,8 +68,8 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function values for computation
-  void setFunction(double *Fval);
-  void setFunction(double **Fval);
+  void setFunction(arma::vec Fval);
+  void setFunction(arma::mat Fval);
 
   // set the function definition for computation
   void setFunction(double (*f)(double));
@@ -95,7 +83,7 @@ public:
   void compute_moments(double (*f)(double));
 
   // compute the b-moments for the Fval function values
-  void compute_moments(double *Fval);
+  void compute_moments(arma::vec Fval);
 };
 
 /*****************************************************************************
@@ -106,25 +94,13 @@ class BMoment2DTri
   int q;                // number of quadrature points in one dimension
   int n;                // Bernstein polynomial order
   int lenMoments;       //length of the Bmoment vectors
-  double **CVal;        // stores function values at quadrature points
-  double **Bmoment;     // Vectors to store the Bernstein Moments
+  arma::mat CVal;        // stores function values at quadrature points
+  arma::mat Bmoment;     // Vectors to store the Bernstein Moments
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
   double (*f)(double, double) = 0x0;
-
-  // alloc the Bmoment Vectors linearly
-  double **create_Bmoment();
-
-  // alloc Cval similarly to the Bmoment
-  double **create_Cval();
-
-  // free memory allocated to B-moments
-  void delete_Bmoment(double **Bmoment);
-
-  // alloc the quadrature points matrix
-  double **create_quadraWN();
 
   // map to obtain Gauss-Jacobi rule on unit interval
   void assignQuadra();
@@ -142,7 +118,7 @@ protected:
   int functVal = 1;           // determines if will use function value or function definition (use function value by default)
   int nb_Array = 1;           // dimension of function Image (function is scalar valued by default)
   double v1[2], v2[2], v3[2]; // triangle vertices coordinates
-  double **quadraWN;          // quadrature points and weights
+  arma::mat quadraWN;          // quadrature points and weights
 
   // routine used to pre-multiply normals with the Bmoments
   void transform_BmomentC_Stiff2d (BMoment2DTri *Bmomentab, double normalMat[][2]);
@@ -180,8 +156,8 @@ public:
   void setNbArray(int nb_Array)
   {
     this->nb_Array = nb_Array;
-    delete_Bmoment(Bmoment);
-    Bmoment = create_Bmoment();
+    Bmoment.resize(lenMoments, nb_Array);
+    CVal.resize(q, nb_Array);
   }
 
   int getNbArray() { return nb_Array; }
@@ -193,10 +169,10 @@ public:
   double get_bmoment(int a1, int a2, int dim);
 
   // get the i-th bmoment in the array, only use if you really know what you're doing
-  double get_bmoment(int i) { return Bmoment[i][0]; }
+  double get_bmoment(int i) { return Bmoment(0, i); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-  double get_bmoment(int i, int dim) { return Bmoment[i][dim]; }
+  double get_bmoment(int i, int dim) { return Bmoment(dim, i); }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
@@ -205,8 +181,8 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunction(double *Fval);
-  void setFunction(double **Fval);
+  void setFunction(arma::vec Fval);
+  void setFunction(arma::mat Fval);
 
   // set the function that multiplies the B-polynomial by definition
   void setFunction(double (*function)(double, double));
@@ -221,7 +197,7 @@ public:
   void compute_moments(double (*f)(double, double));
 
   // compute the b-moments for the Fval function values
-  void compute_moments(double *Fval);
+  void compute_moments(arma::vec Fval);
 };
 
 /*****************************************************************************
@@ -232,8 +208,8 @@ class BMoment2DQuad
   int q;                // number of quadrature points in one dimension
   int n;                // Bernstein polynomial order
   int lenMoments;       // length of the Bmoment vector
-  double **Bmoment;     // vector where the b-moments are stored
-  double **Cval;        // vector where the function values are stored
+  arma::mat Bmoment;     // vector where the b-moments are stored
+  arma::mat Cval;        // vector where the function values are stored
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
 
@@ -243,16 +219,16 @@ class BMoment2DQuad
   // methods
 
   // alloc the Bmoment Vectors linearly
-  double **create_Bmoment();
+  arma::mat create_Bmoment();
 
   // alloc Cval similarly to the Bmoment
-  double **create_Cval();
+  arma::mat create_Cval();
 
   // free memory allocated to B-moments
-  void delete_Bmoment(double **Bmoment);
+  void delete_Bmoment(arma::mat Bmoment);
 
   // alloc the quadrature points matrix
-  double **create_quadraWN();
+  arma::mat create_quadraWN();
 
   // map to obtain Gauss-Jacobi rule on unit interval
   void assignQuadra();
@@ -267,7 +243,7 @@ protected:
   int functVal = 1;                  // determines if will use function value or function definition (use function value by default)
   int nb_Array = 1;                  // dimension of function Image (function is scalar valued by default)
   double v1[2], v2[2], v3[2], v4[2]; // vertices of the quadrilateral element
-  double **quadraWN;                 // quadrature points and weights
+  arma::mat quadraWN;                 // quadrature points and weights
 
 public:
   // default constructor
@@ -298,7 +274,7 @@ public:
   double get_bmoment(int a1, int a2, int dim);
 
   // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
-  double get_bmoment(int i) { return Bmoment[i][0]; }
+  double get_bmoment(int i) { return Bmoment(0, i); }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
@@ -308,7 +284,7 @@ public:
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
   void setFunction(double *Fval);
-  void setFunction(double **Fval);
+  void setFunction(arma::mat Fval);
 
   // set the function that multiplies the B-polynomial
   void setFunction(double (*function)(double, double));
