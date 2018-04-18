@@ -101,7 +101,7 @@ void BMoment1D::setFunction(arma::vec Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval(i, el) = Fval[i + el * q];
+            Cval(i, el) = Fval(i + el * q);
 
     fValSet = true;
 }
