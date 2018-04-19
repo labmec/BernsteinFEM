@@ -311,7 +311,7 @@ public:
   // set the function that multiplies the B-polynomial
   void setFunction(double (*function)(double, double));
 
-  // set the element triangle vertices
+  // set the element quadrilateral vertices
   void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
 
   // compute the b-moments using the values already assigned in the object
