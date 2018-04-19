@@ -30,16 +30,16 @@ BElement2DTri::~BElement2DTri()
     delete_el_mat(ElMat);
 }
 
-double **BElement2DTri::create_el_mat()
+arma::mat BElement2DTri::create_el_mat()
 {
     double *aux = new double[length * length];
-    double **mat = new double *[length];
+    arma::mat mat = new double *[length];
     for (int i = 0; i < length; aux += length, i++)
         mat[i] = aux;
     return mat;
 }
 
-void BElement2DTri::delete_el_mat(double **ElMat)
+void BElement2DTri::delete_el_mat(arma::mat ElMat)
 {
     delete ElMat[0];
     delete ElMat;

@@ -19,16 +19,16 @@ BElement2DQuad::BElement2DQuad(int q, int n) :
     ElMat = create_el_mat();
 }
 
-double **BElement2DQuad::create_el_mat()
+arma::mat BElement2DQuad::create_el_mat()
 {
     double *aux = new double[length * length];
-    double **mat = new double *[length];
+    arma::mat mat = new double *[length];
     for (int i = 0; i < length; aux += length, i++)
         mat[i] = aux;
     return mat;
 }
 
-void BElement2DQuad::delete_el_mat(double **ElMat)
+void BElement2DQuad::delete_el_mat(arma::mat ElMat)
 {
     delete ElMat[0];
     delete ElMat;

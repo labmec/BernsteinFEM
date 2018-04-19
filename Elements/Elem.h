@@ -18,12 +18,8 @@ class BElement1D
   BMass1D MassMat;    // mass matrix object
   //BConvec1D *ConvecMat; // convective matrix object
   BStiff1D StiffMat;  // stiffness matrix object
-  double **ElMat;     // element matrix = mass + convec + stiff
+  arma::mat ElMat;     // element matrix = mass + convec + stiff
   BMoment1D LoadVec;  // load vector in moments object
-
-  double **create_el_mat();
-
-  void delete_el_mat(double **);
 
 public:
   BElement1D();
@@ -99,12 +95,12 @@ class BElement2DTri
   BMass2DTri MassMat;   // mass matrix object
   //BConvec2DTri *ConvecMat; // convective matrix object
   BStiff2DTri StiffMat; // stiffness matrix object
-  double **ElMat;       // element matrix = mass + convec + stiff
+  arma::mat ElMat;       // element matrix = mass + convec + stiff
   BMoment2DTri LoadVec; // load vector in moments object
 
-  double **create_el_mat();
+  arma::mat create_el_mat();
 
-  void delete_el_mat(double **);
+  void delete_el_mat(arma::mat );
 
 public:
   BElement2DTri();
@@ -177,12 +173,12 @@ class BElement2DQuad
   BMass2DQuad MassMat;   // mass matrix object
   //BConvec2DQuad *ConvecMat; // convective matrix object
   BStiff2DQuad StiffMat; // stiffness matrix object
-  double **ElMat;        // element matrix = mass + convec + stiff
+  arma::mat ElMat;        // element matrix = mass + convec + stiff
   BMoment2DQuad LoadVec; // load vector in moments object
 
-  double **create_el_mat();
+  arma::mat create_el_mat();
 
-  void delete_el_mat(double **);
+  void delete_el_mat(arma::mat );
 
 public:
   BElement2DQuad();

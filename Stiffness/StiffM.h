@@ -12,19 +12,9 @@ class BStiff1D : public BMoment1D
     int q;              // number of quadrature points ( recommended: 2*(n+1) )
     int n;              // polynomial order
     int lenStiff;       // length of the stiffness matrix
-    double **Matrix;    // stiffness matrix
+    arma::mat Matrix;    // stiffness matrix
     int lenBinomialMat; // length of the binomial Pascal matrix
-    int **BinomialMat;  // Pascal Matrix
-
-    // alloc matrix linearly
-    double **create_matrix();
-
-    void delete_matrix(double **matrix);
-
-    // alloc binomial matrix
-    int **create_binomialMat();
-
-    void delete_binomialMat(int **binomialMat);
+    arma::Matrix<int64_t> BinomialMat;  // Pascal Matrix
 
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
@@ -69,7 +59,7 @@ class BStiff2DTri : public BMoment2DTri
     int q;                  // number of quadrature points ( recommended: 2*(n+1) )
     int n;                  // polynomial order
     int lenStiff;           // length of the stiffness matrix
-    double **Matrix;        // stiffness matrix
+    arma::mat Matrix;        // stiffness matrix
     double normalMat[3][2]; // the normals of the triangle
     int lenBinomialMat;     // length of the binomial Pascal matrix
     int **BinomialMat;      // Pascal Matrix
@@ -77,9 +67,9 @@ class BStiff2DTri : public BMoment2DTri
     // the inherited object is used to compute other parts of the matrix
 
     // alloc matrix linearly
-    double **create_matrix();
+    arma::mat create_matrix();
 
-    void delete_matrix(double **matrix);
+    void delete_matrix(arma::mat matrix);
 
     // alloc binomial matrix
     int **create_binomialMat();
@@ -124,14 +114,14 @@ class BStiff2DQuad : public BMoment2DQuad
     int q;              // number of quadrature points ( recommended: 2*(n+1) )
     int n;              // polynomial order
     int lenStiff;       // length of the stiffness matrix
-    double **Matrix;    // stiffness matrix
+    arma::mat Matrix;    // stiffness matrix
     int lenBinomialMat; // length of the binomial Pascal matrix
     int **BinomialMat;  // Pascal Matrix
 
     // alloc matrix linearly
-    double **create_matrix();
+    arma::mat create_matrix();
 
-    void delete_matrix(double **matrix);
+    void delete_matrix(arma::mat matrix);
 
     // alloc binomial matrix
     int **create_binomialMat();

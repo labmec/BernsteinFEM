@@ -24,16 +24,16 @@ BMass1D::~BMass1D()
     delete_binomialMat(BinomialMat);
 }
 
-double **BMass1D::create_matrix()
+arma::mat BMass1D::create_matrix()
 {
     double *aux = new double[lenMass * lenMass];
-    double **matrix = new double *[lenMass];
+    arma::mat matrix = new double *[lenMass];
     for (int i = 0; i < lenMass; aux += lenMass, i++)
         matrix[i] = aux;
     return matrix;
 }
 
-void BMass1D::delete_matrix(double **matrix)
+void BMass1D::delete_matrix(arma::mat matrix)
 {
     delete matrix[0];
     delete matrix;

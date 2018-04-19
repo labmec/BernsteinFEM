@@ -128,10 +128,10 @@ BMoment2DTri::~BMoment2DTri()
 }
 
 // alloc the Bmoment Vectors linearly
-double **BMoment2DTri::create_Bmoment()
+arma::mat BMoment2DTri::create_Bmoment()
 {
     double *aux = new double[lenMoments * nb_Array];
-    double **bmoment = new double *[lenMoments];
+    arma::mat bmoment = new double *[lenMoments];
 
     for (int i = 0; i < lenMoments; aux += nb_Array, i++)
         bmoment[i] = aux;
@@ -139,25 +139,25 @@ double **BMoment2DTri::create_Bmoment()
     return Bmoment;
 }
 
-double **BMoment2DTri::create_Cval()
+arma::mat BMoment2DTri::create_Cval()
 {
     int aux = lenMoments;
     lenMoments = q;
-    double **p = create_Bmoment();
+    arma::mat p = create_Bmoment();
     lenMoments = aux;
     return p;
 }
 
 // free memory allocated to B-moments
-void BMoment2DTri::delete_Bmoment(double **Bmoment)
+void BMoment2DTri::delete_Bmoment(arma::mat Bmoment)
 {
     delete Bmoment[0];
     delete Bmoment;
 }
 
-double **BMoment2DTri::create_quadraWN()
+arma::mat BMoment2DTri::create_quadraWN()
 {
-    double **quadraWN = new double *[4];
+    arma::mat quadraWN = new double *[4];
     double *quadraWN_array = new double[4 * (q + 1)];
 
     double *p_quadra = quadraWN_array;
@@ -267,7 +267,7 @@ void BMoment2DTri::setFunction(double *Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment2DTri::setFunction(double **Fval)
+void BMoment2DTri::setFunction(arma::mat Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -303,7 +303,7 @@ void BMoment2DTri::compute_moments()
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
     else
     {
-        double **BmomentInter = create_Bmoment(); //intermediate matrix for computation
+        arma::mat BmomentInter = create_Bmoment(); //intermediate matrix for computation
 
         int m = MAX(n, q - 1); // m will be used for indexing
 

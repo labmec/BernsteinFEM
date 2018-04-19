@@ -18,10 +18,10 @@ BStiff1D::~BStiff1D()
     delete_binomialMat(BinomialMat);
 }
 
-double **BStiff1D::create_matrix()
+arma::mat BStiff1D::create_matrix()
 {
     double *aux = new double[lenStiff * lenStiff];
-    double **matrix = new double *[lenStiff];
+    arma::mat matrix = new double *[lenStiff];
 
     for (int i = 0; i < lenStiff; aux += lenStiff, i++)
         matrix[i] = aux;
@@ -29,7 +29,7 @@ double **BStiff1D::create_matrix()
     return matrix;
 }
 
-void BStiff1D::delete_matrix(double **matrix)
+void BStiff1D::delete_matrix(arma::mat matrix)
 {
     delete matrix[0];
     delete matrix;

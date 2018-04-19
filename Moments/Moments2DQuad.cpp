@@ -61,9 +61,9 @@ BMoment2DQuad::~BMoment2DQuad()
     delete Cval;
 }
 
-double **BMoment2DQuad::create_Bmoment()
+arma::mat BMoment2DQuad::create_Bmoment()
 {
-    double **Bmoment = new double *[lenMoments];
+    arma::mat Bmoment = new double *[lenMoments];
     double *Bmoment_array = new double[nb_Array * lenMoments];
 
     double *p1 = Bmoment_array;
@@ -74,25 +74,25 @@ double **BMoment2DQuad::create_Bmoment()
     return Bmoment;
 }
 
-double **BMoment2DQuad::create_Cval()
+arma::mat BMoment2DQuad::create_Cval()
 {
     int aux = lenMoments;
     lenMoments = q;
-    double **p = create_Bmoment();
+    arma::mat p = create_Bmoment();
     lenMoments = aux;
     return p;
 }
 
-void BMoment2DQuad::delete_Bmoment(double **Bmoment)
+void BMoment2DQuad::delete_Bmoment(arma::mat Bmoment)
 {
     delete Bmoment[0];
     delete Bmoment;
 }
 
-double **BMoment2DQuad::create_quadraWN()
+arma::mat BMoment2DQuad::create_quadraWN()
 {
     double *aux = new double[2 * (q + 1)];
-    double **quadraWN = new double *[2];
+    arma::mat quadraWN = new double *[2];
     quadraWN[0] = aux;
     quadraWN[1] = aux + q + 1;
     return quadraWN;
@@ -171,7 +171,7 @@ void BMoment2DQuad::setFunction(double *Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment2DQuad::setFunction(double **Fval)
+void BMoment2DQuad::setFunction(arma::mat Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
