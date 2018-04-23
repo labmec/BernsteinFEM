@@ -14,7 +14,7 @@ class BMass1D : public BMoment1D
 	int lenMass;		// length of the mass matrix
 	arma::mat Matrix;	// mass matrix
 	int lenBinomialMat; // length of the binomial matrix
-	arma::Matrix<int64_t> BinomialMat;  // Pascal Matrix
+	arma::Mat<int64_t> BinomialMat;  // Pascal Matrix
 
 	// computes a Pascal Matrix with size lenBinomialMat
 	void compute_binomials();
@@ -25,14 +25,14 @@ class BMass1D : public BMoment1D
 	~BMass1D();
 
 	// return the mass matrix values at indexes i and j
-	double getMatrixValue(int i, int j) { return Matrix[i][j]; }
+	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
 	// compute the mass matrix
 	void compute_matrix();
 
 	// sets the function definition or value before computing the mass matrix
 	void compute_matrix(double (*f)(double));
-	void compute_matrix(double *Fval);
+	void compute_matrix(arma::vec Fval);
 };
 
 /*****************************************************************************
@@ -67,7 +67,7 @@ class BMass2DTri : public BMoment2DTri
 
 	~BMass2DTri();
 
-	double getMatrixValue(int i, int j) { return Matrix[i][j]; }
+	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
 	// compute the mass matrix
 	void compute_matrix();
@@ -109,7 +109,7 @@ class BMass2DQuad : public BMoment2DQuad
 
 	~BMass2DQuad();
 
-	double getMatrixValue(int i, int j) { return Matrix[i][j]; }
+	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
 	void compute_matrix();
 
