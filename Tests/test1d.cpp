@@ -15,6 +15,7 @@
 #define MAX_ITERATIONS 100000
 
 using namespace std;
+using namespace arma;
 
 // load function
 double loadF(double x)
@@ -22,8 +23,8 @@ double loadF(double x)
     return M_PI * M_PI * sin(M_PI * x);
 }
 
-void assemble(BElement1D **, mat, double *, int, int);
-double *linearSolve(mat, double *, int);
+void assemble(BElement1D **, mat, vec, int, int);
+vec linearSolve(mat, vec, int);
 void printEl(BElement1D, int);
 
 int main()
@@ -59,17 +60,15 @@ int main()
     auto start = chrono::high_resolution_clock::now();
     // compute functions values at quadrature points
     {
-        matlvec = new double *[nElem];
-        for (int k = 0; k < nElem; k++)
-            lvec[k] = new double[q];
-        double *stiff = new double[6 * q]; //must have 6 times the size
-        double *mass = new double[q];
+        mat lvec(nElem, q);
+        vec stiff(6 * q, fill::ones); //must have 6 times the size
+        vec mass(q, fill::zeros);
         for (int i = 0; i < q; i++)
         {
             double ah = a;
             for (int k = 0; k < nElem; k++)
             {
-                lvec[k][i] = loadF((legendre_xi(q, i) + ah) * (h / 2));
+                lvec(k, i) = loadF((legendre_xi(q, i) + ah) * (h / 2));
                 ah += h;
             }
             mass[i] = 0.0;
@@ -79,14 +78,8 @@ int main()
         {
             Elements[k]->setStiffFunction(stiff);
             Elements[k]->setMassFunction(mass);
-            Elements[k]->setLoadFunction(lvec[k]);
+            Elements[k]->setLoadFunction(lvec.col(k));
         }
-
-        for (int k = 0; k < nElem; k++)
-            delete lvec[k];
-        delete lvec;
-        delete stiff;
-        delete mass;
     }
     auto end = chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
@@ -105,10 +98,8 @@ int main()
     diff = end - start;
     std::cout << "Time to compute all elements: " << diff.count() << " s\n";
 
-    matGlobalMatrix = new double *[len];
-    for (int i = 0; i < len; i++)
-        GlobalMatrix[i] = new double[len];
-    double *GlobalVec = new double[len];
+    mat GlobalMatrix(len, len, fill::none);
+    vec GlobalVec(len, fill::none);
 
     // assemble global linear system
     assemble(Elements, GlobalMatrix, GlobalVec, n, nElem);
@@ -167,15 +158,15 @@ void printEl(BElement1D el, int i)
     cout << endl;
 }
 
-void assemble(BElement1D **el, matGlbM, double *GlbV, int n, int nElem)
+void assemble(BElement1D **el, mat GlbM, vec GlbV, int n, int nElem)
 {
     // assuming the Global matrix and global load vector are alloc'd
     // first we make sure they are set to 0
     for (int i = 0; i < n * nElem + 1; i++)
     {
         for (int j = 0; j < n * nElem + 1; j++)
-            GlbM[i][j] = 0.0;
-        GlbV[i] = 0.0;
+            GlbM(i, j) = 0.0;
+        GlbV(i) = 0.0;
     }
     // then we "assemble"
     for (int k = 0; k < nElem; k++)
@@ -183,20 +174,20 @@ void assemble(BElement1D **el, matGlbM, double *GlbV, int n, int nElem)
         for (int i = 0; i <= n; i++)
         {
             for (int j = 0; j <= n; j++)
-                GlbM[n * k + i][n * k + j] += el[k]->getMatrixValue(i, j);
+                GlbM(n * k + i, n * k + j) += el[k]->getMatrixValue(i, j);
 
-            GlbV[n * k + i] += el[k]->getLoadVector(i);
+            GlbV(n * k + i) += el[k]->getLoadVector(i);
         }
     }
 } // O(n^2 * nElem)
 
 // difference by maximum norm
-double vec_dif(double *v1, double *v2, int len)
+double vec_dif(vec v1, vec v2, int len)
 {
     double max = -1.0e66;
     for (int i = 0; i < len; i++)
     {
-        double dif = abs(v2[i] - v1[i]);
+        double dif = abs(v2(i) - v1(i));
         if (dif > max)
             max = dif;
     }
@@ -204,23 +195,23 @@ double vec_dif(double *v1, double *v2, int len)
 }
 /*
 // Jacobi iterative linear solver
-double *linearSolve(matA, double *b, int len)
+vec linearSolve(mat A, vec b, int len)
 {
-    double *res_k1 = new double[len];
-    double *res_k2 = new double[len];
+    vec res_k1(len, fill::none)
+    vec res_k2(len, fill::none);
     double tolerance = 0.1e-5;
     int k;
 
     // sets res_k2 to b
     for (int i = 0; i < len; i++)
-        res_k1[i] = b[i];
+        res_k2(i) = b(i);
 
     // Gauss-Seidel iteration
     for (k = 0; k < MAX_ITERATIONS && vec_dif(res_k1, res_k2, len) > tolerance; k++)
     {
         // copy res_k to res_(k-1) (res_k2 to res_k1)
         for (int i = 0; i < len; i++)
-            res_k1[i] = res_k2[i];
+            res_k1(i) = res_k2(i);
 
         // then compute res_k
         for (int i = 0; i < len; i++)
@@ -228,13 +219,13 @@ double *linearSolve(matA, double *b, int len)
             double s = 0.0;
             for (int j = 0; j < i; j++)
             {
-                s += A[i][j] * res_k1[j];
+                s += A(i, j) * res_k1(j);
             }
             for (int j = i+1; j < len; j++)
             {
-                s += A[i][j] * res_k1[j];
+                s += A(i, j) * res_k1(j);
             }
-            res_k2[i] = (b[i] - s) / A[i][i];
+            res_k2(i) = (b(i) - s) / A(i, i);
         }
     }
 
@@ -247,19 +238,19 @@ double *linearSolve(matA, double *b, int len)
 */
 
 // Gaussian elimination linear solver
-double *linearSolve(matA, double *b, int len)
+vec linearSolve(mat A, vec b, int len)
 {
-    double *res = new double[len];
+    vec res(len, fill::none);
     
     // Makes the elimination
     for (int k = 0; k < len-1; k++)
     {
         for (int i = k+1; i < len; i++)
         {
-            double m = A[i][k] / A[k][k];
-            b[i] -= m * b[k];
+            double m = A(i, k) / A(k, k);
+            b(i) -= m * b(k);
             for (int j = k+1; j < len; j++)
-                A[i][j] -= m * A[k][j];
+                A(i, j) -= m * A(k, j);
         }
     }
 
@@ -268,8 +259,8 @@ double *linearSolve(matA, double *b, int len)
     {
         double s = 0.0;
         for (int j = i + 1; j < len; j++)
-            s += res[j] * A[i][j];
-        res[i] = (b[i] - s) / A[i][i];
+            s += res(j) * A(i, j);
+        res(i) = (b(i) - s) / A(i, i);
     }
 
     return res;

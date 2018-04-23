@@ -5,11 +5,12 @@ OBJ= -c
 FLAGS= -g -std=c++17 -lm -Wall -O3
 
 # include directories
-INC_MOM=-IMoments/
-INC_MASS=-IMass/
-INC_STIFF=-IStiffness/
-INC_ELEM=-IElements/
-INC_QUADRA=-IQuadra/
+INC_ARMA=-I../Armadillo/include
+INC_MOM=$(INC_ARMA) -IMoments/
+INC_MASS=$(INC_ARMA) -IMass/
+INC_STIFF=$(INC_ARMA) -IStiffness/
+INC_ELEM=$(INC_ARMA) -IElements/
+INC_QUADRA=$(INC_ARMA) -IQuadra/
 INC_ALL=$(INC_MOM) $(INC_MASS) $(INC_STIFF) $(INC_QUADRA) $(INC_ELEM)
 
 # library name

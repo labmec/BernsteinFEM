@@ -3,6 +3,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+#include <armadillo>
+
 #include "MassM.h"
 #include "JacobiGaussNodes.h"
 
@@ -23,10 +25,7 @@ int main()
 
     // sets function values (1)
     {
-        double *Fval = new double[q];
-        for (int i = 0; i < q; i++)
-            Fval[i] = 1.0;
-
+        arma::vec Fval(q, arma::fill::ones);
         mass1d.setFunction(Fval);
     }
 

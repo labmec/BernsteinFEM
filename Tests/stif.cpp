@@ -6,6 +6,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#include <armadillo>
+
 #include "StiffM.h"
 #include "JacobiGaussNodes.h"
 
@@ -33,9 +35,10 @@ int main()
 
     // sets function values (1)
     {
-        double *Fval = new double[q];
-        for (int i = 0; i < q; i++)
-            Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 );
+        arma::vec Fval(q, arma::fill::ones);
+
+        /* for (int i = 0; i < q; i++)
+            Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 ); */
 
         stif.setFunction(Fval);
     }
