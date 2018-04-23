@@ -30,12 +30,12 @@ BMoment2DQuad::BMoment2DQuad()
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment.zeros(lenMoments, 0);
-    Cval.set_size(q, 1);
+    Cval.set_size(q * q, 1);
 }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n)
     : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), 1, arma::fill::zeros),
-      Cval(q, 1, arma::fill::none),
+      Cval(q * q, 1, arma::fill::none),
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
 {
@@ -55,7 +55,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
 
 BMoment2DQuad::BMoment2DQuad(int q, int n, int nb_Array)
     : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), nb_Array, arma::fill::zeros),
-      Cval(q, nb_Array, arma::fill::none),
+      Cval(q * q, nb_Array, arma::fill::none),
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
 {
