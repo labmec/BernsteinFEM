@@ -9,6 +9,7 @@ using std::endl;
 #include "JacobiGaussNodes.h"
 
 BMoment2DQuad::BMoment2DQuad()
+    : Bmoment(), Cval(), quadraWN(), vertices(4, 2, arma::fill::none)
 {
     cout << "Enter a value for the polynomial order n:";
     cin >> n;
@@ -22,17 +23,21 @@ BMoment2DQuad::BMoment2DQuad()
         exit(EXIT_FAILURE);
     }
 
-    quadraWN = create_quadraWN();
+    quadraWN.set_size(q, 2);
     assignQuadra();
 
     int m = MAX(n, q - 1);
     lenMoments = (m + 1) * (m + 1);
 
-    Bmoment = create_Bmoment();
-    Cval = create_Cval();
+    Bmoment.zeros(lenMoments, 0);
+    Cval.set_size(q, 1);
 }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n)
+    : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), 1, arma::fill::zeros),
+      Cval(q, 1, arma::fill::none),
+      quadraWN(q, 2, arma::fill::none),
+      vertices(4, 2, arma::fill::none)
 {
     if (q > 80)
     {
@@ -42,66 +47,40 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
     this->q = q;
     this->n = n;
 
-    quadraWN = create_quadraWN();
     assignQuadra();
 
     int m = MAX(n, q - 1);
     lenMoments = (m + 1) * (m + 1);
+}
 
-    Bmoment = create_Bmoment();
-    Cval = create_Cval();
+BMoment2DQuad::BMoment2DQuad(int q, int n, int nb_Array)
+    : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), nb_Array, arma::fill::zeros),
+      Cval(q, nb_Array, arma::fill::none),
+      quadraWN(q, 2, arma::fill::none),
+      vertices(4, 2, arma::fill::none)
+{
+    if (q > 80)
+    {
+        std::cerr << "The polynomial order is too large.\n";
+        exit(EXIT_FAILURE);
+    }
+    this->q = q;
+    this->n = n;
+
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1) * (m + 1);
 }
 
 BMoment2DQuad::~BMoment2DQuad()
 {
-    delete_Bmoment(Bmoment);
-    delete quadraWN[0];
-    delete quadraWN;
-    delete Cval[0];
-    delete Cval;
-}
-
-arma::mat BMoment2DQuad::create_Bmoment()
-{
-    arma::mat Bmoment = new double *[lenMoments];
-    double *Bmoment_array = new double[nb_Array * lenMoments];
-
-    double *p1 = Bmoment_array;
-
-    for (int i = 0; i < lenMoments; p1 += nb_Array, i++)
-        Bmoment[i] = p1;
-
-    return Bmoment;
-}
-
-arma::mat BMoment2DQuad::create_Cval()
-{
-    int aux = lenMoments;
-    lenMoments = q;
-    arma::mat p = create_Bmoment();
-    lenMoments = aux;
-    return p;
-}
-
-void BMoment2DQuad::delete_Bmoment(arma::mat Bmoment)
-{
-    delete Bmoment[0];
-    delete Bmoment;
-}
-
-arma::mat BMoment2DQuad::create_quadraWN()
-{
-    double *aux = new double[2 * (q + 1)];
-    arma::mat quadraWN = new double *[2];
-    quadraWN[0] = aux;
-    quadraWN[1] = aux + q + 1;
-    return quadraWN;
 }
 
 void BMoment2DQuad::assignQuadra()
 {
-    double *x = quadraWN[1];
-    double *w = quadraWN[0];
+    double *x = quadraWN.colptr(1);
+    double *w = quadraWN.colptr(0);
 
     for (int k = 0; k < q; k++)
     {
@@ -122,14 +101,14 @@ void BMoment2DQuad::nodalShape(double X[], double &dX, double xi, double eta)
     N[3] = (1.0 - xi) * eta;
 
     //computes the mapped point
-    X[0] = N[0] * v1[0] + N[1] * v2[0] + N[2] * v3[0] + N[3] * v4[0];
-    X[1] = N[0] * v1[1] + N[1] * v2[1] + N[2] * v3[1] + N[3] * v4[1];
+    X[0] = N[0] * vertices(0, 0) + N[1] * vertices(1, 0) + N[2] * vertices(2, 0) + N[3] * vertices(3, 0);
+    X[1] = N[0] * vertices(0, 1) + N[1] * vertices(1, 1) + N[2] * vertices(2, 1) + N[3] * vertices(3, 1);
 
     //computes the derivatives
-    x_xi = (1.0 - eta) * (v2[0] - v1[0]) + eta * (v3[0] - v4[0]);
-    x_eta = (1.0 - xi) * (v4[0] - v1[0]) + xi * (v3[0] - v2[0]);
-    y_xi = (1.0 - eta) * (v2[1] - v1[1]) + eta * (v3[1] - v4[1]);
-    y_eta = (1.0 - xi) * (v4[1] - v1[1]) + xi * (v3[1] - v2[1]);
+    x_xi  = (1.0 - eta) * (vertices(1, 0) - vertices(0, 0)) + eta * (vertices(2, 0) - vertices(3, 0));
+    x_eta = (1.0 - xi)  * (vertices(3, 0) - vertices(0, 0)) + xi  * (vertices(2, 0) - vertices(1, 0));
+    y_xi  = (1.0 - eta) * (vertices(1, 1) - vertices(0, 1)) + eta * (vertices(2, 1) - vertices(3, 1));
+    y_eta = (1.0 - xi)  * (vertices(3, 1) - vertices(0, 1)) + xi  * (vertices(2, 1) - vertices(1, 1));
 
     //computes the Jacobian det
     dX = x_xi * y_eta - x_eta * y_xi;
@@ -145,28 +124,23 @@ void BMoment2DQuad::computeFunctionDef()
     {
         for (j = 0; j < q; j++)
         {
-            nodalShape(X, dX, quadraWN[1][i], quadraWN[1][j]);
+            nodalShape(X, dX, quadraWN(i, 1), quadraWN(j, 1));
             index_ij = position(i, j, q);
-            Cval[index_ij][0] = (*f)(X[0], X[1]) * dX;
+            Cval(index_ij, 0) = (*f)(X[0], X[1]) * dX;
         }
     }
 
     fValSet = true;
 }
 
-double BMoment2DQuad::get_bmoment(int a1, int a2)
-{
-    return Bmoment[position(a1, a2, n)][0];
-}
-
 // it is expected that Fval has the function values mapped to the
 // master element already multiplied by the Jacobian
 // and has q * nb_Array elements
-void BMoment2DQuad::setFunction(double *Fval)
+void BMoment2DQuad::setFunction(arma::vec Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval[i][el] = Fval[i + el * q];
+            Cval(i, el) = Fval(i + el * q);
 
     fValSet = true;
 }
@@ -175,7 +149,7 @@ void BMoment2DQuad::setFunction(arma::mat Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval[i][el] = Fval[i][el];
+            Cval(i, el) = Fval(i, el);
 
     fValSet = true;
 }
@@ -188,15 +162,33 @@ void BMoment2DQuad::setFunction(double (*function)(double, double))
 
 void BMoment2DQuad::setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2])
 {
-    this->v1[0] = v1[0];
-    this->v1[1] = v1[1];
-    this->v2[0] = v2[0];
-    this->v2[1] = v2[1];
-    this->v3[0] = v3[0];
-    this->v3[1] = v3[1];
-    this->v4[0] = v4[0];
-    this->v4[1] = v4[1];
+    vertices(0, 0) = v1[0];
+    vertices(0, 1) = v1[1];
+    vertices(1, 0) = v2[0];
+    vertices(1, 1) = v2[1];
+    vertices(2, 0) = v3[0];
+    vertices(2, 1) = v3[1];
+    vertices(3, 0) = v4[0];
+    vertices(3, 1) = v4[1];
 }
+
+void BMoment2DQuad::setQuadrilateral(arma::vec v1, arma::vec v2, arma::vec v3, arma::vec v4)
+{
+    vertices(0, 0) = v1[0];
+    vertices(0, 1) = v1[1];
+    vertices(1, 0) = v2[0];
+    vertices(1, 1) = v2[1];
+    vertices(2, 0) = v3[0];
+    vertices(2, 1) = v3[1];
+    vertices(3, 0) = v4[0];
+    vertices(3, 1) = v4[1];
+}
+
+void BMoment2DQuad::setQuadrilateral(arma::mat vertices)
+{
+    this->vertices.swap(vertices);
+}
+
 
 void BMoment2DQuad::compute_moments()
 {
@@ -214,18 +206,18 @@ void BMoment2DQuad::compute_moments()
 
         for (i = 0; i < n; i++)
             for (j = 0; j < n; j++)
-                Bmoment[i][j] = 0.0;
+                Bmoment(i, j) = 0.0;
 
         for (i = 0; i < q; i++)
         {
-            xi1 = quadraWN[1][i];    //quadrature abcissa i
-            omega1 = quadraWN[0][i]; //quadrature weight i
+            xi1 = quadraWN(i, 1);    //quadrature abcissa i
+            omega1 = quadraWN(i, 0); //quadrature weight i
             s1 = 1.0 - xi1;
             r1 = xi1 / s1; //recurrence relation 1st coefficient
             for (j = 0; j < q; j++)
             {
-                xi2 = quadraWN[1][j];    //quadrature abcissa j
-                omega2 = quadraWN[0][j]; //quadrature weight j
+                xi2 = quadraWN(j, 1);    //quadrature abcissa j
+                omega2 = quadraWN(j, 0); //quadrature weight j
                 s2 = 1.0 - xi2;
                 r2 = xi2 / s2; //recurrence relation 2nd coefficient
                 w1 = omega1 * pow(s1, n);
@@ -238,8 +230,8 @@ void BMoment2DQuad::compute_moments()
                         // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
                         index_ij = position(i, j, q);
                         index_a1a2 = position(a1, a2, n);
-                        for (int el = 0; el < nb_Array; el ++)
-                            Bmoment[index_a1a2][el] += w1 * w2 * Cval[index_ij][el];
+                        for (int el = 0; el < nb_Array; el++)
+                            Bmoment(index_a1a2, el) += w1 * w2 * Cval(index_ij, el);
                         w2 *= r2 * ((n - a2) / (1.0 + a2));
                     }
                     w1 *= r1 * ((n - a1) / (1.0 + a1));
@@ -255,7 +247,7 @@ void BMoment2DQuad::compute_moments(double (*f)(double, double))
     compute_moments();
 }
 
-void BMoment2DQuad::compute_moments(double *Fval)
+void BMoment2DQuad::compute_moments(arma::vec Fval)
 {
     setFunction(Fval);
     compute_moments();

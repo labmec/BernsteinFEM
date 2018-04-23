@@ -32,9 +32,9 @@ BMoment1D::BMoment1D()
 }
 
 // quadrature and polynomial order constructor
-BMoment1D::BMoment1D(int q, int n) 
-    : Bmoment(MAX(n+1, q), 1, arma::fill::zeros), Cval(q, 1, arma::fill::zeros),
-        quadraWN(q+1, 2, arma::fill::zeros)
+BMoment1D::BMoment1D(int q, int n)
+    : Bmoment(MAX(n + 1, q), 1, arma::fill::zeros), Cval(q, 1, arma::fill::zeros),
+      quadraWN(q + 1, 2, arma::fill::zeros)
 {
     if (q > 80)
     {
@@ -50,10 +50,10 @@ BMoment1D::BMoment1D(int q, int n)
     lenMoments = (m + 1);
 }
 
-BMoment1D::BMoment1D(int q, int n, int nb_Array) 
-    : Bmoment(MAX(n+1, q), nb_Array, arma::fill::zeros),
-        Cval(q, nb_Array, arma::fill::zeros),
-            quadraWN(q+1, 2, arma::fill::zeros)
+BMoment1D::BMoment1D(int q, int n, int nb_Array)
+    : Bmoment(MAX(n + 1, q), nb_Array, arma::fill::zeros),
+      Cval(q, nb_Array, arma::fill::zeros),
+      quadraWN(q + 1, 2, arma::fill::zeros)
 {
     if (q > 80)
     {
