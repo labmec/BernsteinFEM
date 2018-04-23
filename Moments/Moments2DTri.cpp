@@ -168,7 +168,7 @@ void BMoment2DTri::init_BmomentC_Bmom2d()
 
     for (int i = 0; i < q; i++)
     {
-        b1 = quadraWN(1, i);
+        b1 = quadraWN(i, 1);
 
         for (int j = 0; j < q; j++)
         {
@@ -176,7 +176,7 @@ void BMoment2DTri::init_BmomentC_Bmom2d()
 
             index_ij = position(i, j, q - 1);
 
-            b2 = quadraWN(3, j) * (1 - b1);
+            b2 = quadraWN(j, 3) * (1 - b1);
             b3 = 1 - b1 - b2;
             //b1, b2, b3 are the barycentric coordinates using the Duffy Transformation
 
@@ -292,8 +292,8 @@ void BMoment2DTri::compute_moments()
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
         {
-            xi = quadraWN(1, i);
-            wgt = quadraWN(0, i);
+            xi = quadraWN(i, 1);
+            wgt = quadraWN(i, 0);
 
             s = 1 - xi;
             r = xi / (1 - xi);
@@ -333,8 +333,8 @@ void BMoment2DTri::compute_moments()
         // convert second index (l=1)
         for (int j = 0; j < q; j++)
         {
-            xi = quadraWN(3, j);
-            wgt = quadraWN(2, j);
+            xi = quadraWN(j, 3);
+            wgt = quadraWN(j, 2);
 
             s = 1 - xi;
             r = xi / (1 - xi);
