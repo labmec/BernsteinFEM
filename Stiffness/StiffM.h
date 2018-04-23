@@ -9,12 +9,12 @@
  *****************************************************************************/
 class BStiff1D : public BMoment1D
 {
-    int q;              // number of quadrature points ( recommended: 2*(n+1) )
-    int n;              // polynomial order
-    int lenStiff;       // length of the stiffness matrix
-    arma::mat Matrix;    // stiffness matrix
-    int lenBinomialMat; // length of the binomial Pascal matrix
-    arma::Mat<int64_t> BinomialMat;  // Pascal Matrix
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
@@ -53,14 +53,14 @@ class BStiff1D : public BMoment1D
  *****************************************************************************/
 class BStiff2DTri : public BMoment2DTri
 {
-    int q;                  // number of quadrature points ( recommended: 2*(n+1) )
-    int n;                  // polynomial order
-    int lenStiff;           // length of the stiffness matrix
-    arma::mat Matrix;        // stiffness matrix
-    double normalMat[3][2]; // the normals of the triangle
-    int lenBinomialMat;     // length of the binomial Pascal matrix
-    int **BinomialMat;      // Pascal Matrix
-    BMoment2DTri *Moments;  // this is used instead of the inherited object
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    double normalMat[3][2];         // the normals of the triangle
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
+    BMoment2DTri *Moments;          // this is used instead of the inherited object
     // the inherited object is used to compute other parts of the matrix
 
     // alloc matrix linearly
@@ -95,7 +95,7 @@ class BStiff2DTri : public BMoment2DTri
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(arma::vec Fval);
 
     void compute_matrix(double (*f)(double, double));
 };
@@ -105,12 +105,12 @@ class BStiff2DTri : public BMoment2DTri
  *****************************************************************************/
 class BStiff2DQuad : public BMoment2DQuad
 {
-    int q;              // number of quadrature points ( recommended: 2*(n+1) )
-    int n;              // polynomial order
-    int lenStiff;       // length of the stiffness matrix
-    arma::mat Matrix;    // stiffness matrix
-    int lenBinomialMat; // length of the binomial Pascal matrix
-    int **BinomialMat;  // Pascal Matrix
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // alloc matrix linearly
     arma::mat create_matrix();
@@ -139,7 +139,7 @@ class BStiff2DQuad : public BMoment2DQuad
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(arma::vec Fval);
 
     void compute_matrix(double (*f)(double, double));
 };
