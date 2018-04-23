@@ -121,7 +121,7 @@ protected:
   arma::mat quadraWN; // quadrature points and weights
 
   // routine used to pre-multiply normals with the Bmoments
-  void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, double normalMat[][2]);
+  void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, arma::mat normalMat);
 
 public:
   // default constructor
