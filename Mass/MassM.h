@@ -74,7 +74,7 @@ class BMass2DTri : public BMoment2DTri
 
 	// sets the function definition or value before computing the mass matrix
 	void compute_matrix(double (*f)(double, double));
-	void compute_matrix(double *Fval);
+	void compute_matrix(arma::vec Fval);
 };
 
 /*****************************************************************************
