@@ -14,7 +14,7 @@ class BStiff1D : public BMoment1D
     int lenStiff;       // length of the stiffness matrix
     arma::mat Matrix;    // stiffness matrix
     int lenBinomialMat; // length of the binomial Pascal matrix
-    arma::Matrix<int64_t> BinomialMat;  // Pascal Matrix
+    arma::Mat<int64_t> BinomialMat;  // Pascal Matrix
 
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
@@ -28,10 +28,7 @@ class BStiff1D : public BMoment1D
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
 
     // computes the normalized moment
@@ -46,7 +43,7 @@ class BStiff1D : public BMoment1D
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(arma::vec Fval);
 
     void compute_matrix(double (*f)(double));
 };
@@ -93,10 +90,7 @@ class BStiff2DTri : public BMoment2DTri
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
 
     void compute_matrix();
@@ -140,10 +134,7 @@ class BStiff2DQuad : public BMoment2DQuad
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
 
     void compute_matrix();
