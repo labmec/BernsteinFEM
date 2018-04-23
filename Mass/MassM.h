@@ -9,12 +9,12 @@
  *****************************************************************************/
 class BMass1D : public BMoment1D
 {
-	int q;				// number of quadrature points ( recommended: 2*(n+1) )
-	int n;				// polynomial order
-	int lenMass;		// length of the mass matrix
-	arma::mat Matrix;	// mass matrix
-	int lenBinomialMat; // length of the binomial matrix
-	arma::Mat<int64_t> BinomialMat;  // Pascal Matrix
+	int q;							// number of quadrature points ( recommended: 2*(n+1) )
+	int n;							// polynomial order
+	int lenMass;					// length of the mass matrix
+	arma::mat Matrix;				// mass matrix
+	int lenBinomialMat;				// length of the binomial matrix
+	arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
 	// computes a Pascal Matrix with size lenBinomialMat
 	void compute_binomials();
@@ -40,12 +40,12 @@ class BMass1D : public BMoment1D
  *****************************************************************************/
 class BMass2DTri : public BMoment2DTri
 {
-	int q;				// number of quadrature points ( recommended: 2*(n+1) )
-	int n;				// polynomial order
-	int lenMass;		// length of the matrix
-	arma::mat Matrix;	// mass matrix
-	int lenBinomialMat; // length of the binomials matrix
-	int **BinomialMat;  // computes a Pascal Matrix with size lenBinomialMat
+	int q;							// number of quadrature points ( recommended: 2*(n+1) )
+	int n;							// polynomial order
+	int lenMass;					// length of the matrix
+	arma::mat Matrix;				// mass matrix
+	int lenBinomialMat;				// length of the binomials matrix
+	arma::Mat<int64_t> BinomialMat; // computes a Pascal Matrix with size lenBinomialMat
 
 	//alloc matrix linearly
 	arma::mat create_matrix();
@@ -82,22 +82,12 @@ class BMass2DTri : public BMoment2DTri
  *****************************************************************************/
 class BMass2DQuad : public BMoment2DQuad
 {
-	int q;				// number of quadrature points ( recommended: 2*(n+1) )
-	int n;				// polynomial order
-	int lenMass;		// length of the matrix
-	arma::mat Matrix;	// mass matrix
-	int lenBinomialMat; // length of the binomials matrix
-	int **BinomialMat;  // Pascal Matrix, BinomialMat[i, j] == binomial(i+j, i);
-
-	//alloc matrix linearly
-	arma::mat create_matrix();
-
-	void delete_matrix(arma::mat matrix);
-
-	// alloc binomial matrix
-	int **create_binomialMat();
-
-	void delete_binomialMat(int **binomialMat);
+	int q;							// number of quadrature points ( recommended: 2*(n+1) )
+	int n;							// polynomial order
+	int lenMass;					// length of the matrix
+	arma::mat Matrix;				// mass matrix
+	int lenBinomialMat;				// length of the binomials matrix
+	arma::Mat<int64_t> BinomialMat; // Pascal Matrix, BinomialMat[i, j] == binomial(i+j, i);
 
 	// computes a Pascal Matrix with size lenBinomialMat
 	void compute_binomials();
@@ -115,7 +105,7 @@ class BMass2DQuad : public BMoment2DQuad
 
 	void compute_matrix(double (*f)(double, double));
 
-	void compute_matrix(double *Fval);
+	void compute_matrix(arma::vec Fval);
 };
 
 class BMass3D : public BMoment3D
