@@ -27,7 +27,7 @@ BMoment2DTri::BMoment2DTri()
     lenMoments = (m + 1) * (m + 1);
 
     Bmoment.zeros(lenMoments, 1);
-    CVal.set_size(q, 1);
+    CVal.set_size(q * q, 1);
 }
 
 // quadrature and polynomial order constructor;
@@ -205,26 +205,19 @@ void BMoment2DTri::init_Bmoment2d_Cval()
     }
 }
 
-//get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-double BMoment2DTri::get_bmoment(int a1, int a2, int dim)
-{
-    int i = position(a1, a2, n);
-    return Bmoment(i, dim - 1);
-}
-
 // set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
 void BMoment2DTri::setFunction(arma::vec Fval)
 {
-    for (int i = 0; i < q; i++)
+    for (int i = 0; i < q * q; i++)
         for (int el = 0; el < nb_Array; el++)
-            CVal(i, el) = Fval[i + el * q];
+            CVal(i, el) = Fval(i + el * q);
 
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
 void BMoment2DTri::setFunction(arma::mat Fval)
 {
-    for (int i = 0; i < q; i++)
+    for (int i = 0; i < q * q; i++)
         for (int el = 0; el < nb_Array; el++)
             CVal(i, el) = Fval(i, el);
 
@@ -249,6 +242,11 @@ void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
     vertices(2, 1) = v3[1];
 }
 
+void BMoment2DTri::computeFunctionDef()
+{
+    // TODO: implement
+}
+
 //compute the b-moments
 void BMoment2DTri::compute_moments()
 {
@@ -260,34 +258,13 @@ void BMoment2DTri::compute_moments()
     {
         int m = MAX(n, q - 1); // m will be used for indexing
 
-        arma::mat BmomentInter((m + 1) * (m + 1), 1, arma::fill::zeros);
+        arma::mat Bmoment_inter((m + 1) * (m + 1), nb_Array, arma::fill::zeros);
 
-        //initialize Bmoment with function values
-        if (functVal == 1)
-            if (fValSet)
-                init_Bmoment2d_Cval();
-            else
-                std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-        else if (fDefSet)
-            init_BmomentC_Bmom2d();
-        else
-            std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
-
-        //  initialize BmomentInter, at this point, array Bmoment has been initialized with function values
-        for (int i = 0; i <= m; i++)
-        {
-            for (int j = 0; j <= m; j++)
-            {
-                int index_ij = position(i, j, m);
-
-                for (int ell = 0; ell < nb_Array; ell++)
-                    BmomentInter(index_ij, ell) = 0;
-            }
-        }
+        // compute the function definition into the function values vector
+        if (functVal == 0)
+            computeFunctionDef();
 
         double xi, wgt, s, r, B;
-
-        arma::vec fact(nb_Array, arma::fill::none);
 
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
@@ -296,63 +273,48 @@ void BMoment2DTri::compute_moments()
             wgt = quadraWN(i, 0);
 
             s = 1 - xi;
-            r = xi / (1 - xi);
+            r = xi / s;
 
             B = wgt * pow(s, n);
-            for (int mu1 = 0; mu1 <= n; mu1++)
+            for (int a1 = 0; a1 <= n; a1++)
             {
                 for (int j = 0; j < q; j++)
                 {
-                    int index_mu1j = position(mu1, j, m);
+                    int index_a1j = position(a1, j, m);
 
-                    int index_ij = position(i, j, q - 1); // init_BmomentC uses this indexing
+                    int index_ij = position(i, j, m);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
-                        fact(ell) = B * Bmoment(index_ij, ell);
-
-                        BmomentInter(index_mu1j, ell) += fact(ell);
+                        Bmoment_inter(index_a1j, ell) += B * CVal(index_ij, ell);
                     }
                 }
-                B *= r * (n - mu1) / (1 + mu1);
-            }
-        }
-
-        // reset the Bmoment array
-        for (int mu1 = 0; mu1 <= n; mu1++)
-        {
-            for (int mu2 = 0; mu2 <= n - mu1; mu2++)
-            {
-                int index_mu1mu2 = position(mu1, mu2, m);
-
-                for (int ell = 0; ell < nb_Array; ell++)
-                    Bmoment(index_mu1mu2, ell) = 0;
+                B = B * r * (n - a1) / (1 + a1);
             }
         }
 
         // convert second index (l=1)
-        for (int j = 0; j < q; j++)
+        for (int i = 0; i < q; i++)
         {
-            xi = quadraWN(j, 3);
-            wgt = quadraWN(j, 2);
+            xi = quadraWN(i, 3);
+            wgt = quadraWN(i, 2);
 
             s = 1 - xi;
-            r = xi / (1 - xi);
+            r = xi / s;
 
-            for (int mu1 = 0; mu1 <= n; mu1++)
+            for (int a1 = 0; a1 <= n; a1++)
             {
-                B = wgt * pow(s, n - mu1);
-                for (int mu2 = 0; mu2 <= n - mu1; mu2++)
+                B = wgt * pow(s, n - a1);
+                for (int a2 = 0; a2 <= n - a1; a2++)
                 {
-                    int index_mu1mu2 = position(mu1, mu2, m);
-                    int index_mu1j = position(mu1, j, m);
+                    int index_a1a2 = position(a1, a2, n);
+                    int index_a1i = position(a1, i, m);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
-                        fact(ell) = B * BmomentInter(index_mu1j, ell);
-                        Bmoment(index_mu1mu2, ell) += fact(ell);
+                        Bmoment(index_a1a2, ell) += B * Bmoment_inter(index_a1i, ell);
                     }
-                    B *= r * (n - mu1 - mu2) / (1 + mu2);
+                    B = B * r * (n - a1 - a2) / (1 + a2);
                 }
             }
         }

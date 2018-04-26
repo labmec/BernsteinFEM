@@ -179,13 +179,13 @@ public:
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-  double get_bmoment(int a1, int a2, int dim);
+  double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
   // get the i-th bmoment in the array, only use if you really know what you're doing
   double get_bmoment(int i) { return Bmoment(i, 0); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-  double get_bmoment(int i, int dim) { return Bmoment(dim, i); }
+  double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
@@ -202,6 +202,9 @@ public:
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
+
+  // computes the function definition into the function values vector
+  void computeFunctionDef();
 
   // compute the b-moments using the values already assigned in the object
   void compute_moments();
