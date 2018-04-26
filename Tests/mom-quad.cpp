@@ -13,6 +13,9 @@
 using namespace std;
 
 // testing if BMoments is functioning correctly
+// you can change the function to use in the computations by
+// modifying the function below, and uncommenting the code under
+// the "sets function values" section
 
 double f(double x)
 {
@@ -40,7 +43,6 @@ int main()
     //     Fval(i) = f( (legendre_xi(q, i) + 1.0) * 0.5 );
 
     mom_quad.setFunction(Fval);
-    
 
     // computes moments
     mom_quad.compute_moments();
@@ -51,4 +53,6 @@ int main()
     for (int i = 0; i < n + 1; i++)
         for (int j = 0; j < n + 1; j++)
             cout << "Bmoment[" << i << ", " << j << "] : " << mom_quad.get_bmoment(i, j, 0) << endl;
+
+    return 0;
 }

@@ -13,6 +13,9 @@
 using namespace std;
 
 // testing if BMoments is functioning correctly
+// you can change the function to use in the computations by
+// modifying the function below, and uncommenting the code under
+// the "sets function values" section
 
 double f(double x)
 {
