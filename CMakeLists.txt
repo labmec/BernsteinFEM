@@ -23,8 +23,6 @@ include_directories(
     #"${PROJECT_SOURCE_DIR}/../externallibs/include"
 )
 
-if(ARMADILLO_FOUND)
-
 #adds dependencies directories
 add_subdirectory(Moments)
 add_subdirectory(Mass)
