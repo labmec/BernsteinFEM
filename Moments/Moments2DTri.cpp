@@ -5,6 +5,11 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
+#ifdef LEN
+#undef LEN
+#endif
+#define LEN(n, q) MAX(n + 1, q) * MAX(n + 1, q)
+
 BMoment2DTri::BMoment2DTri()
     : Bmoment(), CVal(), quadraWN(), vertices(3, 2, arma::fill::none)
 {
@@ -23,17 +28,16 @@ BMoment2DTri::BMoment2DTri()
     quadraWN.set_size(q, 4);
     assignQuadra();
 
-    int m = MAX(n, q - 1);
-    lenMoments = (m + 1) * (m + 1);
+    lenMoments = LEN(n, q);
 
     Bmoment.zeros(lenMoments, 1);
-    CVal.set_size(q * q, 1);
+    CVal.set_size(lenMoments, 1);
 }
 
 // quadrature and polynomial order constructor;
 BMoment2DTri::BMoment2DTri(int q, int n)
-    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), 1, arma::fill::zeros),
-      CVal(q * q, 1, arma::fill::none),
+    : Bmoment(LEN(n, q), 1, arma::fill::zeros),
+      CVal(LEN(n, q), 1, arma::fill::none),
       quadraWN(q, 4, arma::fill::none),
       vertices(3, 2, arma::fill::none)
 {
@@ -53,8 +57,8 @@ BMoment2DTri::BMoment2DTri(int q, int n)
 
 // constructor setting the triangle vertices
 BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
-    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), 1, arma::fill::zeros),
-      CVal(q * q, 1, arma::fill::none),
+    : Bmoment(LEN(n, q), 1, arma::fill::zeros),
+      CVal(LEN(n, q), 1, arma::fill::none),
       quadraWN(q, 4, arma::fill::none),
       vertices(3, 2, arma::fill::none)
 {
@@ -75,8 +79,8 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
 }
 
 BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
-    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), nb_Array, arma::fill::zeros),
-      CVal(q * q, nb_Array, arma::fill::none),
+    : Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
+      CVal(LEN(n, q), nb_Array, arma::fill::none),
       quadraWN(q, 4, arma::fill::none),
       vertices(3, 2, arma::fill::none)
 {
@@ -97,8 +101,8 @@ BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
 
 // constructor setting the triangle vertices
 BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array, double T[][2])
-    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), nb_Array, arma::fill::zeros),
-      CVal(q * q, nb_Array, arma::fill::none),
+    : Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
+      CVal(LEN(n, q), nb_Array, arma::fill::none),
       quadraWN(q, 4, arma::fill::none),
       vertices(3, 2, arma::fill::none)
 {
@@ -263,7 +267,7 @@ void BMoment2DTri::compute_moments()
         // compute the function definition into the function values vector
         if (functVal == 0)
             computeFunctionDef();
-
+            
         double xi, wgt, s, r, B;
 
         // convert first index (l=2)
