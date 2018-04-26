@@ -57,7 +57,7 @@ class BStiff2DTri : public BMoment2DTri
     int n;                          // polynomial order
     int lenStiff;                   // length of the stiffness matrix
     arma::mat Matrix;               // stiffness matrix
-    arma::mat normalMat;         // the normals of the triangle
+    arma::mat normalMat;            // the normals of the triangle
     int lenBinomialMat;             // length of the binomial Pascal matrix
     arma::Mat<int64_t> BinomialMat; // Pascal Matrix
     BMoment2DTri *Moments;          // this is used instead of the inherited object

@@ -19,10 +19,10 @@ BStiff1D::~BStiff1D()
 void BStiff1D::compute_binomials()
 {
     for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat(i, 0) += 1;
+        BinomialMat(i, 0) = 1;
 
     for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat(0, j) += 1;
+        BinomialMat(0, j) = 1;
 
     for (int k = 1; k < lenBinomialMat; k++)
     {
