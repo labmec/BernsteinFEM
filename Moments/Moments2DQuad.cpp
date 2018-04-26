@@ -35,7 +35,7 @@ BMoment2DQuad::BMoment2DQuad()
 
 BMoment2DQuad::BMoment2DQuad(int q, int n)
     : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), 1, arma::fill::zeros),
-      Cval(q * q, 1, arma::fill::none),
+      Cval((q + 1) * (q + 1), 1, arma::fill::none),
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
 {
@@ -54,7 +54,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
 }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n, int nb_Array)
-    : Bmoment((MAX(n + 1, q) * MAX(n + 1, q)), nb_Array, arma::fill::zeros),
+    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), nb_Array, arma::fill::zeros),
       Cval(q * q, nb_Array, arma::fill::none),
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
@@ -192,21 +192,17 @@ void BMoment2DQuad::setQuadrilateral(arma::mat vertices)
 
 void BMoment2DQuad::compute_moments()
 {
-    if (functVal == 0 && !fValSet)
+    if (functVal == 1 && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 1 && !fDefSet)
+    else if (functVal == 0 && !fDefSet)
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
     else
     {
-        if (functVal == 1)
+        if (functVal == 0)
             computeFunctionDef();
 
         double xi1, xi2, omega1, omega2, s1, s2, r1, r2, w1, w2;
         int i, j, a1, a2, index_ij, index_a1a2;
-
-        for (i = 0; i < n; i++)
-            for (j = 0; j < n; j++)
-                Bmoment(i, j) = 0.0;
 
         for (i = 0; i < q; i++)
         {
@@ -221,6 +217,7 @@ void BMoment2DQuad::compute_moments()
                 s2 = 1.0 - xi2;
                 r2 = xi2 / s2; //recurrence relation 2nd coefficient
                 w1 = omega1 * pow(s1, n);
+                index_ij = position(i, j, q);
                 for (a1 = 0; a1 <= n; a1++)
                 {
                     // here w1 equals to the weight i multiplied with the a1-th 1d bernstein polynomial evaluated at xi1
@@ -228,7 +225,6 @@ void BMoment2DQuad::compute_moments()
                     for (a2 = 0; a2 <= n; a2++)
                     {
                         // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
-                        index_ij = position(i, j, q);
                         index_a1a2 = position(a1, a2, n);
                         for (int el = 0; el < nb_Array; el++)
                             Bmoment(index_a1a2, el) += w1 * w2 * Cval(index_ij, el);

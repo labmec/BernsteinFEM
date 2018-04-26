@@ -252,9 +252,9 @@ void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
 //compute the b-moments
 void BMoment2DTri::compute_moments()
 {
-    if (functVal == 0 && !fValSet)
+    if (functVal == 1 && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 1 && !fDefSet)
+    else if (functVal == 0 && !fDefSet)
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
     else
     {

@@ -182,7 +182,7 @@ public:
   double get_bmoment(int a1, int a2, int dim);
 
   // get the i-th bmoment in the array, only use if you really know what you're doing
-  double get_bmoment(int i) { return Bmoment(0, i); }
+  double get_bmoment(int i) { return Bmoment(i, 0); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
   double get_bmoment(int i, int dim) { return Bmoment(dim, i); }
@@ -271,7 +271,7 @@ public:
   double get_bmoment(int a1, int a2) { return Bmoment(position(a1, a2, n), 0); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-  double get_bmoment(int a1, int a2, int dim);
+  double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
   // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
   double get_bmoment(int i) { return Bmoment(0, i); }
