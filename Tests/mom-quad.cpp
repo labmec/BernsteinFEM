@@ -29,12 +29,13 @@ int main()
 
     BMoment2DQuad mom_quad(q, n);
 
-    // sets triangle to compute
+    // sets quadrilateral to compute 
     double v1[2] = {0, 0};
     double v2[2] = {1, 0};
     double v3[2] = {1, 1};
     double v4[2] = {0, 1};
     mom_quad.setQuadrilateral(v1, v2, v3, v4);
+    // this last part is only necessary when computing from function definition
 
     // sets function values
     arma::vec Fval(q * q, arma::fill::ones);

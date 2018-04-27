@@ -38,6 +38,7 @@ int main()
     double v2[2] = {1, 0};
     double v3[2] = {0, 1};
     mom_tri.setTriangle(v1, v2, v3);
+    // this last part is only necessary when computing from function definition
 
     // sets function values
     {
