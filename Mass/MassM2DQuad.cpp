@@ -1,15 +1,17 @@
 #include "MassM.h"
 
+#define LEN(n) ((n + 1) * (n + 1))
+
 BMass2DQuad::BMass2DQuad(int q, int n)
     : BMoment2DQuad(q, 2 * n),
-      Matrix((n + 1) * (n + 1), (n + 1) * (n + 1), arma::fill::none),
-      BinomialMat(n * 2 + 2, n * 2 + 2, arma::fill::zeros)
+      Matrix(LEN(n), LEN(n), arma::fill::none),
+      BinomialMat(n + 1, n + 1, arma::fill::zeros)
 {
     this->q = q;
     this->n = n;
 
-    lenMass = (n + 1) * (n + 1);
-    lenBinomialMat = 2 * n + 2;
+    lenMass = LEN(n);
+    lenBinomialMat = n + 1;
 }
 
 BMass2DQuad::~BMass2DQuad()
@@ -38,17 +40,25 @@ void BMass2DQuad::compute_matrix()
     compute_moments();
     compute_binomials();
 
-    double Const = 1.0 / (BinomialMat(n, n) * BinomialMat(n, n));
+    double Const = 1.0 / (BinomialMat(n, n) * BinomialMat(n, n)); // constant due to integration
 
     // since it is a simple tensor product, this is just like in the 1D case
-    // except it's doubled
-    for (int i = 0; i < lenMass; i++)
+    // except for indexing
+    for (int a1 = 0; a1 <= n; a1++)
     {
-        for (int j = 0; j < lenMass; j++)
+        for (int a2 = 0; a2 <= n; a2++) 
         {
-            double w = Const * BinomialMat(i, j) * BinomialMat(i, j);
-            w *= (BinomialMat(n - i, n - j) * BinomialMat(n - i, n - j));
-            Matrix(i, j) = w * get_bmoment(i + j);
+            for (int b1 = 0; b1 <= n; b1++)
+            {
+                for (int b2 = 0; b2 <= n; b2++)
+                {
+                    double w = Const * BinomialMat(a1, b1) * BinomialMat(a2, b2);
+                    w *= (BinomialMat(n - a1, n - b1) * BinomialMat(n - a2, n - b2));
+                    int i = position(a1, a2, n);
+                    int j = position(b1, b2, n);
+                    Matrix(i, j) = w * get_bmoment(a1 + b1, a2 + b2);
+                }
+            }
         }
     }
 }
