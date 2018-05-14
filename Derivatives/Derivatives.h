@@ -17,6 +17,8 @@ class dXi_dXi // does not inherit moment
 public:
   dXi_dXi(int q, int n);
 
+  int Len() { return len; }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -37,6 +39,8 @@ class dEta_dEta // dows not inherit moment
 public:
   dEta_dEta(int q, int n);
 
+  int Len() { return len; }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -55,6 +59,8 @@ class dXi_dEta : public BMoment2DQuad
 
 public:
   dXi_dEta(int q, int n);
+
+  int Len() { return len; }
 
   // compute matrix coefficients
   void compute_matrix();
@@ -81,6 +87,8 @@ class dXi_dXi
 public:
   dXi_dXi(int q, int n);
 
+  int Len() { return len; }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -101,6 +109,8 @@ class dEta_dEta
 public:
   dEta_dEta(int q, int n);
 
+  int Len() { return len; }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -120,6 +130,8 @@ class dXi_dEta
 
 public:
   dXi_dEta(int q, int n);
+
+  int Len() { return len; }
 
   void setFunction(arma::mat Fval);
 
