@@ -57,26 +57,26 @@ void dXi_dXi::compute_matrix()
         double sXi = 1 - xi;
         double rXi = xi / sXi;
         double omegaXi = legendre_w(q, iXi) * 0.5;
+
         double wXi = omegaXi * pow(sXi, nXi);
-
-        for (int iEta = 0; iEta < q; iEta++)
+        for (int aXi = 0; aXi <= nXi; aXi++)
         {
-            double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-            double sEta = 1 - eta;
-            double rEta = eta / sEta;
-            double omegaEta = legendre_w(q, iEta) * 0.5;
-            double wEta = omegaXi * pow(sEta, nEta);
-
-            for (int aXi = 0; aXi <= nXi; aXi++)
+            for (int iEta = 0; iEta < q; iEta++)
             {
+                double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
+                double sEta = 1 - eta;
+                double rEta = eta / sEta;
+                double omegaEta = legendre_w(q, iEta) * 0.5;
+
+                double wEta = omegaXi * pow(sEta, nEta);
                 for (int aEta = 0; aEta <= nEta; aEta++)
                 {
                     moments(aXi, aEta) += wXi * wEta * Fval(iXi, iEta);
 
                     wEta *= rEta * ((n - aEta) / (1 + aEta));
                 }
-                wXi *= rXi * ((n - aXi) / (1 + aXi));
             }
+            wXi *= rXi * ((n - aXi) / (1 + aXi));
         }
     } // O(q^2 * n^2)
 
@@ -151,26 +151,26 @@ void dEta_dEta::compute_matrix()
         double sXi = 1 - xi;
         double rXi = xi / sXi;
         double omegaXi = legendre_w(q, iXi) * 0.5;
+
         double wXi = omegaXi * pow(sXi, nXi);
-
-        for (int iEta = 0; iEta < q; iEta++)
+        for (int aXi = 0; aXi <= nXi; aXi++)
         {
-            double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-            double sEta = 1 - eta;
-            double rEta = eta / sEta;
-            double omegaEta = legendre_w(q, iEta) * 0.5;
-            double wEta = omegaXi * pow(sEta, nEta);
-
-            for (int aXi = 0; aXi <= nXi; aXi++)
+            for (int iEta = 0; iEta < q; iEta++)
             {
+                double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
+                double sEta = 1 - eta;
+                double rEta = eta / sEta;
+                double omegaEta = legendre_w(q, iEta) * 0.5;
+
+                double wEta = omegaXi * pow(sEta, nEta);
                 for (int aEta = 0; aEta <= nEta; aEta++)
                 {
                     moments(aXi, aEta) += wXi * wEta * Fval(iXi, iEta);
 
                     wEta *= rEta * ((n - aEta) / (1 + aEta));
                 }
-                wXi *= rXi * ((n - aXi) / (1 + aXi));
             }
+            wXi *= rXi * ((n - aXi) / (1 + aXi));
         }
     } // O(q^2 * n^2)
 
