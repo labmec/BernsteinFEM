@@ -70,13 +70,61 @@ namespace TriD
 {
 class dXi_dXi
 {
+  int q;                          // number of quadrature nodes
+  int n;                          // polynomial order
+  int len;                        // length of the matrix
+  arma::mat Matrix;               // matrix containing coefficients
+  int lenBinom;                   // length of the binomial (Pascal) matrix
+  arma::Mat<int64_t> BinomialMat; // Pascal matrix
+  arma::mat Fval;                 // function values at quadrature nodes
+
+public:
+  dXi_dXi(int q, int n);
+
+  void setFunction(arma::mat Fval);
+
+  // compute matrix coefficients
+  void compute_matrix();
+  void compute_matrix(arma::mat Fval);
 };
 
 class dEta_dEta
 {
+  int q;                          // number of quadrature nodes
+  int n;                          // polynomial order
+  int len;                        // length of the matrix
+  arma::mat Matrix;               // matrix containing coefficients
+  int lenBinom;                   // length of the binomial (Pascal) matrix
+  arma::Mat<int64_t> BinomialMat; // Pascal matrix
+  arma::mat Fval;                 // function values at quadrature nodes
+
+public:
+  dEta_dEta(int q, int n);
+
+  void setFunction(arma::mat Fval);
+
+  // compute matrix coefficients
+  void compute_matrix();
+  void compute_matrix(arma::mat Fval);
 };
 
 class dXi_dEta
 {
+  int q;                          // number of quadrature nodes
+  int n;                          // polynomial order
+  int len;                        // length of the matrix
+  arma::mat Matrix;               // matrix containing coefficients
+  int lenBinom;                   // length of the binomial (Pascal) matrix
+  arma::Mat<int64_t> BinomialMat; // Pascal matrix
+  arma::mat Fval;                 // function values at quadrature nodes
+
+public:
+  dXi_dEta(int q, int n);
+
+  void setFunction(arma::mat Fval);
+
+  // compute matrix coefficients
+  void compute_matrix();
+  void compute_matrix(arma::mat Fval);
 };
 } // namespace TriD
