@@ -17,7 +17,7 @@ INC_ALL=$(INC_MOM) $(INC_MASS) $(INC_STIFF) $(INC_QUADRA) $(INC_ELEM)
 # library name
 LIB=BernsteinFEM.a
 
-all: quadra moments mass stiff elem
+all: quadra moments mass stiff elem deriv
 	$(MAKE) lib
 
 lib:
@@ -67,6 +67,14 @@ stiff2dtri:
 
 stiff2dquad:
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Stiffness/StiffM2DQuad.cpp
+
+deriv: deriv2dquad deriv2dtri
+
+deriv2dquad:
+	g++ $(OBJ) $(GFLAGS) $(INC_MOM) $(INC_QUADRA) Derivatives/QuadD.cpp
+
+deriv2dtri:
+	g++ $(OBJ) $(GFLAGS) $(INC_MOM) $(INC_QUADRA) Derivatives/TriD.cpp
 
 elem: elem1d elem2d
 
