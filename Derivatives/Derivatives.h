@@ -19,6 +19,10 @@ public:
 
   int Len() { return len; }
 
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -41,6 +45,10 @@ public:
 
   int Len() { return len; }
 
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -61,6 +69,10 @@ public:
   dXi_dEta(int q, int n);
 
   int Len() { return len; }
+
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
   // compute matrix coefficients
   void compute_matrix();
@@ -89,6 +101,10 @@ public:
 
   int Len() { return len; }
 
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -111,6 +127,10 @@ public:
 
   int Len() { return len; }
 
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
+
   void setFunction(arma::mat Fval);
 
   // compute matrix coefficients
@@ -132,6 +152,10 @@ public:
   dXi_dEta(int q, int n);
 
   int Len() { return len; }
+
+  arma::mat getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
   void setFunction(arma::mat Fval);
 
