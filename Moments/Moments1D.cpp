@@ -140,17 +140,14 @@ void BMoment1D::compute_moments()
     }
     else
     {
-        int i, alpha;
-        double xi, omega, s, r, w;
-
-        for (i = 0; i < q; i++)
+        for (int i = 0; i < q; i++)
         {
-            xi = quadraWN(i, 1);
-            omega = quadraWN(i, 0);
-            s = 1 - xi;
-            r = xi / s;
-            w = omega * pow(s, n);
-            for (alpha = 0; alpha <= n; alpha++)
+            double xi = quadraWN(i, 1);
+            double omega = quadraWN(i, 0);
+            double s = 1 - xi;
+            double r = xi / s;
+            double w = omega * pow(s, n);
+            for (int alpha = 0; alpha <= n; alpha++)
             {
                 // here w equals the Bernstein polynomial of order n,
                 // with index alpha, evaluated at the i-th integration node
