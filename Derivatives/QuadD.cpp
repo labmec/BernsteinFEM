@@ -1,8 +1,10 @@
 #include "Derivatives.h"
 #include "JacobiGaussNodes.h"
 
+#include <iostream>
+
 #ifndef LEN
-#define LEN(N) ((n + 1) * (n + 1))
+#define LEN(N) ((N + 1) * (N + 1))
 #endif
 
 using namespace QuadD;
@@ -31,6 +33,7 @@ void compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
 
 dXi_dXi::dXi_dXi(int q, int n)
     : Matrix(LEN(n), LEN(n), fill::none),
+      Fval(q, q, fill::none),
       BinomialMat(n + 1, n + 1, fill::zeros)
 {
     this->q = q;
@@ -40,6 +43,13 @@ dXi_dXi::dXi_dXi(int q, int n)
     lenBinom = n + 1;
 
     compute_binomials(BinomialMat, lenBinom);
+}
+
+void dXi_dXi::setFunction(Mat<double> FVal)
+{
+    for (int i = 0; i < q; i++)
+        for (int j = 0; j < q; j++)
+            Fval(i, j) = FVal(i, j);
 }
 
 void dXi_dXi::compute_matrix()
@@ -54,31 +64,41 @@ void dXi_dXi::compute_matrix()
     for (int iXi = 0; iXi < q; iXi++)
     {
         double xi = (legendre_xi(q, iXi) + 1.0) * 0.5; // the master element is [0, 1] X [0, 1]
-        double sXi = 1 - xi;
+        double sXi = 1.0 - xi;
         double rXi = xi / sXi;
         double omegaXi = legendre_w(q, iXi) * 0.5;
 
-        double wXi = omegaXi * pow(sXi, nXi);
+        double wXi = omegaXi * pow(sXi, nXi); // O(q * n)
         for (int aXi = 0; aXi <= nXi; aXi++)
         {
             for (int iEta = 0; iEta < q; iEta++)
             {
                 double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-                double sEta = 1 - eta;
+                double sEta = 1.0 - eta;
                 double rEta = eta / sEta;
                 double omegaEta = legendre_w(q, iEta) * 0.5;
 
-                double wEta = omegaXi * pow(sEta, nEta);
+                double wEta = omegaEta * pow(sEta, nEta); // O(q^2 * n^2)
                 for (int aEta = 0; aEta <= nEta; aEta++)
                 {
-                    moments(aXi, aEta) += wXi * wEta * Fval(iXi, iEta);
+                    double w = wXi * wEta * Fval(iXi, iEta);
+                    moments(aXi, aEta) += w;
 
-                    wEta *= rEta * ((n - aEta) / (1 + aEta));
+                    wEta *= rEta * (nEta - aEta) / (1.0 + aEta);
                 }
             }
-            wXi *= rXi * ((n - aXi) / (1 + aXi));
+            wXi *= rXi * (nXi - aXi) / (1.0 + aXi);
         }
     } // O(q^2 * n^2)
+
+    // test if the moments were calculated correctly
+    /* for (int i = 0; i <= nXi; i++) {
+        for(int j = 0; j <= nEta; j++)
+        {
+            std::cout << std::scientific << moments(i, j) << ",\t";
+        }
+        std::cout << std::endl;
+    } */
 
     // then we arrange the terms
 
@@ -86,10 +106,10 @@ void dXi_dXi::compute_matrix()
 
     for (int a1 = 0; a1 < n; a1++)
     {
-        for (int b1 = 0; b1 <= n; b1++)
+        for (int b1 = 0; b1 < n; b1++)
         {
             double w1 = Const * BinomialMat(a1, b1);
-            for (int a2 = 0; a2 < n; a2++)
+            for (int a2 = 0; a2 <= n; a2++)
             {
                 for (int b2 = 0; b2 <= n; b2++)
                 {
@@ -103,13 +123,10 @@ void dXi_dXi::compute_matrix()
 
                     Matrix(i, j) += mom * w1 * w2;
 
-                    w2 = BinomialMat(a2 + 1, b2 + 1);
                     Matrix(I, J) += mom * w1 * w2;
 
-                    w2 = BinomialMat(a2 + 1, b2);
                     Matrix(I, j) -= mom * w1 * w2;
 
-                    w2 = BinomialMat(a2, b2 + 1);
                     Matrix(i, J) -= mom * w1 * w2;
                 }
             }
@@ -123,6 +140,7 @@ void dXi_dXi::compute_matrix()
 
 dEta_dEta::dEta_dEta(int q, int n)
     : Matrix(LEN(n), LEN(n), fill::none),
+      Fval(q, q, fill::none),
       BinomialMat(n + 1, n + 1, fill::zeros)
 {
     this->q = q;
@@ -132,6 +150,13 @@ dEta_dEta::dEta_dEta(int q, int n)
     lenBinom = n + 1;
 
     compute_binomials(BinomialMat, lenBinom);
+}
+
+void dEta_dEta::setFunction(Mat<double> FVal)
+{
+    for (int i = 0; i < q; i++)
+        for (int j = 0; j < q; j++)
+            Fval(i, j) = FVal(i, j);
 }
 
 void dEta_dEta::compute_matrix()
@@ -162,15 +187,15 @@ void dEta_dEta::compute_matrix()
                 double rEta = eta / sEta;
                 double omegaEta = legendre_w(q, iEta) * 0.5;
 
-                double wEta = omegaXi * pow(sEta, nEta);
+                double wEta = omegaEta * pow(sEta, nEta);
                 for (int aEta = 0; aEta <= nEta; aEta++)
                 {
                     moments(aXi, aEta) += wXi * wEta * Fval(iXi, iEta);
 
-                    wEta *= rEta * ((n - aEta) / (1 + aEta));
+                    wEta *= rEta * ((nEta - aEta) / (1 + aEta));
                 }
             }
-            wXi *= rXi * ((n - aXi) / (1 + aXi));
+            wXi *= rXi * ((nXi - aXi) / (1 + aXi));
         }
     } // O(q^2 * n^2)
 
@@ -232,7 +257,6 @@ dXi_dEta::dXi_dEta(int q, int n)
 void dXi_dEta::compute_matrix()
 {
     compute_moments();
-
     Matrix.zeros();
 
     // then arrange the terms
@@ -240,11 +264,10 @@ void dXi_dEta::compute_matrix()
 
     for (int a1 = 0; a1 < n; a1++)
     {
-        for (int b1 = 0; b1 < n; b1++)
+        for (int b1 = 0; b1 <= n; b1++)
         {
             double w1 = BinomialMat(a1, b1);
-            double _w1 = BinomialMat(a1 + 1, b1);
-            for (int a2 = 0; a2 < n; a2++)
+            for (int a2 = 0; a2 <= n; a2++)
             {
                 for (int b2 = 0; b2 < n; b2++)
                 {
@@ -261,6 +284,12 @@ void dXi_dEta::compute_matrix()
 
                     Matrix(I, j) -= Const * w1 * w2 * mom;
                     Matrix(i, J) -= Const * w1 * w2 * mom;
+
+                    std::cout << "Matrix max: " << Matrix.n_cols << std::endl;
+                    std::cout << "i:\t" << i << endl;
+                    std::cout << "j:\t" << j << endl;
+                    std::cout << "I:\t" << I << endl;
+                    std::cout << "J:\t" << J << endl;
                 }
             }
         }
