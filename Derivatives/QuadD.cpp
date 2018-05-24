@@ -173,7 +173,7 @@ void dEta_dEta::compute_matrix()
     for (int iXi = 0; iXi < q; iXi++)
     {
         double xi = (legendre_xi(q, iXi) + 1.0) * 0.5; // the master element is [0, 1] X [0, 1]
-        double sXi = 1 - xi;
+        double sXi = 1.0 - xi;
         double rXi = xi / sXi;
         double omegaXi = legendre_w(q, iXi) * 0.5;
 
@@ -183,7 +183,7 @@ void dEta_dEta::compute_matrix()
             for (int iEta = 0; iEta < q; iEta++)
             {
                 double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-                double sEta = 1 - eta;
+                double sEta = 1.0 - eta;
                 double rEta = eta / sEta;
                 double omegaEta = legendre_w(q, iEta) * 0.5;
 
@@ -192,10 +192,10 @@ void dEta_dEta::compute_matrix()
                 {
                     moments(aXi, aEta) += wXi * wEta * Fval(iXi, iEta);
 
-                    wEta *= rEta * ((nEta - aEta) / (1 + aEta));
+                    wEta *= rEta * ((nEta - aEta) / (1.0 + aEta));
                 }
             }
-            wXi *= rXi * ((nXi - aXi) / (1 + aXi));
+            wXi *= rXi * ((nXi - aXi) / (1.0 + aXi));
         }
     } // O(q^2 * n^2)
 
