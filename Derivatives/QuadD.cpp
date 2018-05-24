@@ -257,18 +257,18 @@ void dXi_dEta::compute_matrix()
     Matrix.zeros();
 
     // then arrange the terms
-    double Const = n * n * (1.0 / BinomialMat(n, n));
+    double Const = n * n * (1.0 / (BinomialMat(n - 1, n) * BinomialMat(n, n - 1)));
 
     for (int a1 = 0; a1 < n; a1++)
     {
         for (int b1 = 0; b1 <= n; b1++)
         {
-            double w1 = BinomialMat(a1, b1);
+            double w1 = BinomialMat(a1, b1) * BinomialMat(n - a1 - 1, n - b1);
             for (int a2 = 0; a2 <= n; a2++)
             {
                 for (int b2 = 0; b2 < n; b2++)
                 {
-                    double w2 = BinomialMat(a2, b2);
+                    double w2 = BinomialMat(a2, b2) * BinomialMat(n - a2, n - b2 - 1);
                     double mom = get_bmoment(a1 + b1, a2 + b2);
 
                     int i = position(a1, a2, n);
@@ -282,11 +282,11 @@ void dXi_dEta::compute_matrix()
                     Matrix(I, j) -= Const * w1 * w2 * mom;
                     Matrix(i, J) -= Const * w1 * w2 * mom;
 
-                    std::cout << "Matrix max: " << Matrix.n_cols << std::endl;
+                    /* std::cout << "Matrix max: " << Matrix.n_cols << std::endl;
                     std::cout << "i:\t" << i << endl;
                     std::cout << "j:\t" << j << endl;
                     std::cout << "I:\t" << I << endl;
-                    std::cout << "J:\t" << J << endl;
+                    std::cout << "J:\t" << J << endl; */
                 }
             }
         }
