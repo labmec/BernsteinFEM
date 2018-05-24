@@ -47,9 +47,9 @@ dXi_dXi::dXi_dXi(int q, int n)
 
 void dXi_dXi::setFunction(Mat<double> FVal)
 {
-    for (int i = 0; i < q; i++)
-        for (int j = 0; j < q; j++)
-            Fval(i, j) = FVal(i, j);
+    for (int i = 0; i < q * q; i++)
+        for (int el = 0; el < q; el++)
+            Fval(i, el) = FVal(i, el);
 }
 
 void dXi_dXi::compute_matrix()
@@ -154,9 +154,9 @@ dEta_dEta::dEta_dEta(int q, int n)
 
 void dEta_dEta::setFunction(Mat<double> FVal)
 {
-    for (int i = 0; i < q; i++)
-        for (int j = 0; j < q; j++)
-            Fval(i, j) = FVal(i, j);
+    for (int i = 0; i < q * q; i++)
+        for (int el = 0; el < q; el++)
+            Fval(i, el) = FVal(i, el);
 }
 
 void dEta_dEta::compute_matrix()
