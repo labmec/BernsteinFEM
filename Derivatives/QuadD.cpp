@@ -108,35 +108,35 @@ void dXi_dXi::compute_matrix()
     {
         for (int b1 = 0; b1 < n; b1++)
         {
-            double w1 = Const * BinomialMat(a1, b1);
+            double w1 = Const * BinomialMat(a1, b1) * BinomialMat(n - a1 - 1, n - b1 - 1);
             for (int a2 = 0; a2 <= n; a2++)
             {
                 for (int b2 = 0; b2 <= n; b2++)
                 {
-                    double w2 = BinomialMat(a2, b2);
-                    double mom = moments(a1 + b1, a2 + b2);
+                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a2, n - b2);
+                    double mom = w2 * moments(a1 + b1, a2 + b2);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
                     int I = BMoment2DQuad::position(a1 + 1, a2, n);
                     int J = BMoment2DQuad::position(b1 + 1, b2, n);
 
-                    Matrix(i, j) += mom * w1 * w2;
+                    Matrix(i, j) += mom;
 
-                    Matrix(I, J) += mom * w1 * w2;
+                    Matrix(I, J) += mom;
 
-                    Matrix(I, j) -= mom * w1 * w2;
+                    Matrix(I, j) -= mom;
 
-                    Matrix(i, J) -= mom * w1 * w2;
+                    Matrix(i, J) -= mom;
                 }
             }
         }
     } // O(n^4)
 }
 
-/****************************************
+/******************************************
  ********** Defining dEta_dEta ************
- ****************************************/
+ ******************************************/
 
 dEta_dEta::dEta_dEta(int q, int n)
     : Matrix(LEN(n), LEN(n), fill::none),
@@ -205,31 +205,28 @@ void dEta_dEta::compute_matrix()
 
     for (int a1 = 0; a1 <= n; a1++)
     {
-        for (int b1 = 0; b1 < n; b1++)
+        for (int b1 = 0; b1 <= n; b1++)
         {
-            double w1 = BinomialMat(a1, b1);
-            for (int a2 = 0; a2 <= n; a2++)
+            double w1 = Const * BinomialMat(a1, b1) * BinomialMat(n - a1, n - b1);
+            for (int a2 = 0; a2 < n; a2++)
             {
                 for (int b2 = 0; b2 < n; b2++)
                 {
-                    double w2 = Const * BinomialMat(a2, b2);
-                    double mom = moments(a1 + b1, a2 + b2);
+                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a2 - 1, n - b2 - 1);
+                    double mom = w2 * moments(a1 + b1, a2 + b2);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
                     int I = BMoment2DQuad::position(a1, a2 + 1, n);
                     int J = BMoment2DQuad::position(b1, b2 + 1, n);
 
-                    Matrix(i, j) += mom * w1 * w2;
+                    Matrix(i, j) += mom;
 
-                    w1 = BinomialMat(a1 + 1, b1 + 1);
-                    Matrix(I, J) += mom * w1 * w2;
+                    Matrix(I, J) += mom;
 
-                    w1 = BinomialMat(a1 + 1, b1);
-                    Matrix(I, j) -= mom * w1 * w2;
+                    Matrix(I, j) -= mom;
 
-                    w1 = BinomialMat(a1, b1 + 1);
-                    Matrix(i, J) -= mom * w1 * w2;
+                    Matrix(i, J) -= mom;
                 }
             }
         }
