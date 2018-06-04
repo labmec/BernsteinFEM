@@ -1,3 +1,6 @@
+#ifndef DERIVATIVES_H
+#define DERIVATIVES_H
+
 #include <armadillo>
 #include <stdint.h>
 #include "Moments.h"
@@ -164,3 +167,5 @@ public:
   void compute_matrix(arma::mat Fval);
 };
 } // namespace TriD
+
+#endif
