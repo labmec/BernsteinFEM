@@ -2,7 +2,7 @@
 #include "JacobiGaussNodes.h"
 
 #ifndef LEN
-#define LEN(N) ((n + 1) * (n + 1))
+#define LEN(N) ((MAX(n, q - 1) + 1) * (MAX(n, q - 1) + 1))
 #endif
 
 using namespace TriD;
@@ -30,7 +30,17 @@ void compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
  ****************************************/
 
 dXi_dXi::dXi_dXi(int q, int n)
+    : Matrix(LEN(n), LEN(n), fill::none),
+      Fval(q, q, fill::none),
+      BinomialMat(n + 1, n + 1, fill::zeros)
 {
+    this->q = q;
+    this->n = n;
+
+    len = LEN(n);
+    lenBinom = n + 1; // TODO: verificar esse valor
+
+    compute_binomials(BinomialMat, lenBinom);
 }
 
 void dXi_dXi::compute_matrix()
@@ -42,7 +52,17 @@ void dXi_dXi::compute_matrix()
  *****************************************/
 
 dEta_dEta::dEta_dEta(int q, int n)
+    : Matrix(LEN(n), LEN(n), fill::none),
+      Fval(q, q, fill::none),
+      BinomialMat(n + 1, n + 1, fill::zeros)
 {
+    this->q = q;
+    this->n = n;
+
+    len = LEN(n);
+    lenBinom = n + 1; // TODO: verificar esse valor
+
+    compute_binomials(BinomialMat, lenBinom);
 }
 
 void dEta_dEta::compute_matrix()
@@ -54,10 +74,20 @@ void dEta_dEta::compute_matrix()
  ****************************************/
 
 dXi_dEta::dXi_dEta(int q, int n)
+    : Matrix(LEN(n), LEN(n), fill::none),
+      Fval(q, q, fill::none),
+      BinomialMat(n + 1, n + 1, fill::zeros)
 {
+    this->q = q;
+    this->n = n;
+
+    len = LEN(n);
+    lenBinom = n + 1; // TODO: verificar esse valor
+
+    compute_binomials(BinomialMat, lenBinom);
 }
 
 void dXi_dEta::compute_matrix()
 {
 
-} // takes the time to compute moments with parameters q and 2 * n - 2 (q^2 * (2 * n - 2)^2) plus n^4
+} 
