@@ -52,6 +52,7 @@ void BStiff2DTri::compute_normals()
     normalMat(2, 1) = vertices(1, 0) - vertices(0, 0);
 }
 
+/* modified function bmoment2d from 'bbfem.cpp' to fit into this implementation */
 void BStiff2DTri::compute_matrix()
 {
     Moments->compute_moments();
