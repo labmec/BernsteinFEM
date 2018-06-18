@@ -61,6 +61,9 @@ public:
   double get_bmoment(int i) { return Bmoment(i, 0); }
   double get_bmoment(int i, int dim) { return Bmoment(i, dim - 1); }
 
+  // returns the vector with the integration points over the object's element, following the moments organization
+  arma::vec getIntegrationPoints();
+
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
 
@@ -187,6 +190,12 @@ public:
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
   double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
+  // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
+  // Assuming: points = getIntegrationPoints(); then
+  // points(i, 0) == x i-th coordinate
+  // points(i, 1) == y i-th coordinate
+  arma::mat getIntegrationPoints();
+
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
 
@@ -278,6 +287,11 @@ public:
 
   // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
   double get_bmoment(int i) { return Bmoment(i, 0); }
+
+  // returns the vector with the integration points (x, y) over the object's element, following the moments organization
+  // points(i, 0) == x i-th coordinate
+  // points(i, 1) == y i-th coordinate
+  arma::mat getIntegrationPoints();
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }

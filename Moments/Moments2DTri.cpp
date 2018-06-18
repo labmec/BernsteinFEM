@@ -158,7 +158,7 @@ void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], do
 }
 
 // initialize Bmoment by the values of the function f at the quadrature points of order q
-void BMoment2DTri::init_BmomentC_Bmom2d()
+/* void BMoment2DTri::init_BmomentC_Bmom2d()
 {
     if (nb_Array > 1)
     {
@@ -191,8 +191,9 @@ void BMoment2DTri::init_BmomentC_Bmom2d()
         }
     }
 }
+*/
 
-void BMoment2DTri::init_Bmoment2d_Cval()
+/* void BMoment2DTri::init_Bmoment2d_Cval()
 {
     double scalingConst = 2 * Area2d(vertices); // Jacobian of Duffy transformation
 
@@ -208,7 +209,7 @@ void BMoment2DTri::init_Bmoment2d_Cval()
         }
     }
 }
-
+ */
 // set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
 void BMoment2DTri::setFunction(arma::vec Fval)
 {
@@ -248,8 +249,45 @@ void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
 
 void BMoment2DTri::computeFunctionDef()
 {
-    // TODO: implement
+    arma::mat points = getIntegrationPoints();
+
+    for (int i = 0; i < q; i++)
+    {
+        for (int j = 0; j < q; j++)
+        {
+            int index_ij = position(i, j, q - 1);
+            CVal(index_ij, 0) = f(points(i, 0), points(j, 1));
+        }
+    }
 }
+
+// returns the vectors with the integration points (x, y) over the object's element, following the moments organization
+// Assuming: points = getIntegrationPoints(); then
+// points(i, 0) == x i-th coordinate
+// points(i, 1) == y i-th coordinate
+arma::mat BMoment2DTri::getIntegrationPoints()
+{
+    arma::mat points(q * q, 2); // vector with q elements
+    double b1, b2, b3;
+
+    for (int i = 0; i < q; i++)
+    {
+        b1 = quadraWN(i, 1);
+        for (int j = 0; j < q; j++)
+        {
+            double v[2];
+            b2 = quadraWN(j, 3) * (1 - b1);
+            b3 = 1 - b1 - b2;
+            bary2cart2d(b1, b2, b3, vertices.colptr(0), vertices.colptr(1), vertices.colptr(2), v); // stores b1*v1+b2*v2+b3*v3 into v;
+            int index_ij = position(i, j, q-1);
+            points(index_ij, 0) = v[0];
+            points(index_ij, 1) = v[1];
+        }
+    }
+
+    return points;
+}
+
 
 //compute the b-moments
 void BMoment2DTri::compute_moments()
@@ -269,7 +307,7 @@ void BMoment2DTri::compute_moments()
             computeFunctionDef();
             
         double xi, wgt, s, r, B;
-
+        double scalingConst =  2 * Area2d(vertices); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
         {
@@ -286,11 +324,11 @@ void BMoment2DTri::compute_moments()
                 {
                     int index_a1j = position(a1, j, m);
 
-                    int index_ij = position(i, j, m);
+                    int index_ij = position(i, j, q-1);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
-                        Bmoment_inter(index_a1j, ell) += B * CVal(index_ij, ell);
+                        Bmoment_inter(index_a1j, ell) += scalingConst * B * CVal(index_ij, ell);
                     }
                 }
                 B = B * r * (n - a1) / (1 + a1);

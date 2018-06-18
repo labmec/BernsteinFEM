@@ -128,6 +128,19 @@ void BMoment1D::setInterval(double a, double b)
     this->b = b;
 }
 
+// returns the vector with the integration points over the object's element, following the moments organization
+arma::vec BMoment1D::getIntegrationPoints()
+{
+    arma::vec points(this->q); // vector with q elements
+
+    for(int i = 0; i < q; i++)
+    {
+        points(i) = (legendre_xi(q, i) + (a + 1)) * ((b - a) / 2.);
+    }
+
+    return points;
+}
+
 // compute the B-moments using the values already assigned in the object
 void BMoment1D::compute_moments()
 {

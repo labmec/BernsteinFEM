@@ -189,6 +189,24 @@ void BMoment2DQuad::setQuadrilateral(arma::mat vertices)
     this->vertices.swap(vertices);
 }
 
+arma::mat BMoment2DQuad::getIntegrationPoints()
+{
+    arma::mat points(q * q, 2); // vector with q elements
+    double X[2], dX;
+
+    for (int i = 0; i < q; i++)
+    {
+        for (int j = 0; j < q; j++)
+        {
+            nodalShape(X, dX, quadraWN(i, 1), quadraWN(j, 1));
+            points(i * n + j, 0) = X[0];
+            points(i * n + j, 1) = X[1];
+        }
+    }
+
+    return points;
+}
+
 void BMoment2DQuad::compute_moments()
 {
     if (functVal == 1 && !fValSet)
