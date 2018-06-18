@@ -56,7 +56,7 @@ void BMass2DQuad::compute_matrix()
                     w *= (BinomialMat(n - a1, n - b1) * BinomialMat(n - a2, n - b2));
                     int i = position(a1, a2, n);
                     int j = position(b1, b2, n);
-                    Matrix(i, j) = w * get_bmoment(a1 + b1, a2 + b2);
+                    Matrix(i, j) = w * get_bmoment(a1 + b1, a2 + b2, 0);
                 }
             }
         }

@@ -267,17 +267,17 @@ public:
 
   int getNbArray() { return nb_Array; }
 
-  // return the index for the (i, j, n-i-j) triangle coordinate
+  // return the index for the (i, j) quadrilateral node
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2
-  double get_bmoment(int a1, int a2) { return Bmoment(position(a1, a2, n), 0); }
+  double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
   double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
-  // get the i-th Bmoment in the array, associated with the i-th element on the quadrilateral
-  double get_bmoment(int i) { return Bmoment(0, i); }
+  // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
+  double get_bmoment(int i) { return Bmoment(i, 0); }
 
   // call if you're going to use the function definition as parameters instead of the function value (as in default)
   void useFunctionDef() { functVal = 0; }
