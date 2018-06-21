@@ -10,7 +10,7 @@
 using namespace QuadD;
 using namespace arma;
 
-void compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
+void QuadDerivative::compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
 {
     for (int i = 0; i < lenBinom; i++)
         BinomialMat(i, 0) = 1;
@@ -27,11 +27,7 @@ void compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
     }
 }
 
-/****************************************
- ********** Defining dXi_dXi ************
- ****************************************/
-
-dXi_dXi::dXi_dXi(int q, int n)
+QuadDerivative::QuadDerivative(int q, int n)
     : Matrix(LEN(n), LEN(n), fill::none),
       Fval(q, q, fill::none),
       BinomialMat(n + 1, n + 1, fill::zeros)
@@ -45,12 +41,12 @@ dXi_dXi::dXi_dXi(int q, int n)
     compute_binomials(BinomialMat, lenBinom);
 }
 
-void dXi_dXi::setFunction(Mat<double> FVal)
-{
-    for (int i = 0; i < q * q; i++)
-        for (int el = 0; el < q; el++)
-            Fval(i, el) = FVal(i, el);
-}
+/****************************************
+ ********** Defining dXi_dXi ************
+ ****************************************/
+
+dXi_dXi::dXi_dXi(int q, int n)
+    : QuadDerivative(q, n) { }
 
 void dXi_dXi::compute_matrix()
 {
@@ -139,25 +135,7 @@ void dXi_dXi::compute_matrix()
  ******************************************/
 
 dEta_dEta::dEta_dEta(int q, int n)
-    : Matrix(LEN(n), LEN(n), fill::none),
-      Fval(q, q, fill::none),
-      BinomialMat(n + 1, n + 1, fill::zeros)
-{
-    this->q = q;
-    this->n = n;
-
-    len = LEN(n);
-    lenBinom = n + 1;
-
-    compute_binomials(BinomialMat, lenBinom);
-}
-
-void dEta_dEta::setFunction(Mat<double> FVal)
-{
-    for (int i = 0; i < q * q; i++)
-        for (int el = 0; el < q; el++)
-            Fval(i, el) = FVal(i, el);
-}
+    : QuadDerivative(q, n) { }
 
 void dEta_dEta::compute_matrix()
 {
@@ -239,22 +217,13 @@ void dEta_dEta::compute_matrix()
 
 dXi_dEta::dXi_dEta(int q, int n)
     : BMoment2DQuad(q, 2 * n - 1),
-      Matrix(LEN(n), LEN(n), fill::none),
-      BinomialMat(n + 1, n + 1, fill::zeros)
-{
-    this->q = q;
-    this->n = n;
-
-    len = LEN(n);
-    lenBinom = n + 1;
-
-    compute_binomials(BinomialMat, lenBinom);
-}
+      QuadDerivative(q, n) { }
 
 void dXi_dEta::compute_matrix()
 {
     compute_moments();
     Matrix.zeros();
+    int n = QuadDerivative::n; // takes the n from QuadDerivative, the BMoment2DQuad n is equal to this one times 2 minus 1
 
     // then arrange the terms
     double Const = n * n * (1.0 / (BinomialMat(n - 1, n) * BinomialMat(n, n - 1))); // don't worry the BinomialMat is symmetrical
