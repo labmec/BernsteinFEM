@@ -5,6 +5,15 @@ OBJ= -c
 GFLAGS= -g -std=c++17 -lm -Wall
 OFLAGS= -std=c++17 -lm -Wall -O3
 
+# object files
+ELEM_OBJS= Elem1D.o Elem2DQuad.o Elem2DTri.o
+MASS_OBJS= MassM1D.o MassM2DTri.o MassM2DQuad.o
+QUADRA_OBJS= JacobiGaussNodes.o
+MOM_OBJS= Moments1D.o Moments2DQuad.o Moments2DTri.o
+STIFF_OBJS= StiffM1D.o StiffM2DTri.o StiffM2DQuad.o
+DER_OBJS= QuadD.o TriD.o
+OBJECTS= $(ELEM_OBJS) $(MASS_OBJS) $(QUADRA_OBJS) $(MOM_OBJS) $(STIFF_OBJS) $(DER_OBJS)
+
 # include directories
 INC_ARMA=-I../Armadillo/include
 INC_MOM=$(INC_ARMA) -IMoments/
@@ -17,74 +26,56 @@ INC_ALL=$(INC_MOM) $(INC_MASS) $(INC_STIFF) $(INC_QUADRA) $(INC_ELEM)
 # library name
 LIB=BernsteinFEM.a
 
-all: quadra moments mass stiff elem deriv
-	$(MAKE) lib
+.PHONY : all
+all: $(LIB)
 
-lib:
-	ar -r $(LIB) *.o
+BernsteinFEM.a: $(OBJECTS)
+	ar -r $(LIB) $(OBJECTS)
 
 clean:
-	rm -f *.o
+	rm -f $(OBJECTS)
 
-quadra:
-	g++ $(OBJ) $(GFLAGS) Quadra/JacobiGaussNodes.cpp 
+JacobiGaussNodes.o: Quadra/JacobiGaussNodes.cpp Quadra/JacobiGaussNodes.h
+	g++ $(OBJ) $(GFLAGS) Quadra/JacobiGaussNodes.cpp
 
-moments: moments1d moments2d
-
-moments1d:
+Moments1D.o: Moments/Moments1D.cpp Moments/Moments.h
 	g++ $(OBJ) $(GFLAGS) $(INC_QUADRA) Moments/Moments1D.cpp
 
-moments2d: moments2dtri moments2dquad
-
-moments2dtri:
+Moments2DTri.o: Moments/Moments2DTri.cpp Moments/Moments.h
 	g++ $(OBJ) $(GFLAGS) $(INC_QUADRA) Moments/Moments2DTri.cpp
 
-moments2dquad:
+Moments2DQuad.o: Moments/Moments2DQuad.cpp Moments/Moments.h
 	g++ $(OBJ) $(GFLAGS) $(INC_QUADRA) Moments/Moments2DQuad.cpp
 
-mass: mass1d mass2d
-
-mass1d:
+MassM1D.o: Mass/MassM1D.cpp Mass/MassM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Mass/MassM1D.cpp
 
-mass2d:	mass2dtri mass2dquad
-
-mass2dtri:
+MassM2DTri.o: Mass/MassM2DTri.cpp Mass/MassM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Mass/MassM2DTri.cpp
 
-mass2dquad:
+MassM2DQuad.o: Mass/MassM2DQuad.cpp Mass/MassM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Mass/MassM2DQuad.cpp
 
-stiff: stiff1d stiff2d
-
-stiff1d:
+StiffM1D.o: Stiffness/StiffM1D.cpp Stiffness/StiffM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Stiffness/StiffM1D.cpp
 
-stiff2d: stiff2dtri stiff2dquad
-
-stiff2dtri:
+StiffM2DTri.o: Stiffness/StiffM2DTri.cpp Stiffness/StiffM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Stiffness/StiffM2DTri.cpp
 
-stiff2dquad:
+StiffM2DQuad.o: Stiffness/StiffM2DQuad.cpp Stiffness/StiffM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Stiffness/StiffM2DQuad.cpp
 
-deriv: deriv2dquad deriv2dtri
-
-deriv2dquad:
+QuadD.o: Derivatives/QuadD.cpp Derivatives/Derivatives.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) $(INC_QUADRA) Derivatives/QuadD.cpp
 
-deriv2dtri:
+TriD.o: Derivatives/TriD.cpp Derivatives/Derivatives.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) $(INC_QUADRA) Derivatives/TriD.cpp
 
-elem: elem1d elem2d
-
-elem1d:
+Elem1D.o: Elements/Elem1D.cpp Elements/Elem.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MASS) $(INC_STIFF) $(INC_MOM) $(INC_QUADRA) Elements/Elem1D.cpp
 
-elem2d:	elem2dtri elem2dquad
-
-elem2dtri:
+Elem2DTri.o: Elements/Elem2DTri.cpp Elements/Elem.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MASS) $(INC_STIFF) $(INC_MOM) $(INC_QUADRA) Elements/Elem2DTri.cpp
 
-elem2dquad:
+Elem2DQuad.o: Elements/Elem2DQuad.cpp Elements/Elem.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MASS) $(INC_STIFF) $(INC_MOM) $(INC_QUADRA) Elements/Elem2DQuad.cpp
