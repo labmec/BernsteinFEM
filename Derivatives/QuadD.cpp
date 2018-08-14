@@ -369,16 +369,16 @@ void StiffnessMatrix::compute_matrix()
     mat xi_eta = Xi_Eta.getMatrix();
     mat eta_eta = Eta_Eta.getMatrix();
 
-    std::ofstream f1, f2, f3;
-    f1.open("results/xi_xi.txt");
-    f2.open("results/xi_eta.txt");
-    f3.open("results/eta_eta.txt");
-    xi_xi.print(f1);
-    xi_eta.print(f2);
-    eta_eta.print(f3);
-    f1.close();
-    f2.close();
-    f3.close();
+    // std::ofstream f1, f2, f3;
+    // f1.open("results/xi_xi.txt");
+    // f2.open("results/xi_eta.txt");
+    // f3.open("results/eta_eta.txt");
+    // xi_xi.print(f1);
+    // xi_eta.print(f2);
+    // eta_eta.print(f3);
+    // f1.close();
+    // f2.close();
+    // f3.close();
 
     for (int i = 0; i < LEN(n); i++)
     {
