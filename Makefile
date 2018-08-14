@@ -2,7 +2,7 @@
 
 # compiler options
 OBJ= -c
-GFLAGS= -g -std=c++17 -lm -Wall
+GFLAGS= -ggdb -std=c++17 -lm -Wall
 OFLAGS= -std=c++17 -lm -Wall -O3
 
 # object files
