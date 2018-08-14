@@ -247,6 +247,10 @@ void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
     vertices(2, 1) = v3[1];
 }
 
+void BMoment2DTri::setTriangle(arma::mat vertices) {
+    this->vertices = vertices;
+}
+
 void BMoment2DTri::computeFunctionDef()
 {
     arma::mat points = getIntegrationPoints();
@@ -259,6 +263,7 @@ void BMoment2DTri::computeFunctionDef()
             CVal(index_ij, 0) = f(points(i, 0), points(j, 1));
         }
     }
+    fValSet = true;
 }
 
 // returns the vectors with the integration points (x, y) over the object's element, following the moments organization

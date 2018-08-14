@@ -49,7 +49,7 @@ public:
   {
     this->nb_Array = nb_Array;
     Bmoment.resize(lenMoments, nb_Array);
-    Cval.resize(q, nb_Array);
+    Cval.resize(q * q, nb_Array);
   }
 
   int getNbArray() { return nb_Array; }
@@ -57,8 +57,13 @@ public:
   // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
   int position(int i, int n) { return i; }
 
+  // returns the whole Bmoment matrix
+  const arma::mat &get_bmoment() { return Bmoment; }
+
   // returns the value of the i-th indexed B-moment
   double get_bmoment(int i) { return Bmoment(i, 0); }
+
+  // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
   double get_bmoment(int i, int dim) { return Bmoment(i, dim - 1); }
 
   // returns the vector with the integration points over the object's element, following the moments organization
@@ -72,7 +77,6 @@ public:
 
   // set the function values for computation
   void setFunction(arma::vec Fval);
-  void setFunction(arma::mat Fval);
 
   // set the function definition for computation
   void setFunction(double (*f)(double));
@@ -152,10 +156,10 @@ public:
     double x3 = v3[0];
     double y3 = v3[1];
 
-    return (x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
+    return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
   }
 
-  // computes area of triangle < v1,v2,v3 >
+  // computes area of triangle defined by vertices
   static double Area2d(arma::mat vertices)
   {
     double x1 = vertices(0, 0);
@@ -165,7 +169,7 @@ public:
     double x3 = vertices(2, 0);
     double y3 = vertices(2, 1);
 
-    return (x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
+    return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
   }
 
   // sets the dimension number of the function multiplying the Bernstein basis polynomial
@@ -211,6 +215,7 @@ public:
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
+  void setTriangle(arma::mat);
 
   // computes the function definition into the function values vector
   void computeFunctionDef();
@@ -228,6 +233,9 @@ public:
 /*****************************************************************************
  * Bernstein moments for quadrilaterals (2-dimensional)                      *
  *****************************************************************************/
+
+// for later implementation:
+// add the second order of polynomial degree to computation
 class BMoment2DQuad
 {
   int q;                // number of quadrature points in one dimension
@@ -246,9 +254,6 @@ class BMoment2DQuad
   // map to obtain Gauss-Jacobi rule on unit interval
   void assignQuadra();
 
-  // maps the quadrilatera to the master element
-  void nodalShape(double X[], double &dX, double xi, double eta);
-
   // computes the function by the definition and stores it in Cval
   void computeFunctionDef();
 
@@ -263,7 +268,8 @@ public:
   BMoment2DQuad();
   BMoment2DQuad(int q, int n);
   BMoment2DQuad(int q, int n, int nb_Array);
-  // destructoe
+
+  // destructor
   ~BMoment2DQuad();
 
   // sets the dimension number of the function multiplying the Bernstein basis polynomial
@@ -271,7 +277,7 @@ public:
   {
     this->nb_Array = nb_Array;
     Bmoment.resize(lenMoments, nb_Array);
-    Cval.resize(q, nb_Array);
+    Cval.resize(q * q, nb_Array);
   }
 
   int getNbArray() { return nb_Array; }
@@ -279,10 +285,13 @@ public:
   // return the index for the (i, j) quadrilateral node
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2
+  // return the Bmoment matrix
+  const arma::mat& get_bmoment() { return Bmoment; }
+  
+  // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
   double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
-  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
   double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
   // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
@@ -310,6 +319,12 @@ public:
   void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
   void setQuadrilateral(arma::vec v1, arma::vec v2, arma::vec v3, arma::vec v4);
   void setQuadrilateral(arma::mat vertices);
+
+  // Returns the nodal shape function of the elements quadrilateral, and the jacobian determinant
+  // the points are stored in the parameter X and the jacobian determinant in dX
+  void nodalShape(double X[], double &dX, double xi, double eta);
+  void nodalShape(arma::vec &X, double &dX, double xi, double eta);
+  void nodalShape(arma::vec &X, arma::mat &jac,  double &dX, double xi, double eta);
 
   // compute the b-moments using the values already assigned in the object
   void compute_moments();

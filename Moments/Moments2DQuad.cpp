@@ -91,6 +91,18 @@ void BMoment2DQuad::assignQuadra()
 
 void BMoment2DQuad::nodalShape(double X[], double &dX, double xi, double eta)
 {
+    arma::vec x(2, arma::fill::none);
+    nodalShape(x, dX, xi, eta);
+}
+
+void BMoment2DQuad::nodalShape(arma::vec &X, double &dX, double xi, double eta)
+{
+    arma::mat a(2, 2, arma::fill::none);
+    nodalShape(X, a, dX, xi, eta);
+}
+
+void BMoment2DQuad::nodalShape(arma::vec &X, arma::mat &jac, double &dX, double xi, double eta)
+{
     double N[4];
     double x_xi, x_eta, y_xi, y_eta;
 
@@ -101,14 +113,20 @@ void BMoment2DQuad::nodalShape(double X[], double &dX, double xi, double eta)
     N[3] = (1.0 - xi) * eta;
 
     //computes the mapped point
-    X[0] = N[0] * vertices(0, 0) + N[1] * vertices(1, 0) + N[2] * vertices(2, 0) + N[3] * vertices(3, 0);
-    X[1] = N[0] * vertices(0, 1) + N[1] * vertices(1, 1) + N[2] * vertices(2, 1) + N[3] * vertices(3, 1);
+    X(0) = N[0] * vertices(0, 0) + N[1] * vertices(1, 0) + N[2] * vertices(2, 0) + N[3] * vertices(3, 0);
+    X(1) = N[0] * vertices(0, 1) + N[1] * vertices(1, 1) + N[2] * vertices(2, 1) + N[3] * vertices(3, 1);
 
     //computes the derivatives
     x_xi = (1.0 - eta) * (vertices(1, 0) - vertices(0, 0)) + eta * (vertices(2, 0) - vertices(3, 0));
     x_eta = (1.0 - xi) * (vertices(3, 0) - vertices(0, 0)) + xi * (vertices(2, 0) - vertices(1, 0));
     y_xi = (1.0 - eta) * (vertices(1, 1) - vertices(0, 1)) + eta * (vertices(2, 1) - vertices(3, 1));
     y_eta = (1.0 - xi) * (vertices(3, 1) - vertices(0, 1)) + xi * (vertices(2, 1) - vertices(1, 1));
+
+    // stores the Jacobian matrix
+    jac(0, 0) = x_xi;
+    jac(0, 1) = x_eta;
+    jac(1, 0) = y_xi;
+    jac(1, 1) = y_eta;
 
     //computes the Jacobian det
     dX = x_xi * y_eta - x_eta * y_xi;
@@ -191,16 +209,17 @@ void BMoment2DQuad::setQuadrilateral(arma::mat vertices)
 
 arma::mat BMoment2DQuad::getIntegrationPoints()
 {
-    arma::mat points(q * q, 2); // vector with q elements
-    double X[2], dX;
+    arma::mat points(q * q, 2);
+    arma::vec X(2, arma::fill::none);
+    double dX;
 
     for (int i = 0; i < q; i++)
     {
         for (int j = 0; j < q; j++)
         {
             nodalShape(X, dX, quadraWN(i, 1), quadraWN(j, 1));
-            points(i * n + j, 0) = X[0];
-            points(i * n + j, 1) = X[1];
+            points(i * q + j, 0) = X[0];
+            points(i * q + j, 1) = X[1];
         }
     }
 
