@@ -90,7 +90,7 @@ public:
 
   void setQuadrilateral(const arma::mat &vertices);
 
-  
+  arma::mat getIntegrationPoints();
 
   // compute matrix coefficients
   void compute_matrix();

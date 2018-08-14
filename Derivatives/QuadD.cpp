@@ -49,22 +49,14 @@ void QuadDerivative::setFunction(const vec &Fval)
 
 arma::mat QuadDerivative::getIntegrationPoints()
 {
-    int q = QuadDerivative::q;
     arma::mat points(q * q, 2);
-    arma::vec X(2, arma::fill::none);
-    BMoment2DQuad nodalAux(1, 1);
-    nodalAux.setQuadrilateral(this->vertices);
-    double dX;
 
     for (int i = 0; i < q; i++)
     {
         for (int j = 0; j < q; j++)
         {
-            double xi = (legendre_xi(q, i) + 1.0) * 0.5;
-            double eta = (legendre_xi(q, j) + 1.0) * 0.5;
-            nodalAux.nodalShape(X, dX, xi, eta);
-            points(i * q + j, 0) = X[0];
-            points(i * q + j, 1) = X[1];
+            points(i * q + j, 0) = (legendre_xi(q, i) + 1.0) * 0.5;
+            points(i * q + j, 1) = (legendre_xi(q, j) + 1.0) * 0.5;
         }
     }
     
@@ -340,6 +332,30 @@ void StiffnessMatrix::setFunction(const vec &Fval)
 void StiffnessMatrix::setQuadrilateral(const mat &vertices)
 {
     this->vertices = vertices;
+}
+
+arma::mat StiffnessMatrix::getIntegrationPoints()
+{
+    int q = QuadDerivative::q;
+    arma::mat points(q * q, 2);
+    arma::vec X(2, arma::fill::none);
+    BMoment2DQuad nodalAux(1, 1);
+    nodalAux.setQuadrilateral(this->vertices);
+    double dX;
+
+    for (int i = 0; i < q; i++)
+    {
+        for (int j = 0; j < q; j++)
+        {
+            double xi = (legendre_xi(q, i) + 1.0) * 0.5;
+            double eta = (legendre_xi(q, j) + 1.0) * 0.5;
+            nodalAux.nodalShape(X, dX, xi, eta);
+            points(i * q + j, 0) = X[0];
+            points(i * q + j, 1) = X[1];
+        }
+    }
+    
+    return points;
 }
 
 // computes the stiffness matrix from the coefficients of partial derivatives in the master element
