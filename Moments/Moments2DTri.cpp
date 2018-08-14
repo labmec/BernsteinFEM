@@ -11,7 +11,7 @@
 #define LEN(n, q) MAX(n + 1, q) * MAX(n + 1, q)
 
 BMoment2DTri::BMoment2DTri()
-    : Bmoment(), CVal(), quadraWN(), vertices(3, 2, arma::fill::none)
+    : CVal(), Bmoment(), vertices(3, 2, arma::fill::none), quadraWN()
 {
     std::cout << "Enter a value for the polynomial order n:";
     std::cin >> n;
@@ -36,10 +36,10 @@ BMoment2DTri::BMoment2DTri()
 
 // quadrature and polynomial order constructor;
 BMoment2DTri::BMoment2DTri(int q, int n)
-    : Bmoment(LEN(n, q), 1, arma::fill::zeros),
-      CVal(LEN(n, q), 1, arma::fill::none),
-      quadraWN(q, 4, arma::fill::none),
-      vertices(3, 2, arma::fill::none)
+    : CVal(LEN(n, q), 1, arma::fill::none),
+      Bmoment(LEN(n, q), 1, arma::fill::zeros),
+      vertices(3, 2, arma::fill::none),
+      quadraWN(q, 4, arma::fill::none)
 {
     if (q > 80)
     {
@@ -57,10 +57,10 @@ BMoment2DTri::BMoment2DTri(int q, int n)
 
 // constructor setting the triangle vertices
 BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
-    : Bmoment(LEN(n, q), 1, arma::fill::zeros),
-      CVal(LEN(n, q), 1, arma::fill::none),
-      quadraWN(q, 4, arma::fill::none),
-      vertices(3, 2, arma::fill::none)
+    : CVal(LEN(n, q), 1, arma::fill::none),
+      Bmoment(LEN(n, q), 1, arma::fill::zeros),
+      vertices(3, 2, arma::fill::none),
+      quadraWN(q, 4, arma::fill::none)
 {
     if (q > 80)
     {
@@ -79,10 +79,10 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
 }
 
 BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
-    : Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
-      CVal(LEN(n, q), nb_Array, arma::fill::none),
-      quadraWN(q, 4, arma::fill::none),
-      vertices(3, 2, arma::fill::none)
+    : CVal(LEN(n, q), nb_Array, arma::fill::none),
+      Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
+      vertices(3, 2, arma::fill::none),
+      quadraWN(q, 4, arma::fill::none)
 {
     if (q > 80)
     {
@@ -101,10 +101,10 @@ BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
 
 // constructor setting the triangle vertices
 BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array, double T[][2])
-    : Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
-      CVal(LEN(n, q), nb_Array, arma::fill::none),
-      quadraWN(q, 4, arma::fill::none),
-      vertices(3, 2, arma::fill::none)
+    : CVal(LEN(n, q), nb_Array, arma::fill::none),
+      Bmoment(LEN(n, q), nb_Array, arma::fill::zeros),
+      vertices(3, 2, arma::fill::none),
+      quadraWN(q, 4, arma::fill::none)
 {
     if (q > 80)
     {
