@@ -105,6 +105,7 @@ void BMoment1D::setFunction(arma::vec Fval)
 
     fValSet = true;
 }
+
 // Fval must have at least q X nb_Array elements
 void BMoment1D::setFunction(arma::mat Fval)
 {

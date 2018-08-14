@@ -77,6 +77,9 @@ public:
 
   // set the function values for computation
   void setFunction(arma::vec Fval);
+  
+  // set the function values for computation when you have more than one dimension
+  void setFunction(arma::mat Fval);
 
   // set the function definition for computation
   void setFunction(double (*f)(double));
