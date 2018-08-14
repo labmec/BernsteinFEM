@@ -22,7 +22,7 @@ TriangleDerivative::TriangleDerivative(int q, int n)
     compute_binomials(BinomialMat, lenBinom);
 }
 
-void TriangleDerivative::setTriangle(arma::mat vertices)
+void TriangleDerivative::setTriangle(const mat &vertices)
 {
     this->vertices = vertices;
 }
@@ -37,7 +37,7 @@ void TriangleDerivative::setTriangle(double v1[], double v2[], double v3[])
     vertices(2, 1) = v3[1];
 }
 
-void TriangleDerivative::setFunction(arma::mat Fval)
+void TriangleDerivative::setFunction(const mat &Fval)
 {
 
 }
@@ -81,6 +81,8 @@ void dXi_dXi::compute_matrix()
     // convert first index
     // calculate mu_2
     // in O(n q^2 * n^2 q) each
+    vec mu_2(m * m);
+    vec mu_2_inter(m * m);
 
     double Const = n * n * (1.0 / BinomialMat(n-1, n-1));
     // compute matrix using mu_0, mu_1 and mu_2 in O(n^4)
