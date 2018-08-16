@@ -248,9 +248,10 @@ void BMoment2DQuad::compute_moments()
             omega1 = quadraWN(i, 0); //quadrature weight i
             s1 = 1.0 - xi1;
             r1 = xi1 / s1; //recurrence relation 1st coefficient
+            
+            w1 = omega1 * pow(s1, n);
             for (a1 = 0; a1 <= n; a1++)
             {
-                w1 = omega1 * pow(s1, n);
                 for (j = 0; j < q; j++)
                 {
                     xi2 = quadraWN(j, 1);    //quadrature abcissa j
@@ -264,7 +265,7 @@ void BMoment2DQuad::compute_moments()
                     for (a2 = 0; a2 <= m; a2++)
                     {
                         // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
-                        index_a1a2 = position(a1, a2, m);
+                        index_a1a2 = position(a1, a2, MAX(n, m));
                         for (int el = 0; el < nb_Array; el++)
                             Bmoment(index_a1a2, el) += w1 * w2 * Cval(index_ij, el);
                         w2 *= r2 * ((m - a2) / (1.0 + a2));
