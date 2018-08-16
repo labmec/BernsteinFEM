@@ -46,6 +46,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
     }
     this->q = q;
     this->n = n;
+    this->m = n;
 
     assignQuadra();
 
@@ -53,8 +54,8 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
     lenMoments = (m + 1) * (m + 1);
 }
 
-BMoment2DQuad::BMoment2DQuad(int q, int n, int nb_Array)
-    : Bmoment(MAX(n + 1, q) * MAX(n + 1, q), nb_Array, arma::fill::zeros),
+BMoment2DQuad::BMoment2DQuad(int q, int n, int m, int nb_Array)
+    : Bmoment(MAX(n + 1, m + 1) * MAX(n + 1, m + 1), nb_Array, arma::fill::zeros),
       Cval(q * q, nb_Array, arma::fill::none),
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
@@ -66,11 +67,12 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, int nb_Array)
     }
     this->q = q;
     this->n = n;
+    this->m = m;
 
     assignQuadra();
 
-    int m = MAX(n, q - 1);
-    lenMoments = (m + 1) * (m + 1);
+    int mx = MAX(n + 1, m + 1);
+    lenMoments = mx * mx;
 }
 
 BMoment2DQuad::~BMoment2DQuad()
@@ -204,7 +206,7 @@ void BMoment2DQuad::setQuadrilateral(arma::vec v1, arma::vec v2, arma::vec v3, a
 
 void BMoment2DQuad::setQuadrilateral(arma::mat vertices)
 {
-    this->vertices.swap(vertices);
+    this->vertices = vertices;
 }
 
 arma::mat BMoment2DQuad::getIntegrationPoints()
@@ -246,28 +248,29 @@ void BMoment2DQuad::compute_moments()
             omega1 = quadraWN(i, 0); //quadrature weight i
             s1 = 1.0 - xi1;
             r1 = xi1 / s1; //recurrence relation 1st coefficient
-            for (j = 0; j < q; j++)
+            for (a1 = 0; a1 <= n; a1++)
             {
-                xi2 = quadraWN(j, 1);    //quadrature abcissa j
-                omega2 = quadraWN(j, 0); //quadrature weight j
-                s2 = 1.0 - xi2;
-                r2 = xi2 / s2; //recurrence relation 2nd coefficient
                 w1 = omega1 * pow(s1, n);
-                index_ij = position(i, j, q - 1);
-                for (a1 = 0; a1 <= n; a1++)
+                for (j = 0; j < q; j++)
                 {
-                    // here w1 equals to the weight i multiplied with the a1-th 1d bernstein polynomial evaluated at xi1
+                    xi2 = quadraWN(j, 1);    //quadrature abcissa j
+                    omega2 = quadraWN(j, 0); //quadrature weight j
+                    s2 = 1.0 - xi2;
+                    r2 = xi2 / s2; //recurrence relation 2nd coefficient
+
+                    index_ij = position(i, j, q - 1);
+
                     w2 = omega2 * pow(s2, n);
-                    for (a2 = 0; a2 <= n; a2++)
+                    for (a2 = 0; a2 <= m; a2++)
                     {
                         // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
-                        index_a1a2 = position(a1, a2, n);
+                        index_a1a2 = position(a1, a2, m);
                         for (int el = 0; el < nb_Array; el++)
                             Bmoment(index_a1a2, el) += w1 * w2 * Cval(index_ij, el);
-                        w2 *= r2 * ((n - a2) / (1.0 + a2));
+                        w2 *= r2 * ((m - a2) / (1.0 + a2));
                     }
-                    w1 *= r1 * ((n - a1) / (1.0 + a1));
                 }
+                w1 *= r1 * ((n - a1) / (1.0 + a1));
             }
         }
     }

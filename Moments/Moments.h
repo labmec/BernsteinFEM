@@ -77,7 +77,7 @@ public:
 
   // set the function values for computation
   void setFunction(arma::vec Fval);
-  
+
   // set the function values for computation when you have more than one dimension
   void setFunction(arma::mat Fval);
 
@@ -218,7 +218,7 @@ public:
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
-  void setTriangle(arma::mat);
+  void setTriangle(arma::mat vertices);
 
   // computes the function definition into the function values vector
   void computeFunctionDef();
@@ -243,6 +243,7 @@ class BMoment2DQuad
 {
   int q;                // number of quadrature points in one dimension
   int n;                // Bernstein polynomial order
+  int m;                // Bernstein polynomial order (second independent variable)
   int lenMoments;       // length of the Bmoment vector
   arma::mat Bmoment;    // vector where the b-moments are stored
   arma::mat Cval;       // vector where the function values are stored
@@ -270,7 +271,7 @@ public:
   // constructors
   BMoment2DQuad();
   BMoment2DQuad(int q, int n);
-  BMoment2DQuad(int q, int n, int nb_Array);
+  BMoment2DQuad(int q, int n, int m, int nb_Array = 1);
 
   // destructor
   ~BMoment2DQuad();
@@ -289,8 +290,8 @@ public:
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
   // return the Bmoment matrix
-  const arma::mat& get_bmoment() { return Bmoment; }
-  
+  const arma::mat &get_bmoment() { return Bmoment; }
+
   // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
   double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
@@ -327,7 +328,7 @@ public:
   // the points are stored in the parameter X and the jacobian determinant in dX
   void nodalShape(double X[], double &dX, double xi, double eta);
   void nodalShape(arma::vec &X, double &dX, double xi, double eta);
-  void nodalShape(arma::vec &X, arma::mat &jac,  double &dX, double xi, double eta);
+  void nodalShape(arma::vec &X, arma::mat &jac, double &dX, double xi, double eta);
 
   // compute the b-moments using the values already assigned in the object
   void compute_moments();
