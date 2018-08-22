@@ -146,7 +146,7 @@ void BMoment2DQuad::computeFunctionDef()
         {
             nodalShape(X, dX, quadraWN(i, 1), quadraWN(j, 1));
             index_ij = position(i, j, q);
-            Cval(index_ij, 0) = (*f)(X[0], X[1]) * dX;
+            Cval(index_ij, 0) = f(X[0], X[1]) * dX;
         }
     }
 
@@ -174,7 +174,7 @@ void BMoment2DQuad::setFunction(arma::mat Fval)
     fValSet = true;
 }
 
-void BMoment2DQuad::setFunction(double (*function)(double, double))
+void BMoment2DQuad::setFunction(std::function<double (double, double)> function)
 {
     f = function;
     fDefSet = true;
@@ -248,7 +248,7 @@ void BMoment2DQuad::compute_moments()
             omega1 = quadraWN(i, 0); //quadrature weight i
             s1 = 1.0 - xi1;
             r1 = xi1 / s1; //recurrence relation 1st coefficient
-            
+
             w1 = omega1 * pow(s1, n);
             for (a1 = 0; a1 <= n; a1++)
             {
@@ -277,7 +277,7 @@ void BMoment2DQuad::compute_moments()
     }
 }
 
-void BMoment2DQuad::compute_moments(double (*f)(double, double))
+void BMoment2DQuad::compute_moments(std::function<double (double, double)> f)
 {
     setFunction(f);
     compute_moments();

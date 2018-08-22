@@ -63,7 +63,7 @@ void BMass2DQuad::compute_matrix()
     }
 }
 
-void BMass2DQuad::compute_matrix(double (*f)(double, double))
+void BMass2DQuad::compute_matrix(std::function<double (double, double)> f)
 {
     setFunction(f);
     compute_matrix();

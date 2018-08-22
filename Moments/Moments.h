@@ -19,7 +19,7 @@ class BMoment1D
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  double (*f)(double) = 0x0;
+  std::function<double (double)> f = 0x0;
 
   // assign the quadrature points and weights
   void assignQuadra();
@@ -82,7 +82,7 @@ public:
   void setFunction(arma::mat Fval);
 
   // set the function definition for computation
-  void setFunction(double (*f)(double));
+  void setFunction(std::function<double (double)> f);
 
   void setInterval(double a, double b);
 
@@ -90,7 +90,7 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(double (*f)(double));
+  void compute_moments(std::function<double (double)> f);
 
   // compute the b-moments for the Fval function values
   void compute_moments(arma::vec Fval);
@@ -110,7 +110,7 @@ class BMoment2DTri
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  double (*f)(double, double) = 0x0;
+  std::function<double (double, double)> f;
 
   // map to obtain Gauss-Jacobi rule on unit interval
   void assignQuadra();
@@ -214,7 +214,7 @@ public:
   void setFunction(arma::mat Fval);
 
   // set the function that multiplies the B-polynomial by definition
-  void setFunction(double (*function)(double, double));
+  void setFunction(std::function<double (double, double)> f);
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
@@ -227,7 +227,7 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(double (*f)(double, double));
+  void compute_moments(std::function<double (double, double)> f);
 
   // compute the b-moments for the Fval function values
   void compute_moments(arma::vec Fval);
@@ -251,7 +251,7 @@ class BMoment2DQuad
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  double (*f)(double, double) = 0x0;
+  std::function<double (double, double)> f;
 
   // methods
 
@@ -317,7 +317,7 @@ public:
   void setFunction(arma::mat Fval);
 
   // set the function that multiplies the B-polynomial
-  void setFunction(double (*function)(double, double));
+  void setFunction(std::function<double (double, double)> f);
 
   // set the element quadrilateral vertices
   void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
@@ -334,7 +334,7 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(double (*f)(double, double));
+  void compute_moments(std::function<double (double, double)> f);
 
   // compute the b-moments for the Fval function values
   void compute_moments(arma::vec Fval);

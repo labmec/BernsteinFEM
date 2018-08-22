@@ -57,7 +57,7 @@ void BMass1D::compute_matrix()
     }
 }
 
-void BMass1D::compute_matrix(double (*f)(double))
+void BMass1D::compute_matrix(std::function<double (double)> f)
 {
     setFunction(f);
     compute_matrix();

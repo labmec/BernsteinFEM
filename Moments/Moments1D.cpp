@@ -90,7 +90,7 @@ void BMoment1D::loadFunctionDef()
     for (int i = 0; i < q; i++)
     {
         for (int el = 0; el < nb_Array; el++)
-            Cval(i, el) = (*f)(quadraWN(i, 0));
+            Cval(i, el) = f(quadraWN(i, 0));
     }
 
     fValSet = true;
@@ -117,7 +117,7 @@ void BMoment1D::setFunction(arma::mat Fval)
 }
 
 // set the function definition for computation
-void BMoment1D::setFunction(double (*function)(double))
+void BMoment1D::setFunction(std::function<double (double)> function)
 {
     f = function;
     fDefSet = true;
@@ -175,7 +175,7 @@ void BMoment1D::compute_moments()
 }
 
 // compute the b-moments for the specified f function
-void BMoment1D::compute_moments(double (*f)(double))
+void BMoment1D::compute_moments(std::function<double (double)> f)
 {
     setFunction(f);
     compute_moments();

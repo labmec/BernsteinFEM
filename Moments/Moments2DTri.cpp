@@ -230,7 +230,7 @@ void BMoment2DTri::setFunction(arma::mat Fval)
 }
 
 // set the function definition for computations
-void BMoment2DTri::setFunction(double (*function)(double, double))
+void BMoment2DTri::setFunction(std::function<double (double, double)> function)
 {
     f = function;
     fDefSet = true;
@@ -368,7 +368,7 @@ void BMoment2DTri::compute_moments()
     }
 }
 
-void BMoment2DTri::compute_moments(double (*f)(double, double))
+void BMoment2DTri::compute_moments(std::function<double (double, double)> f)
 {
     setFunction(f);
     compute_moments();

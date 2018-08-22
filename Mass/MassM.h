@@ -31,7 +31,7 @@ class BMass1D : public BMoment1D
 	void compute_matrix();
 
 	// sets the function definition or value before computing the mass matrix
-	void compute_matrix(double (*f)(double));
+	void compute_matrix(std::function<double (double)> f);
 	void compute_matrix(arma::vec Fval);
 };
 
@@ -73,7 +73,7 @@ class BMass2DTri : public BMoment2DTri
 	void compute_matrix();
 
 	// sets the function definition or value before computing the mass matrix
-	void compute_matrix(double (*f)(double, double));
+	void compute_matrix(std::function<double (double, double)> f);
 	void compute_matrix(arma::vec Fval);
 };
 
@@ -103,7 +103,7 @@ class BMass2DQuad : public BMoment2DQuad
 
 	void compute_matrix();
 
-	void compute_matrix(double (*f)(double, double));
+	void compute_matrix(std::function<double (double, double)> f);
 
 	void compute_matrix(arma::vec Fval);
 };
