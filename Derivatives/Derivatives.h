@@ -22,14 +22,19 @@ protected:
   arma::vec Fval;                 // function values at quadrature nodes
 
 public:
+  // constructor
   QuadDerivative(int q, int n);
 
+  // returns the length of the square Matrix
   int Len() { return len; }
+  
+  // returns a reference to the Matrix
+  const arma::mat &getMatrix() { return Matrix; }
 
-  arma::mat getMatrix() { return Matrix; }
-
+  // returns the Matrix[i][j] value
   double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
+  // returns the integration points to the quadrilateral
   arma::mat getIntegrationPoints();
 
   void setFunction(const arma::vec &Fval);
@@ -39,6 +44,14 @@ public:
     setFunction(Fval);
     compute_matrix();
   }
+
+  // prints the Matrix in format compatible with Mathematica to the specified stream
+  // default stream: cout
+  void print_mathematica(std::ostream &stream = std::cout);
+
+  // prints the Matrix in readable format to the specified stream
+  // default stream: cout
+  void print(std::ostream &stream = std::cout);
 
   virtual void compute_matrix() = 0;
 };

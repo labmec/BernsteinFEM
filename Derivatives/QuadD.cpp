@@ -63,6 +63,35 @@ arma::mat QuadDerivative::getIntegrationPoints()
     return points;
 }
 
+void QuadDerivative::print_mathematica(std::ostream &stream)
+{
+    stream << "{";
+    for (int i = 0; i < (n + 1) * (n + 1); i++)
+    {
+        stream << "{";
+        for (int j = 0; j < (n + 1) * (n + 1); j++)
+            if (j < (n + 1) * (n + 1) - 1)
+                stream << Matrix(i, j) << ", ";
+            else
+                stream << Matrix(i, j);
+        if (i < (n + 1) * (n + 1) - 1)
+            stream << "},\n";
+        else
+            stream << "}";
+    }
+    stream << "}" << endl;
+}
+
+void QuadDerivative::print(std::ostream &stream)
+{
+    for (int i = 0; i < (n + 1) * (n + 1); i++)
+    {
+        for (int j = 0; j < (n + 1) * (n + 1); j++)
+                stream << std::scientific << Matrix(i, j) << "\t";
+        stream << "\n";
+    }
+}
+
 /****************************************
  ********** Defining dXi_dXi ************
  ****************************************/
