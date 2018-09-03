@@ -65,6 +65,8 @@ arma::mat QuadDerivative::getIntegrationPoints()
 
 void QuadDerivative::print_mathematica(std::ostream &stream)
 {
+    stream.flags(std::ios_base::fixed);
+    stream.precision(16);
     stream << "{";
     for (int i = 0; i < (n + 1) * (n + 1); i++)
     {
@@ -345,7 +347,7 @@ void StiffnessMatrix::setFunction(const vec &Fval)
             double xi = (legendre_xi(q, i) + 1.0) * 0.5;
             double eta = (legendre_xi(q, j) + 1.0) * 0.5;
             nodalAux.nodalShape(X, jac, dX, xi, eta);
-            mat jac_inv = jac.i();
+            mat jac_inv = inv(jac);
 
             Fval1(i * q + j) *= (jac_inv(0, 0) * jac_inv(0, 0) + jac_inv(0, 1) * jac_inv(0, 1)) * dX;
             Fval2(i * q + j) *= (jac_inv(1, 0) * jac_inv(1, 0) + jac_inv(1, 1) * jac_inv(1, 1)) * dX;
