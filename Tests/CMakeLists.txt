@@ -54,3 +54,8 @@ add_dependencies(DERIV_1ST_TEST Deriv_lib Quadra_lib Moments_lib)
 target_link_libraries(DERIV_1ST_TEST Deriv_lib Quadra_lib Moments_lib)
 target_include_directories(DERIV_1ST_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS}  "../../externallibs/include")
 set(allTests ${allTests} DERIV_1ST_TEST)
+
+add_executable(QUAD_STIF_CPU_TEST cpu_test.cpp)
+add_dependencies(QUAD_STIF_CPU_TEST Deriv_lib)
+target_link_libraries(QUAD_STIF_CPU_TEST Deriv_lib Quadra_lib Moments_lib)
+target_include_directories(QUAD_STIF_CPU_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../../externallibs/include")
