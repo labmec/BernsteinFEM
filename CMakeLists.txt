@@ -5,8 +5,8 @@ project(BernsteinFEM CXX)
 find_package(Armadillo REQUIRED)
 
 if(WIN32)
-    find_package(BLAS QUIET)
-    find_package(LAPACK QUIET)
+    find_package(BLAS REQUIRED)
+    find_package(LAPACK REQUIRED)
     set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
     #append blas and lapack libraries into armadillo when on windows
 endif()
@@ -21,7 +21,7 @@ include_directories(
     "${PROJECT_SOURCE_DIR}/Quadra"
     "${PROJECT_SOURCE_DIR}/Derivatives"
     ${ARMADILLO_INCLUDE_DIRS}
-    #"${PROJECT_SOURCE_DIR}/../externallibs/include"
+    "${PROJECT_SOURCE_DIR}/Armadillo/include"
 )
 
 #adds dependencies directories
