@@ -1,3 +1,10 @@
+/** quad_dxi_dxi.cpp
+ * 
+ * This file makes a test for the computation
+ * of the dXi_dXi object matrix in quadrilateral
+ * elements
+ */
+
 #include "Derivatives.h"
 #include <armadillo>
 #include <iostream>

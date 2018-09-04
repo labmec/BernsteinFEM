@@ -1,3 +1,10 @@
+/** mass-tri.cpp
+ * 
+ * This file makes a test for the computation
+ * of the finite element Mass Matrix
+ * for 2D-simplex elements using Bernstein polynomials
+ */
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES

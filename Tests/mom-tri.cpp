@@ -1,3 +1,13 @@
+/** mom-tri.cpp
+ * 
+ * This file makes tests for the computation
+ * of Moments of an 2D simplex element using
+ * Bernstein polynomials.
+ * 
+ * A Moment is the integral of a basis function
+ * (Bernstein polynomials) multiplied by a weight function.
+ */
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES

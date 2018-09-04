@@ -1,3 +1,10 @@
+/** el.cpp
+ * 
+ * This file make a test for the computation
+ * of the finite element matrix = Mass Matrix + Stiffness Matrix
+ * for 1D elements using Bernstein polynomials
+ */
+
 #include <iostream>
 
 #define USE_MATH_DEFINES

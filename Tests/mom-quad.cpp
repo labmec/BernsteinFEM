@@ -17,9 +17,9 @@ using namespace std;
 // modifying the function below, and uncommenting the code under
 // the "sets function values" section
 
-double f(double x)
+double f(double x, double y)
 {
-    return sin(M_PI * x);
+    return sin(M_PI * M_PI * x * y);
 }
 
 int main()
@@ -35,25 +35,31 @@ int main()
     double v3[2] = {1, 1};
     double v4[2] = {0, 1};
     mom_quad.setQuadrilateral(v1, v2, v3, v4);
-    // this last part is only necessary when computing from function definition
+    // you should set the quadrilateral before getting the integration points
 
     // sets function values
-    arma::vec Fval(q * q, arma::fill::ones);
+    arma::mat quadPoints = mom_quad.getIntegrationPoints();
+    arma::vec Fval(quadPoints.n_rows, arma::fill::ones);
 
-    // for (int i = 0; i < q * q; i++)
-    //     Fval(i) = f( (legendre_xi(q, i) + 1.0) * 0.5 );
+    for (int i = 0; i < Fval.n_rows; i++)
+        Fval(i) = f(quadPoints(i, 0), quadPoints(i, 1));
 
     mom_quad.setFunction(Fval);
 
     // computes moments
     mom_quad.compute_moments();
 
+    ofstream file;
+    file.open("results/mom_quad2.txt");
+
     // prints moments
-    cout << "Bernstein moments computed with the function sin(pi * x)" << endl
+    file << "Bernstein moments computed with the function sin(pi * x)" << endl
          << endl;
     for (int i = 0; i < n + 1; i++)
         for (int j = 0; j < n + 1; j++)
-            cout << "Bmoment[" << i << ", " << j << "] : " << mom_quad.get_bmoment(i, j, 0) << endl;
+            file << "Bmoment[" << i << ", " << j << "] : " << mom_quad.get_bmoment(i, j, 0) << endl;
+
+    file.close();
 
     return 0;
 }

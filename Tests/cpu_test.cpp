@@ -1,3 +1,10 @@
+/** cpu_test.cpp
+ *
+ * This file consists of a CPU time test for the
+ * finite element Stiffness Matrix computation
+ * in quadrilateral elements using Bernstein polynomials
+ */
+
 #include <iostream>
 #include <chrono>
 

@@ -1,3 +1,13 @@
+/** mom.cpp
+ * 
+ * This file makes a test for the computation
+ * of Moments in 1D elements using the Bernstein
+ * polynomials.
+ * 
+ * A Moment is the integral of a basis function
+ * (Bernstein polynomials) multiplied by a weight function.
+ */
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES
