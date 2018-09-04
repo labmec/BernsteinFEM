@@ -58,4 +58,4 @@ target_include_directories(QUAD_STIF_CPU_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS
 add_executable(QUAD_CONVERGENCE_TEST convergence_test.cpp)
 add_dependencies(QUAD_CONVERGENCE_TEST Deriv_lib)
 target_link_libraries(QUAD_CONVERGENCE_TEST Deriv_lib Quadra_lib Moments_lib)
-target_include_directories(QUAD_CONVERGENCE_TEST ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
+target_include_directories(QUAD_CONVERGENCE_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
