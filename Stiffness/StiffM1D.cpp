@@ -38,7 +38,7 @@ void BStiff1D::compute_matrix()
     compute_moments();
     compute_binomials();
 
-    double Const = 1. / BinomialMat(n - 1, n - 1);
+    double Const = 1. / BinomialMat(n - 1, n - 1) / pow(b - a, n);
     
     for (int i = 0; i < lenStiff - 1; i++)
     {
@@ -60,7 +60,7 @@ void BStiff1D::compute_matrix(arma::vec Fval)
     compute_matrix();
 }
 
-void BStiff1D::compute_matrix(double (*f)(double))
+void BStiff1D::compute_matrix(std::function<double (double)> f)
 {
     setFunction(f);
     compute_matrix();
