@@ -19,10 +19,10 @@ BMoment2DTri::BMoment2DTri()
               << "Enter a value for the quadrature order q:";
     std::cin >> q;
     std::cout << std::endl;
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
 
     quadraWN.set_size(q, 4);
@@ -41,10 +41,10 @@ BMoment2DTri::BMoment2DTri(int q, int n)
       vertices(3, 2, arma::fill::none),
       quadraWN(q, 4, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
@@ -62,10 +62,10 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
       vertices(3, 2, arma::fill::none),
       quadraWN(q, 4, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
@@ -84,10 +84,10 @@ BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array)
       vertices(3, 2, arma::fill::none),
       quadraWN(q, 4, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
@@ -106,10 +106,10 @@ BMoment2DTri::BMoment2DTri(int q, int n, int nb_Array, double T[][2])
       vertices(3, 2, arma::fill::none),
       quadraWN(q, 4, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;

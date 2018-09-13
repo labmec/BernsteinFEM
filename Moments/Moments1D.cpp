@@ -18,10 +18,10 @@ BMoment1D::BMoment1D()
          << "Enter a value for the quadrature order q:";
     cin >> q;
     cout << endl;
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
 
     int m = MAX(n, q - 1);
@@ -36,10 +36,10 @@ BMoment1D::BMoment1D(int q, int n)
     : Bmoment(MAX(n + 1, q), 1, arma::fill::zeros), Cval(q, 1, arma::fill::zeros),
       quadraWN(q + 1, 2, arma::fill::zeros)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The number of quadrature points is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
@@ -55,10 +55,10 @@ BMoment1D::BMoment1D(int q, int n, int nb_Array)
       Cval(q, nb_Array, arma::fill::zeros),
       quadraWN(q + 1, 2, arma::fill::zeros)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The number of quadrature points is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;

@@ -17,10 +17,10 @@ BMoment2DQuad::BMoment2DQuad()
          << "Enter a value for the quadrature order q:";
     cin >> q;
     cout << endl;
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
 
     quadraWN.set_size(q, 2);
@@ -39,10 +39,10 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
@@ -60,10 +60,10 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, int m, int nb_Array)
       quadraWN(q, 2, arma::fill::none),
       vertices(4, 2, arma::fill::none)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
