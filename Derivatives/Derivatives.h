@@ -27,12 +27,15 @@ public:
 
   // returns the length of the square Matrix
   int Len() { return len; }
-  
+
   // returns a reference to the Matrix
   const arma::mat &getMatrix() { return Matrix; }
 
   // returns the Matrix[i][j] value
   double getMatrixValue(int i, int j) { return Matrix(i, j); }
+
+  // zeroes the Matrix
+  void Zero() { Matrix.zeros(); }
 
   // returns the integration points to the quadrilateral
   arma::mat getIntegrationPoints();
@@ -98,6 +101,14 @@ class StiffnessMatrix : public QuadDerivative
 
 public:
   StiffnessMatrix(int q, int n);
+
+  void Zero()
+  {
+    Xi_Xi.Zero();
+    Xi_Eta.Zero();
+    Eta_Eta.Zero();
+    QuadDerivative::Zero();
+  }
 
   void setFunction(const arma::vec &Fval);
 
