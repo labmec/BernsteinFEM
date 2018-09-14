@@ -3,7 +3,7 @@
 #ifdef LEN
 #undef LEN
 #endif
-#define LEN(n) ((n+1) * (n+1)) // (((n+1) * (n+2)) / 2)
+#define LEN(n) ((n + 1) * (n + 1)) // (((n+1) * (n+2)) / 2)
 #ifdef LENB
 #undef LENB
 #endif
@@ -42,26 +42,28 @@ BMass2DTri::~BMass2DTri()
 void BMass2DTri::compute_binomials()
 {
     for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat(i, 0) += 1;
+        BinomialMat.at(i, 0) += 1;
 
     for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat(0, j) += 1;
+        BinomialMat.at(0, j) += 1;
 
     for (int k = 1; k < lenBinomialMat; k++)
     {
         for (int l = 1; l < lenBinomialMat; l++)
         {
-            BinomialMat(k, l) += BinomialMat(k, l - 1) + BinomialMat(k - 1, l);
+            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
         }
     }
 }
 
+// this method was based on the code by M. Ainsworth
+// G. Andriamro and O. Davydov
 void BMass2DTri::compute_matrix()
 {
     compute_moments();
     compute_binomials();
 
-    double Const = 1.0 / BinomialMat(n, n);
+    double Const = 1.0 / BinomialMat.at(n, n);
 
     int M = MAX(2 * n, q - 1);
 
@@ -72,7 +74,7 @@ void BMass2DTri::compute_matrix()
         for (int eta0 = n; eta0 >= 0; eta0--)
         {
             int iMuEta0 = BMoment2DTri::position(mu0, eta0, M); // the Bmoments are indexed w.r.t position2d2(. , MAX(2n,q-1) )
-            double w1 = Const * BinomialMat(mu0, eta0);
+            double w1 = Const * BinomialMat.at(mu0, eta0);
 
             int mu2 = 0;
             for (int mu1 = n - mu0; mu1 >= 0; mu1--, mu2++, iMu++)
@@ -80,11 +82,11 @@ void BMass2DTri::compute_matrix()
                 int eta2 = 0;
                 for (int eta1 = n - eta0; eta1 >= 0; eta1--, eta2++, iEta++)
                 {
-                    double w2 = w1 * BinomialMat(mu1, eta1) * BinomialMat(mu2, eta2);
+                    double w2 = w1 * BinomialMat.at(mu1, eta1) * BinomialMat.at(mu2, eta2);
 
                     int iMuEta = iMuEta0 + mu1 + eta1;
 
-                    Matrix(iMu, iEta) = w2 * get_bmoment(iMuEta);
+                    Matrix.at(iMu, iEta) = w2 * get_bmoment(iMuEta);
                 }
                 if (mu1 > 0)
                     iEta -= eta2;
@@ -122,13 +124,13 @@ void BMass2DTri::compute_matrix()
 
 } */
 
-void BMass2DTri::compute_matrix(std::function<double (double, double)> f)
+void BMass2DTri::compute_matrix(std::function<double(double, double)> f)
 {
     setFunction(f);
     compute_matrix();
 }
 
-void BMass2DTri::compute_matrix(arma::vec Fval)
+void BMass2DTri::compute_matrix(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_matrix();

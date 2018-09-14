@@ -211,7 +211,7 @@ void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], do
 }
  */
 // set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
-void BMoment2DTri::setFunction(arma::vec Fval)
+void BMoment2DTri::setFunction(const arma::vec &Fval)
 {
     for (int i = 0; i < q * q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -220,7 +220,7 @@ void BMoment2DTri::setFunction(arma::vec Fval)
     fValSet = true;
 }
 // Fval must have at least q X nb_Array elements
-void BMoment2DTri::setFunction(arma::mat Fval)
+void BMoment2DTri::setFunction(const arma::mat &Fval)
 {
     for (int i = 0; i < q * q; i++)
         for (int el = 0; el < nb_Array; el++)
@@ -230,7 +230,7 @@ void BMoment2DTri::setFunction(arma::mat Fval)
 }
 
 // set the function definition for computations
-void BMoment2DTri::setFunction(std::function<double (double, double)> function)
+void BMoment2DTri::setFunction(std::function<double(double, double)> function)
 {
     f = function;
     fDefSet = true;
@@ -247,7 +247,8 @@ void BMoment2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
     vertices(2, 1) = v3[1];
 }
 
-void BMoment2DTri::setTriangle(arma::mat vertices) {
+void BMoment2DTri::setTriangle(const arma::mat &vertices)
+{
     this->vertices = vertices;
 }
 
@@ -284,7 +285,7 @@ arma::mat BMoment2DTri::getIntegrationPoints()
             b2 = quadraWN(j, 3) * (1 - b1);
             b3 = 1 - b1 - b2;
             bary2cart2d(b1, b2, b3, vertices.colptr(0), vertices.colptr(1), vertices.colptr(2), v); // stores b1*v1+b2*v2+b3*v3 into v;
-            int index_ij = position(i, j, q-1);
+            int index_ij = position(i, j, q - 1);
             points(index_ij, 0) = v[0];
             points(index_ij, 1) = v[1];
         }
@@ -292,7 +293,6 @@ arma::mat BMoment2DTri::getIntegrationPoints()
 
     return points;
 }
-
 
 //compute the b-moments
 void BMoment2DTri::compute_moments()
@@ -310,9 +310,9 @@ void BMoment2DTri::compute_moments()
         // compute the function definition into the function values vector
         if (functVal == 0)
             computeFunctionDef();
-            
+
         double xi, wgt, s, r, B;
-        double scalingConst =  2 * Area2d(vertices); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
+        double scalingConst = 2 * Area2d(vertices); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
         {
@@ -329,7 +329,7 @@ void BMoment2DTri::compute_moments()
                 {
                     int index_a1j = position(a1, j, m);
 
-                    int index_ij = position(i, j, q-1);
+                    int index_ij = position(i, j, q - 1);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
@@ -368,20 +368,20 @@ void BMoment2DTri::compute_moments()
     }
 }
 
-void BMoment2DTri::compute_moments(std::function<double (double, double)> f)
+void BMoment2DTri::compute_moments(std::function<double(double, double)> f)
 {
     setFunction(f);
     compute_moments();
 }
 
-void BMoment2DTri::compute_moments(arma::vec Fval)
+void BMoment2DTri::compute_moments(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_moments();
 }
 
 /* modified from 'bbfem.cpp' to fit into this implementation */
-void BMoment2DTri::transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, arma::mat normalMat)
+void BMoment2DTri::transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, const arma::mat &normalMat)
 {
     int m, mm;
 
@@ -394,31 +394,31 @@ void BMoment2DTri::transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, arma::mat
     {
         arma::mat Mat(2, 2, arma::fill::none);
 
-        Mat(0, 0) = Bmoment(mu, 0); // Mat is used to store Bmoment[mu] entries
-        Mat(0, 1) = Mat(1, 0) = Bmoment(mu, 1);
-        Mat(1, 1) = Bmoment(mu, 2);
+        Mat.at(0, 0) = Bmoment.at(mu, 0); // Mat is used to store Bmoment[mu] entries
+        Mat.at(0, 1) = Mat.at(1, 0) = Bmoment.at(mu, 1);
+        Mat.at(1, 1) = Bmoment.at(mu, 2);
 
         double matVectMult[2];
 
-        matVectMult[0] = Mat(0, 0) * normalMat(0, 0) + Mat(0, 1) * normalMat(0, 1);
-        matVectMult[1] = Mat(1, 0) * normalMat(0, 0) + Mat(1, 1) * normalMat(0, 1);
+        matVectMult[0] = Mat.at(0, 0) * normalMat.at(0, 0) + Mat.at(0, 1) * normalMat.at(0, 1);
+        matVectMult[1] = Mat.at(1, 0) * normalMat.at(0, 0) + Mat.at(1, 1) * normalMat.at(0, 1);
 
-        Bmomentab->Bmoment(mu, 0) = normalMat(0, 0) * matVectMult[0] + normalMat(0, 1) * matVectMult[1]; //alfa=[1,0,0], beta=[1,0,0]
-        Bmomentab->Bmoment(mu, 1) = normalMat(1, 0) * matVectMult[0] + normalMat(1, 1) * matVectMult[1]; //alfa=[0,1,0], beta=[1,0,0]
-        Bmomentab->Bmoment(mu, 2) = normalMat(2, 0) * matVectMult[0] + normalMat(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[1,0,0]
+        Bmomentab->Bmoment.at(mu, 0) = normalMat.at(0, 0) * matVectMult[0] + normalMat.at(0, 1) * matVectMult[1]; //alfa=[1,0,0], beta=[1,0,0]
+        Bmomentab->Bmoment.at(mu, 1) = normalMat.at(1, 0) * matVectMult[0] + normalMat.at(1, 1) * matVectMult[1]; //alfa=[0,1,0], beta=[1,0,0]
+        Bmomentab->Bmoment.at(mu, 2) = normalMat.at(2, 0) * matVectMult[0] + normalMat.at(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[1,0,0]
 
-        matVectMult[0] = Mat(0, 0) * normalMat(1, 0) + Mat(0, 1) * normalMat(1, 1);
-        matVectMult[1] = Mat(1, 0) * normalMat(1, 0) + Mat(1, 1) * normalMat(1, 1);
+        matVectMult[0] = Mat.at(0, 0) * normalMat.at(1, 0) + Mat.at(0, 1) * normalMat.at(1, 1);
+        matVectMult[1] = Mat.at(1, 0) * normalMat.at(1, 0) + Mat.at(1, 1) * normalMat.at(1, 1);
 
-        //Bmomentab->Bmoment(mu, 1) = normalMat(0, 0)*matVectMult[0] + normalMat(0, 1)*matVectMult[1]; //alfa=[1,0,0], beta=[0,1,0] // redundancy
-        Bmomentab->Bmoment(mu, 3) = normalMat(1, 0) * matVectMult[0] + normalMat(1, 1) * matVectMult[1]; //alfa=[0,1,0], beta=[0,1,0]
-        Bmomentab->Bmoment(mu, 4) = normalMat(2, 0) * matVectMult[0] + normalMat(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[0,1,0]
+        //Bmomentab->Bmoment.at(mu, 1) = normalMat.at(0, 0)*matVectMult[0] + normalMat.at(0, 1)*matVectMult[1]; //alfa=[1,0,0], beta=[0,1,0] // redundancy
+        Bmomentab->Bmoment.at(mu, 3) = normalMat.at(1, 0) * matVectMult[0] + normalMat.at(1, 1) * matVectMult[1]; //alfa=[0,1,0], beta=[0,1,0]
+        Bmomentab->Bmoment.at(mu, 4) = normalMat.at(2, 0) * matVectMult[0] + normalMat.at(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[0,1,0]
 
-        matVectMult[0] = Mat(0, 0) * normalMat(2, 0) + Mat(0, 1) * normalMat(2, 1);
-        matVectMult[1] = Mat(1, 0) * normalMat(2, 0) + Mat(1, 1) * normalMat(2, 1);
+        matVectMult[0] = Mat.at(0, 0) * normalMat.at(2, 0) + Mat.at(0, 1) * normalMat.at(2, 1);
+        matVectMult[1] = Mat.at(1, 0) * normalMat.at(2, 0) + Mat.at(1, 1) * normalMat.at(2, 1);
 
-        //Bmomentab->Bmoment(mu, 2) = normalMat(0, 0)*matVectMult[0] + normalMat(0, 1)*matVectMult[1]; //alfa=[1,0,0], beta=[0,0,1] // redundancy
-        //Bmomentab->Bmoment(mu. 4) = normalMat(1, 0)*matVectMult[0] + normalMat(1, 1)*matVectMult[1]; //alfa=[0,1,0], beta=[0,0,1]
-        Bmomentab->Bmoment(mu, 5) = normalMat(2, 0) * matVectMult[0] + normalMat(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[0,0,1]
+        //Bmomentab->Bmoment.at(mu, 2) = normalMat.at(0, 0)*matVectMult[0] + normalMat.at(0, 1)*matVectMult[1]; //alfa=[1,0,0], beta=[0,0,1] // redundancy
+        //Bmomentab->Bmoment.at(mu. 4) = normalMat.at(1, 0)*matVectMult[0] + normalMat.at(1, 1)*matVectMult[1]; //alfa=[0,1,0], beta=[0,0,1]
+        Bmomentab->Bmoment.at(mu, 5) = normalMat.at(2, 0) * matVectMult[0] + normalMat.at(2, 1) * matVectMult[1]; //alfa=[0,0,1], beta=[0,0,1]
     }
 }

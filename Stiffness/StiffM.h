@@ -43,9 +43,9 @@ class BStiff1D : public BMoment1D
 
     void compute_matrix();
 
-    void compute_matrix(arma::vec Fval);
+    void compute_matrix(const arma::vec &Fval);
 
-    void compute_matrix(double (*f)(double));
+    void compute_matrix(std::function<double(double)> f);
 };
 
 /*****************************************************************************
@@ -97,19 +97,21 @@ class BStiff2DTri : public BMoment2DTri
 
     void compute_matrix(arma::vec Fval);
 
-    void compute_matrix(double (*f)(double, double));
+    void compute_matrix(std::function<double(double, double)> f);
 };
 
 /*****************************************************************************
  * Bernstein Stiffness Matrix for quadrilateral elements (2-dimensional)     *
  *****************************************************************************/
-class BStiff2DQuad : public BMoment2DQuad
+class BStiff2DQuad
 {
     int q;                          // number of quadrature points ( recommended: 2*(n+1) )
     int n;                          // polynomial order
     int lenStiff;                   // length of the stiffness matrix
     arma::mat Matrix;               // stiffness matrix
     int lenBinomialMat;             // length of the binomial Pascal matrix
+    BMoment2DQuad Moments1;         // moments for computation of the stiffness matrix
+    BMoment2DQuad Moments2;         // moments for computation of the stiffness matrix
     arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // alloc matrix linearly
@@ -137,11 +139,17 @@ class BStiff2DQuad : public BMoment2DQuad
         return Matrix(i, j);
     }
 
+    void setFunction(arma::vec Fval);
+
+    void setFunction(arma::mat Fval);
+
+    void setFunction(std::function<double(double, double)> f);
+
     void compute_matrix();
 
     void compute_matrix(arma::vec Fval);
 
-    void compute_matrix(double (*f)(double, double));
+    void compute_matrix(std::function<double(double, double)> f);
 };
 
 class BStiff3D : public BMoment3D

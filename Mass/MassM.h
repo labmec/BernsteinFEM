@@ -27,12 +27,14 @@ class BMass1D : public BMoment1D
 	// return the mass matrix values at indexes i and j
 	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
+	const arma::mat &getMatrix() { return Matrix; }
+
 	// compute the mass matrix
 	void compute_matrix();
 
 	// sets the function definition or value before computing the mass matrix
-	void compute_matrix(std::function<double (double)> f);
-	void compute_matrix(arma::vec Fval);
+	void compute_matrix(std::function<double(double)> f);
+	void compute_matrix(const arma::vec &Fval);
 };
 
 /*****************************************************************************
@@ -48,9 +50,9 @@ class BMass2DTri : public BMoment2DTri
 	arma::Mat<int64_t> BinomialMat; // computes a Pascal Matrix with size lenBinomialMat
 
 	//alloc matrix linearly
-	arma::mat create_matrix();
+	__attribute_deprecated__ arma::mat create_matrix();
 
-	void delete_matrix(arma::mat matrix);
+	__attribute_deprecated__ void delete_matrix(arma::mat matrix);
 
 	// alloc binomial matrix
 	int **create_binomialMat();
@@ -69,12 +71,14 @@ class BMass2DTri : public BMoment2DTri
 
 	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
+	const arma::mat &getMatrx() { return Matrix; }
+
 	// compute the mass matrix
 	void compute_matrix();
 
 	// sets the function definition or value before computing the mass matrix
-	void compute_matrix(std::function<double (double, double)> f);
-	void compute_matrix(arma::vec Fval);
+	void compute_matrix(std::function<double(double, double)> f);
+	void compute_matrix(const arma::vec &Fval);
 };
 
 /*****************************************************************************
@@ -101,11 +105,13 @@ class BMass2DQuad : public BMoment2DQuad
 
 	double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
+	const arma::mat &getMatrix() { return Matrix; }
+
 	void compute_matrix();
 
-	void compute_matrix(std::function<double (double, double)> f);
+	void compute_matrix(std::function<double(double, double)> f);
 
-	void compute_matrix(arma::vec Fval);
+	void compute_matrix(const arma::vec &Fval);
 };
 
 class BMass3D : public BMoment3D

@@ -19,7 +19,7 @@ class BMoment1D
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  std::function<double (double)> f = 0x0;
+  std::function<double(double)> f;
 
   // assign the quadrature points and weights
   void assignQuadra();
@@ -76,13 +76,13 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function values for computation
-  void setFunction(arma::vec Fval);
+  void setFunction(const arma::vec &Fval);
 
   // set the function values for computation when you have more than one dimension
-  void setFunction(arma::mat Fval);
+  void setFunction(const arma::mat &Fval);
 
   // set the function definition for computation
-  void setFunction(std::function<double (double)> f);
+  void setFunction(std::function<double(double)> f);
 
   void setInterval(double a, double b);
 
@@ -90,10 +90,10 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(std::function<double (double)> f);
+  void compute_moments(std::function<double(double)> f);
 
   // compute the b-moments for the Fval function values
-  void compute_moments(arma::vec Fval);
+  void compute_moments(const arma::vec &Fval);
 };
 
 /*****************************************************************************
@@ -110,7 +110,7 @@ class BMoment2DTri
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  std::function<double (double, double)> f;
+  std::function<double(double, double)> f;
 
   // map to obtain Gauss-Jacobi rule on unit interval
   void assignQuadra();
@@ -131,7 +131,7 @@ protected:
   arma::mat quadraWN; // quadrature points and weights
 
   // routine used to pre-multiply normals with the Bmoments
-  void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, arma::mat normalMat);
+  void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, const arma::mat &normalMat);
 
 public:
   // default constructor
@@ -163,7 +163,7 @@ public:
   }
 
   // computes area of triangle defined by vertices
-  static double Area2d(arma::mat vertices)
+  static double Area2d(const arma::mat &vertices)
   {
     double x1 = vertices(0, 0);
     double y1 = vertices(0, 1);
@@ -180,7 +180,7 @@ public:
   {
     this->nb_Array = nb_Array;
     Bmoment.resize(lenMoments, nb_Array);
-    CVal.resize(q, nb_Array);
+    CVal.resize(MAX(n + 1, q) * MAX(n + 1, q), nb_Array);
   }
 
   int getNbArray() { return nb_Array; }
@@ -210,15 +210,15 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunction(arma::vec Fval);
-  void setFunction(arma::mat Fval);
+  void setFunction(const arma::vec &Fval);
+  void setFunction(const arma::mat &Fval);
 
   // set the function that multiplies the B-polynomial by definition
-  void setFunction(std::function<double (double, double)> f);
+  void setFunction(std::function<double(double, double)> f);
 
   // set the element triangle vertices
   void setTriangle(double v1[2], double v2[2], double v3[2]);
-  void setTriangle(arma::mat vertices);
+  void setTriangle(const arma::mat &vertices);
 
   // computes the function definition into the function values vector
   void computeFunctionDef();
@@ -227,10 +227,10 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(std::function<double (double, double)> f);
+  void compute_moments(std::function<double(double, double)> f);
 
   // compute the b-moments for the Fval function values
-  void compute_moments(arma::vec Fval);
+  void compute_moments(const arma::vec &Fval);
 };
 
 /*****************************************************************************
@@ -251,7 +251,7 @@ class BMoment2DQuad
   bool fDefSet = false; // is true if the function definition is set
 
   // function definition for the computation of the b-moments
-  std::function<double (double, double)> f;
+  std::function<double(double, double)> f;
 
   // methods
 
@@ -313,16 +313,16 @@ public:
   void useFunctionValue() { functVal = 1; }
 
   // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunction(arma::vec Fval);
-  void setFunction(arma::mat Fval);
+  void setFunction(const arma::vec &Fval);
+  void setFunction(const arma::mat &Fval);
 
   // set the function that multiplies the B-polynomial
-  void setFunction(std::function<double (double, double)> f);
+  void setFunction(std::function<double(double, double)> f);
 
   // set the element quadrilateral vertices
   void setQuadrilateral(double v1[2], double v2[2], double v3[2], double v4[2]);
-  void setQuadrilateral(arma::vec v1, arma::vec v2, arma::vec v3, arma::vec v4);
-  void setQuadrilateral(arma::mat vertices);
+  void setQuadrilateral(const arma::vec &v1, const arma::vec &v2, const arma::vec &v3, const arma::vec &v4);
+  void setQuadrilateral(const arma::mat &vertices);
 
   // Returns the nodal shape function of the elements quadrilateral, and the jacobian determinant
   // the points are stored in the parameter X and the jacobian determinant in dX
@@ -334,10 +334,10 @@ public:
   void compute_moments();
 
   // compute the b-moments for the specified f function
-  void compute_moments(std::function<double (double, double)> f);
+  void compute_moments(std::function<double(double, double)> f);
 
   // compute the b-moments for the Fval function values
-  void compute_moments(arma::vec Fval);
+  void compute_moments(const arma::vec &Fval);
 };
 
 // Future class definition

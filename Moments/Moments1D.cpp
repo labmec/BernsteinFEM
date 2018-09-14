@@ -90,28 +90,28 @@ void BMoment1D::loadFunctionDef()
     for (int i = 0; i < q; i++)
     {
         for (int el = 0; el < nb_Array; el++)
-            Cval(i, el) = f(quadraWN(i, 0));
+            Cval.at(i, el) = f(quadraWN(i, 0));
     }
 
     fValSet = true;
 }
 
 // set the function values for computation (Fval must have at least q * nb_Array elements)
-void BMoment1D::setFunction(arma::vec Fval)
+void BMoment1D::setFunction(const arma::vec &Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval(i, el) = Fval(i + el * q);
+            Cval.at(i, el) = Fval.at(i + el * q);
 
     fValSet = true;
 }
 
 // Fval must have at least q X nb_Array elements
-void BMoment1D::setFunction(arma::mat Fval)
+void BMoment1D::setFunction(const arma::mat &Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval(i, el) = Fval(i, el);
+            Cval.at(i, el) = Fval.at(i, el);
 
     fValSet = true;
 }
@@ -136,7 +136,7 @@ arma::vec BMoment1D::getIntegrationPoints()
 
     for(int i = 0; i < q; i++)
     {
-        points(i) = (legendre_xi(q, i) + (a + 1)) * ((b - a) / 2.);
+        points.at(i) = (legendre_xi(q, i) + (a + 1)) * ((b - a) / 2.);
     }
 
     return points;
@@ -156,8 +156,8 @@ void BMoment1D::compute_moments()
     {
         for (int i = 0; i < q; i++)
         {
-            double xi = quadraWN(i, 1);
-            double omega = quadraWN(i, 0);
+            double xi = quadraWN.at(i, 1);
+            double omega = quadraWN.at(i, 0);
             double s = 1 - xi;
             double r = xi / s;
             double w = omega * pow(s, n);
@@ -167,7 +167,7 @@ void BMoment1D::compute_moments()
                 // with index alpha, evaluated at the i-th integration node
                 // times the i-th integration weight.
                 for (int el = 0; el < nb_Array; el++)
-                    Bmoment(alpha, el) += w * Cval(i, el);
+                    Bmoment.at(alpha, el) += w * Cval.at(i, el);
                 w *= r * ((n - alpha) / (1. + alpha)); // treats the recurrence relation
             }
         }
@@ -182,7 +182,7 @@ void BMoment1D::compute_moments(std::function<double (double)> f)
 }
 
 // compute the b-moments for the Fval function values
-void BMoment1D::compute_moments(arma::vec Fval)
+void BMoment1D::compute_moments(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_moments();
