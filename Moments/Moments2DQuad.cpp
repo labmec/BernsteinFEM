@@ -239,41 +239,77 @@ void BMoment2DQuad::compute_moments()
         if (functVal == 0)
             computeFunctionDef();
 
-        double xi1, xi2, omega1, omega2, s1, s2, r1, r2, w1, w2;
-        int i, j, a1, a2, index_ij, index_a1a2;
+        int max_nq = MAX(n, q - 1);
+        int max_nm = MAX(n, m);
+        arma::mat Bmoment_inter((max_nq + 1) * (max_nq + 1), 1, arma::fill::zeros);
 
-        for (i = 0; i < q; i++)
+        // convert first index (l=2)
+        for (int i = 0; i < q; i++)
         {
-            xi1 = quadraWN.at(i, 1);    //quadrature abcissa i
-            omega1 = quadraWN.at(i, 0); //quadrature weight i
-            s1 = 1.0 - xi1;
-            r1 = xi1 / s1; //recurrence relation 1st coefficient
+            double xi = quadraWN(i, 1);
+            double wgt = quadraWN(i, 0);
 
-            w1 = omega1 * pow(s1, n);
-            for (a1 = 0; a1 <= n; a1++)
+            double s = 1 - xi;
+            double r = xi / s;
+
+            double B = wgt * pow(s, n);
+            for (int a1 = 0; a1 <= n; a1++)
             {
-                for (j = 0; j < q; j++)
+                for (int j = 0; j < q; j++)
                 {
-                    xi2 = quadraWN.at(j, 1);    //quadrature abcissa j
-                    omega2 = quadraWN.at(j, 0); //quadrature weight j
-                    s2 = 1.0 - xi2;
-                    r2 = xi2 / s2; //recurrence relation 2nd coefficient
+                    int index_a1j = position(a1, j, max_nq);
 
-                    index_ij = position(i, j, q - 1);
+                    int index_ij = position(i, j, q - 1);
 
-                    w2 = omega2 * pow(s2, n);
-                    for (a2 = 0; a2 <= m; a2++)
-                    {
-                        // here w2 equals to the weight j multiplied with the a2-th 1d bernstein polynomial evaluated at xi2
-                        index_a1a2 = position(a1, a2, MAX(n, m));
-                        for (int el = 0; el < nb_Array; el++)
-                            Bmoment.at(index_a1a2, el) += w1 * w2 * Cval.at(index_ij, el);
-                        w2 *= r2 * ((m - a2) / (1.0 + a2));
+                    for (int ell = 0; ell < nb_Array; ell++)
+                    try {
+                        Bmoment_inter(index_a1j, ell) += B * Cval(index_ij, ell);
+                    } catch (std::exception e) {
+                        std::cout << e.what() << std::endl;
+                        std::cout << "index_a1j = " << index_a1j << "MAX: " << Bmoment_inter.n_rows << std::endl;
+                        std::cout << "index_ij = " << index_ij << "MAX: " << Cval.n_rows << std::endl;
+                        std::terminate();
                     }
+                    
                 }
-                w1 *= r1 * ((n - a1) / (1.0 + a1));
+                B = B * r * (n - a1) / (1 + a1);
             }
         }
+
+        // convert second index (l=1)
+        for (int i = 0; i < q; i++)
+        {
+            double xi = quadraWN(i, 1);
+            double wgt = quadraWN(i, 0);
+
+            double s = 1 - xi;
+            double r = xi / s;
+
+            for (int a1 = 0; a1 <= n; a1++)
+            {
+                double B = wgt * pow(s, m);
+                for (int a2 = 0; a2 <= m; a2++)
+                {
+                    int index_a1a2 = position(a1, a2, max_nm);
+                    int index_a1i = position(a1, i, max_nq);
+
+                    for (int ell = 0; ell < nb_Array; ell++)
+                    {
+                        try {
+                            Bmoment(index_a1a2, 0) += B * Bmoment_inter(index_a1i, 0);
+                        } catch (std::exception e ) {
+                            std::cout << e.what() << std::endl;
+                            std::cout << "index_a1a2 = " << index_a1a2 << "MAX: " << Bmoment.n_rows << std::endl;
+                            std::cout << "index_a1i = " << index_a1i << "MAX: " << Bmoment_inter.n_rows << std::endl;
+                            std::terminate();
+                        }
+                    }
+                    
+                    B = B * r * (m - a2) / (1 + a2);
+                }
+            }
+        }
+
     }
 }
 
