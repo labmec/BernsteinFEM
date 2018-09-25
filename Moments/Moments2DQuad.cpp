@@ -242,6 +242,7 @@ void BMoment2DQuad::compute_moments()
         int max_nq = MAX(n, q - 1);
         int max_nm = MAX(n, m);
         arma::mat Bmoment_inter((max_nq + 1) * (max_nq + 1), 1, arma::fill::zeros);
+        Bmoment.zeros();
 
         // convert first index (l=2)
         for (int i = 0; i < q; i++)

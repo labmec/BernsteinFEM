@@ -306,6 +306,7 @@ void BMoment2DTri::compute_moments()
         int m = MAX(n, q - 1); // m will be used for indexing
 
         arma::mat Bmoment_inter((m + 1) * (m + 1), nb_Array, arma::fill::zeros);
+        Bmoment.zeros();
 
         // compute the function definition into the function values vector
         if (functVal == 0)

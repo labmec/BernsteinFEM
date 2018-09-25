@@ -154,6 +154,7 @@ void BMoment1D::compute_moments()
     }
     else
     {
+        Bmoment.zeros();
         for (int i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 1);
