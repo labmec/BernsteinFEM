@@ -59,19 +59,29 @@ public:
   virtual void compute_matrix() = 0;
 };
 
-class dXi_dXi : public QuadDerivative // does not inherit moment
+class dXi_dXi : private BMoment2DQuad, public QuadDerivative // does not inherit moment
 {
 public:
   dXi_dXi(int q, int n);
+
+  void setFunction(const arma::vec &Fval)
+  {
+    BMoment2DQuad::setFunction(Fval);
+  }
 
   // compute matrix coefficients
   void compute_matrix();
 };
 
-class dEta_dEta : public QuadDerivative // does not inherit moment
+class dEta_dEta : private BMoment2DQuad, public QuadDerivative // does not inherit moment
 {
 public:
   dEta_dEta(int q, int n);
+
+  void setFunction(const arma::vec &Fval)
+  {
+    BMoment2DQuad::setFunction(Fval);
+  }
 
   // compute matrix coefficients
   void compute_matrix();

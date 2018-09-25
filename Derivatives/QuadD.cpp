@@ -59,7 +59,7 @@ arma::mat QuadDerivative::getIntegrationPoints()
             points.at(i * q + j, 1) = (legendre_xi(q, j) + 1.0) * 0.5;
         }
     }
-    
+
     return points;
 }
 
@@ -89,7 +89,7 @@ void QuadDerivative::print(std::ostream &stream)
     for (int i = 0; i < (n + 1) * (n + 1); i++)
     {
         for (int j = 0; j < (n + 1) * (n + 1); j++)
-                stream << std::scientific << Matrix(i, j) << "\t";
+            stream << std::scientific << Matrix(i, j) << "\t";
         stream << "\n";
     }
 }
@@ -99,45 +99,12 @@ void QuadDerivative::print(std::ostream &stream)
  ****************************************/
 
 dXi_dXi::dXi_dXi(int q, int n)
-    : QuadDerivative(q, n) { }
+    : BMoment2DQuad(q, 2 * (n - 1), 2 * n),
+      QuadDerivative(q, n) {}
 
 void dXi_dXi::compute_matrix()
 {
-    // first we compute the integrals
-    int nXi = 2 * (n - 1);
-    int nEta = 2 * n;
-    Mat<double> moments(nXi + 1, nEta + 1, fill::zeros);
-
-    for (int iXi = 0; iXi < q; iXi++)
-    {
-        double xi = (legendre_xi(q, iXi) + 1.0) * 0.5; // the master element is [0, 1] X [0, 1]
-        double sXi = 1.0 - xi;
-        double rXi = xi / sXi;
-        double omegaXi = legendre_w(q, iXi) * 0.5;
-
-        double wXi = omegaXi * pow(sXi, nXi); // O(q * n)
-        for (int aXi = 0; aXi <= nXi; aXi++)
-        {
-            for (int iEta = 0; iEta < q; iEta++)
-            {
-                double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-                double sEta = 1.0 - eta;
-                double rEta = eta / sEta;
-                double omegaEta = legendre_w(q, iEta) * 0.5;
-
-                double wEta = omegaEta * pow(sEta, nEta); // O(q^2 * n^2)
-                for (int aEta = 0; aEta <= nEta; aEta++)
-                {
-                    double w = wXi * wEta * Fval.at(iXi * q + iEta);
-                    moments.at(aXi, aEta) += w;
-
-                    wEta *= rEta * (nEta - aEta) / (1.0 + aEta);
-                }
-            }
-            wXi *= rXi * (nXi - aXi) / (1.0 + aXi);
-        }
-    } // O(q^2 * n^2)
-
+    BMoment2DQuad::compute_moments();
 
     // test if the moments were calculated correctly
     // std::ofstream file;
@@ -146,6 +113,8 @@ void dXi_dXi::compute_matrix()
     // file.close();
 
     // then we arrange the terms
+
+    int n = QuadDerivative::n;
 
     double Const = n * n * (1.0 / (BinomialMat.at(n, n) * BinomialMat.at(n - 1, n - 1)));
 
@@ -159,7 +128,7 @@ void dXi_dXi::compute_matrix()
                 for (int b2 = 0; b2 <= n; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2, n - b2);
-                    double mom = w2 * moments.at(a1 + b1, a2 + b2);
+                    double mom = w2 * get_bmoment(a1 + b1, a2 + b2, 0);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
@@ -184,46 +153,16 @@ void dXi_dXi::compute_matrix()
  ******************************************/
 
 dEta_dEta::dEta_dEta(int q, int n)
-    : QuadDerivative(q, n) { }
+    : BMoment2DQuad(q, 2 * n, 2 * (n - 1)),
+      QuadDerivative(q, n) {}
 
 void dEta_dEta::compute_matrix()
 {
+    BMoment2DQuad::compute_moments();
     // dEta_dEta is basically the same as dXi_dXi, we could do it by transposing the FVal matrix
     // and then transposing the resulting matrix
 
-    // first we compute the integrals
-    int nXi = 2 * n;
-    int nEta = 2 * (n - 1);
-    Mat<double> moments(nXi + 1, nEta + 1, fill::zeros);
-
-    for (int iXi = 0; iXi < q; iXi++)
-    {
-        double xi = (legendre_xi(q, iXi) + 1.0) * 0.5; // the master element is [0, 1] X [0, 1]
-        double sXi = 1.0 - xi;
-        double rXi = xi / sXi;
-        double omegaXi = legendre_w(q, iXi) * 0.5;
-
-        double wXi = omegaXi * pow(sXi, nXi);
-        for (int aXi = 0; aXi <= nXi; aXi++)
-        {
-            for (int iEta = 0; iEta < q; iEta++)
-            {
-                double eta = (legendre_xi(q, iEta) + 1.0) * 0.5;
-                double sEta = 1.0 - eta;
-                double rEta = eta / sEta;
-                double omegaEta = legendre_w(q, iEta) * 0.5;
-
-                double wEta = omegaEta * pow(sEta, nEta);
-                for (int aEta = 0; aEta <= nEta; aEta++)
-                {
-                    moments.at(aXi, aEta) += wXi * wEta * Fval.at(iXi * q + iEta);
-
-                    wEta *= rEta * ((nEta - aEta) / (1.0 + aEta));
-                }
-            }
-            wXi *= rXi * ((nXi - aXi) / (1.0 + aXi));
-        }
-    } // O(q^2 * n^2)
+    int n = QuadDerivative::n;
 
     // test if the moments were calculated correctly
     // std::ofstream file;
@@ -245,7 +184,7 @@ void dEta_dEta::compute_matrix()
                 for (int b2 = 0; b2 < n; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2 - 1, n - b2 - 1);
-                    double mom = w2 * moments.at(a1 + b1, a2 + b2);
+                    double mom = w2 * get_bmoment(a1 + b1, a2 + b2, 0);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
@@ -271,11 +210,11 @@ void dEta_dEta::compute_matrix()
 
 dXi_dEta::dXi_dEta(int q, int n)
     : BMoment2DQuad(q, 2 * n - 1),
-      QuadDerivative(q, n) { }
+      QuadDerivative(q, n) {}
 
 void dXi_dEta::compute_matrix()
 {
-    compute_moments();
+    BMoment2DQuad::compute_moments();
 
     // test if the moments were calculated correctly
     // std::ofstream file;
@@ -381,7 +320,7 @@ arma::mat StiffnessMatrix::getIntegrationPoints()
             points.at(i * q + j, 1) = X[1];
         }
     }
-    
+
     return points;
 }
 
