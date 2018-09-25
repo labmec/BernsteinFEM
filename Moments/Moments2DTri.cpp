@@ -8,7 +8,7 @@
 #ifdef LEN
 #undef LEN
 #endif
-#define LEN(n, q) MAX(n + 1, q) * MAX(n + 1, q)
+#define LEN(n, q) (MAX(n + 1, q) * MAX(n + 1, q))
 
 BMoment2DTri::BMoment2DTri()
     : CVal(), Bmoment(), vertices(3, 2, arma::fill::none), quadraWN()
@@ -210,7 +210,7 @@ void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], do
     }
 }
  */
-// set the function value at quadrature points, as in Fval (Fval must have at least q * nb_Array elements)
+// set the function value at quadrature points, as in Fval (Fval must have at least q * q * nb_Array elements)
 void BMoment2DTri::setFunction(const arma::vec &Fval)
 {
     for (int i = 0; i < q * q; i++)
@@ -219,7 +219,7 @@ void BMoment2DTri::setFunction(const arma::vec &Fval)
 
     fValSet = true;
 }
-// Fval must have at least q X nb_Array elements
+// Fval must have at least q * q X nb_Array elements
 void BMoment2DTri::setFunction(const arma::mat &Fval)
 {
     for (int i = 0; i < q * q; i++)
@@ -273,7 +273,7 @@ void BMoment2DTri::computeFunctionDef()
 // points(i, 1) == y i-th coordinate
 arma::mat BMoment2DTri::getIntegrationPoints()
 {
-    arma::mat points(q * q, 2); // vector with q elements
+    arma::mat points(q * q * nb_Array, 2); // vector with q * q * nb_Array elements
     double b1, b2, b3;
 
     for (int i = 0; i < q; i++)
