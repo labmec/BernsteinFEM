@@ -35,6 +35,7 @@ BernsteinFEM.a: $(OBJECTS)
 clean:
 	rm -f $(OBJECTS)
 
+
 JacobiGaussNodes.o: Quadra/JacobiGaussNodes.cpp Quadra/JacobiGaussNodes.h
 	g++ $(OBJ) $(GFLAGS) Quadra/JacobiGaussNodes.cpp
 
@@ -46,6 +47,7 @@ Moments2DTri.o: Moments/Moments2DTri.cpp Moments/Moments.h
 
 Moments2DQuad.o: Moments/Moments2DQuad.cpp Moments/Moments.h
 	g++ $(OBJ) $(GFLAGS) $(INC_QUADRA) Moments/Moments2DQuad.cpp
+
 
 MassM1D.o: Mass/MassM1D.cpp Mass/MassM.h
 	g++ $(OBJ) $(GFLAGS) $(INC_MOM) Mass/MassM1D.cpp
