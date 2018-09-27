@@ -1,3 +1,13 @@
+/** mom.cpp
+ * 
+ * This file makes a test for the computation
+ * of Moments in 1D elements using the Bernstein
+ * polynomials.
+ * 
+ * A Moment is the integral of a basis function
+ * (Bernstein polynomials) multiplied by a weight function.
+ */
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES
@@ -6,14 +16,18 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#include <armadillo>
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
 using namespace std;
 
 // testing if BMoments is functioning correctly
+// you can change the function to use in the computations by
+// modifying the function below, and uncommenting the code under
+// the "sets function values" section
 
-double function(double x)
+double f(double x)
 {
     return sin(M_PI * x);
 }
@@ -33,12 +47,12 @@ int main()
 
     // sets function values
     {
-        double *Fval = new double[q];
+        arma::vec Fval(q, arma::fill::ones);
+
         for (int i = 0; i < q; i++)
-            Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 );
+            Fval(i) = f( (legendre_xi(q, i) + 1.0) * 0.5 );
 
         mom1d.setFunction(Fval);
-        delete Fval;
     }
 
     // computes moments

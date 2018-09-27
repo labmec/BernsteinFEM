@@ -10,6 +10,7 @@ using std::endl;
 
 // default constructor
 BMoment1D::BMoment1D()
+    : Bmoment(), Cval(), quadraWN()
 {
     cout << "Enter a value for the polynomial order n:";
     cin >> n;
@@ -17,92 +18,65 @@ BMoment1D::BMoment1D()
          << "Enter a value for the quadrature order q:";
     cin >> q;
     cout << endl;
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
         std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        throw std::bad_alloc();
     }
-
-    quadraWN = create_quadraWN();
-    assignQuadra();
 
     int m = MAX(n, q - 1);
     lenMoments = (m + 1);
 
-    Bmoment = create_Bmoment();
-    Cval = create_Cval();
+    Bmoment.zeros(lenMoments, 1);
+    Cval.zeros(q, 1);
 }
 
 // quadrature and polynomial order constructor
 BMoment1D::BMoment1D(int q, int n)
+    : Bmoment(MAX(n + 1, q), 1, arma::fill::zeros), Cval(q, 1, arma::fill::zeros),
+      quadraWN(q + 1, 2, arma::fill::zeros)
 {
-    if (q > 80)
+    if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
-        exit(EXIT_FAILURE);
+        std::cerr << "The number of quadrature points is too large.\n";
+        throw std::bad_alloc();
     }
     this->q = q;
     this->n = n;
 
-    quadraWN = create_quadraWN();
     assignQuadra();
 
     int m = MAX(n, q - 1);
     lenMoments = (m + 1);
+}
 
-    Bmoment = create_Bmoment();
-    Cval = create_Cval();
+BMoment1D::BMoment1D(int q, int n, int nb_Array)
+    : Bmoment(MAX(n + 1, q), nb_Array, arma::fill::zeros),
+      Cval(q, nb_Array, arma::fill::zeros),
+      quadraWN(q + 1, 2, arma::fill::zeros)
+{
+    if (q > MAX_QUADRA_ORDER)
+    {
+        std::cerr << "The number of quadrature points is too large.\n";
+        throw std::bad_alloc();
+    }
+    this->q = q;
+    this->n = n;
+
+    assignQuadra();
+
+    int m = MAX(n, q - 1);
+    lenMoments = (m + 1);
 }
 
 BMoment1D::~BMoment1D()
 {
-    delete_Bmoment(Bmoment);
-    delete_Bmoment(Cval);
-    delete_Bmoment(quadraWN);
-}
-
-// alloc Bmoment vector
-double **BMoment1D::create_Bmoment()
-{
-    double *aux = new double[lenMoments * nb_Array];
-    double **bmoment = new double *[lenMoments];
-
-    for (int i = 0; i < lenMoments; aux += nb_Array, i++)
-        bmoment[i] = aux;
-
-    return bmoment;
-}
-
-double **BMoment1D::create_Cval()
-{
-    int aux = lenMoments;
-    lenMoments = q;
-    double **p = create_Bmoment();
-    lenMoments = aux;
-    return p;
-}
-
-// free Bmoment vector memory
-void BMoment1D::delete_Bmoment(double **Bmoment)
-{
-    delete Bmoment[0];
-    delete Bmoment;
-}
-
-// alloc memory for the quadrature points and weights
-double **BMoment1D::create_quadraWN()
-{
-    double *aux = new double[2 * (q + 1)];
-    double **quadraWN = new double *[2];
-    quadraWN[0] = aux;
-    quadraWN[1] = aux + (q + 1);
-    return quadraWN;
 }
 
 void BMoment1D::assignQuadra()
 {
-    double *x = quadraWN[1];
-    double *w = quadraWN[0];
+    double *x = quadraWN.colptr(1);
+    double *w = quadraWN.colptr(0);
 
     for (int k = 0; k < q; k++)
     {
@@ -113,45 +87,37 @@ void BMoment1D::assignQuadra()
 
 void BMoment1D::loadFunctionDef()
 {
-    if (nb_Array > 1)
+    for (int i = 0; i < q; i++)
     {
-        std::cerr << "Function definition may be used only scalar-valued" << endl;
-        nb_Array = 1;
-    }
-    double *aux = new double[q * nb_Array];
-    Cval = new double *[q];
-
-    for (int i = 0; i < q; aux += nb_Array, i++)
-    {
-        Cval[i] = aux;
         for (int el = 0; el < nb_Array; el++)
-            Cval[i][el] = (*f)(quadraWN[0][i]);
+            Cval.at(i, el) = f(quadraWN(i, 0));
     }
 
     fValSet = true;
 }
 
 // set the function values for computation (Fval must have at least q * nb_Array elements)
-void BMoment1D::setFunction(double *Fval)
+void BMoment1D::setFunction(const arma::vec &Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval[i][el] = Fval[i + el * q];
+            Cval.at(i, el) = Fval.at(i + el * q);
 
     fValSet = true;
 }
+
 // Fval must have at least q X nb_Array elements
-void BMoment1D::setFunction(double **Fval)
+void BMoment1D::setFunction(const arma::mat &Fval)
 {
     for (int i = 0; i < q; i++)
         for (int el = 0; el < nb_Array; el++)
-            Cval[i][el] = Fval[i][el];
+            Cval.at(i, el) = Fval.at(i, el);
 
     fValSet = true;
 }
 
 // set the function definition for computation
-void BMoment1D::setFunction(double (*function)(double))
+void BMoment1D::setFunction(std::function<double (double)> function)
 {
     f = function;
     fDefSet = true;
@@ -161,6 +127,19 @@ void BMoment1D::setInterval(double a, double b)
 {
     this->a = a;
     this->b = b;
+}
+
+// returns the vector with the integration points over the object's element, following the moments organization
+arma::vec BMoment1D::getIntegrationPoints()
+{
+    arma::vec points(this->q); // vector with q elements
+
+    for(int i = 0; i < q; i++)
+    {
+        points.at(i) = (legendre_xi(q, i) + (a + 1)) * ((b - a) / 2.);
+    }
+
+    return points;
 }
 
 // compute the B-moments using the values already assigned in the object
@@ -175,26 +154,21 @@ void BMoment1D::compute_moments()
     }
     else
     {
-        int i, alpha;
-        double xi, omega, s, r, w;
-
-        for (i = 0; i <= n; Bmoment[i][0] = 0, i++)
-            ; // sets Bmoment to 0 in all entries
-
-        for (i = 0; i < q; i++)
+        Bmoment.zeros();
+        for (int i = 0; i < q; i++)
         {
-            xi = quadraWN[1][i];
-            omega = quadraWN[0][i];
-            s = 1 - xi;
-            r = xi / s;
-            w = omega * pow(s, n);
-            for (alpha = 0; alpha <= n; alpha++)
+            double xi = quadraWN.at(i, 1);
+            double omega = quadraWN.at(i, 0);
+            double s = 1 - xi;
+            double r = xi / s;
+            double w = omega * pow(s, n);
+            for (int alpha = 0; alpha <= n; alpha++)
             {
                 // here w equals the Bernstein polynomial of order n,
                 // with index alpha, evaluated at the i-th integration node
                 // times the i-th integration weight.
                 for (int el = 0; el < nb_Array; el++)
-                    Bmoment[alpha][el] += w * Cval[i][el];
+                    Bmoment.at(alpha, el) += w * Cval.at(i, el);
                 w *= r * ((n - alpha) / (1. + alpha)); // treats the recurrence relation
             }
         }
@@ -202,14 +176,14 @@ void BMoment1D::compute_moments()
 }
 
 // compute the b-moments for the specified f function
-void BMoment1D::compute_moments(double (*f)(double))
+void BMoment1D::compute_moments(std::function<double (double)> f)
 {
     setFunction(f);
     compute_moments();
 }
 
 // compute the b-moments for the Fval function values
-void BMoment1D::compute_moments(double *Fval)
+void BMoment1D::compute_moments(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_moments();

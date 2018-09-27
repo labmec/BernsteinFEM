@@ -3,49 +3,24 @@
 #include "Elem.h"
 #include "JacobiGaussNodes.h"
 
-BElement2DTri::BElement2DTri(int q, int n) :
-    MassMat(q, n), StiffMat(q, n), LoadVec(q, n)
+BElement2DTri::BElement2DTri(int q, int n)
+    : MassMat(q, n), StiffMat(q, n), LoadVec(q, n),
+      ElMat((n + 1) * (n + 1), (n + 1) * (n + 1), arma::fill::none),
+      BBVector((n + 1) * (n + 1), arma::fill::none),
+      QuadVector(q * q, arma::fill::zeros)
 {
     this->q = q;
     this->n = n;
 
     //length = ((n + 1) * (n + 2)) / 2;
     length = (n + 1) * (n + 1); // accounts for positioning
-
-    QuadVector = new double[q * q];
-    BBVector = new double[length];
-    MassFval = new double[length];
-    StiffFval = new double[length];
-
-    ElMat = create_el_mat();
 }
 
 BElement2DTri::~BElement2DTri()
 {
-    delete BBVector;
-    delete QuadVector;
-    delete MassFval;
-    //delete ConvecFval;
-    delete StiffFval;
-    delete_el_mat(ElMat);
 }
 
-double **BElement2DTri::create_el_mat()
-{
-    double *aux = new double[length * length];
-    double **mat = new double *[length];
-    for (int i = 0; i < length; aux += length, i++)
-        mat[i] = aux;
-    return mat;
-}
-
-void BElement2DTri::delete_el_mat(double **ElMat)
-{
-    delete ElMat[0];
-    delete ElMat;
-}
-
-void BElement2DTri::setTriangle (double v1[2], double v2[2], double v3[2])
+void BElement2DTri::setTriangle(double v1[2], double v2[2], double v3[2])
 {
     MassMat.setTriangle(v1, v2, v3);
     //ConvecMat.setTriangle(v1, v2, v3);
@@ -53,12 +28,10 @@ void BElement2DTri::setTriangle (double v1[2], double v2[2], double v3[2])
     LoadVec.setTriangle(v1, v2, v3);
 }
 
-double *BElement2DTri::evaluate()
+arma::vec BElement2DTri::evaluate()
 {
     int Length = ((n + 1) * (n + 2)) / 2;
-    double *QuadInter = new double[q * q];
-    for (int i = 0; i < q; i++)
-        QuadVector[i] = QuadInter[i] = 0.0;
+    arma::vec QuadInter(q * q, arma::fill::zeros);
 
     // convert first index
     for (int i = 0; i < q; i++)
@@ -72,7 +45,7 @@ double *BElement2DTri::evaluate()
             double w = pow(s, n - a1);
             for (int a2 = 0; a2 < n - a1; a2++)
             {
-                QuadInter[i] += w * BBVector[BMoment2DTri::position(a1, a2, n)];
+                QuadInter[i] += w * BBVector(BMoment2DTri::position(a1, a2, n));
                 w *= r * (n - a1 - a2) / (1. + a2);
             }
         }
@@ -91,11 +64,9 @@ double *BElement2DTri::evaluate()
             {
                 QuadVector[i] += w * QuadInter[i2];
             }
-            w *= r * (n -a1 / (1. + a1));
+            w *= r * (n - a1 / (1. + a1));
         }
     }
-
-    delete QuadInter;
 
     return QuadVector;
 }
@@ -109,6 +80,5 @@ void BElement2DTri::makeSystem()
 
     for (int i = 0; i < length; i++)
         for (int j = 0; j < length; j++)
-            ElMat[i][j] = MassMat.getMatrixValue(i, j)
-                          + StiffMat.getMatrixValue(i, j);
+            ElMat(i, j) = MassMat.getMatrixValue(i, j) + StiffMat.getMatrixValue(i, j);
 }

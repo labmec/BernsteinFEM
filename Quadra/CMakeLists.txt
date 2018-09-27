@@ -7,3 +7,5 @@ file(GLOB headers *.h)
 set(quadra ${sources} PARENT_SCOPE)
 
 add_library(Quadra_lib STATIC ${sources} ${headers})
+
+set(LIBRARIES ${LIBRARIES} Quadra_lib)

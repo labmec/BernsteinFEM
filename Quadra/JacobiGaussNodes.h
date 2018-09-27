@@ -3,6 +3,8 @@
 #ifndef JACOBI_GAUSS_NODES_H
 #define JACOBI_GAUSS_NODES_H
 
+#define MAX_QUADRA_ORDER 80
+
 double jacobi_xi(int q, int i);
 double jacobi_w(int q, int i);
 

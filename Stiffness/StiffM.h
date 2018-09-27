@@ -1,3 +1,4 @@
+#include <armadillo>
 #include "Moments.h"
 
 #ifndef STIFFM_H
@@ -8,22 +9,12 @@
  *****************************************************************************/
 class BStiff1D : public BMoment1D
 {
-    int q;              // number of quadrature points ( recommended: 2*(n+1) )
-    int n;              // polynomial order
-    int lenStiff;       // length of the stiffness matrix
-    double **Matrix;    // stiffness matrix
-    int lenBinomialMat; // length of the binomial Pascal matrix
-    int **BinomialMat;  // Pascal Matrix
-
-    // alloc matrix linearly
-    double **create_matrix();
-
-    void delete_matrix(double **matrix);
-
-    // alloc binomial matrix
-    int **create_binomialMat();
-
-    void delete_binomialMat(int **binomialMat);
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // computes a Pascal Matrix with size lenBinomialMat
     void compute_binomials();
@@ -37,10 +28,7 @@ class BStiff1D : public BMoment1D
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
 
     // computes the normalized moment
@@ -55,9 +43,9 @@ class BStiff1D : public BMoment1D
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(const arma::vec &Fval);
 
-    void compute_matrix(double (*f)(double));
+    void compute_matrix(std::function<double(double)> f);
 };
 
 /*****************************************************************************
@@ -65,20 +53,20 @@ class BStiff1D : public BMoment1D
  *****************************************************************************/
 class BStiff2DTri : public BMoment2DTri
 {
-    int q;                  // number of quadrature points ( recommended: 2*(n+1) )
-    int n;                  // polynomial order
-    int lenStiff;           // length of the stiffness matrix
-    double **Matrix;        // stiffness matrix
-    double normalMat[3][2]; // the normals of the triangle
-    int lenBinomialMat;     // length of the binomial Pascal matrix
-    int **BinomialMat;      // Pascal Matrix
-    BMoment2DTri *Moments;  // this is used instead of the inherited object
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    arma::mat normalMat;            // the normals of the triangle
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
+    BMoment2DTri *Moments;          // this is used instead of the inherited object
     // the inherited object is used to compute other parts of the matrix
 
     // alloc matrix linearly
-    double **create_matrix();
+    arma::mat create_matrix();
 
-    void delete_matrix(double **matrix);
+    void delete_matrix(arma::mat matrix);
 
     // alloc binomial matrix
     int **create_binomialMat();
@@ -102,35 +90,34 @@ class BStiff2DTri : public BMoment2DTri
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(arma::vec Fval);
 
-    void compute_matrix(double (*f)(double, double));
+    void compute_matrix(std::function<double(double, double)> f);
 };
 
 /*****************************************************************************
  * Bernstein Stiffness Matrix for quadrilateral elements (2-dimensional)     *
  *****************************************************************************/
-class BStiff2DQuad : public BMoment2DQuad
+class BStiff2DQuad
 {
-    int q;              // number of quadrature points ( recommended: 2*(n+1) )
-    int n;              // polynomial order
-    int lenStiff;       // length of the stiffness matrix
-    double **Matrix;    // stiffness matrix
-    int lenBinomialMat; // length of the binomial Pascal matrix
-    int **BinomialMat;  // Pascal Matrix
+    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    int n;                          // polynomial order
+    int lenStiff;                   // length of the stiffness matrix
+    arma::mat Matrix;               // stiffness matrix
+    int lenBinomialMat;             // length of the binomial Pascal matrix
+    BMoment2DQuad Moments1;         // moments for computation of the stiffness matrix
+    BMoment2DQuad Moments2;         // moments for computation of the stiffness matrix
+    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // alloc matrix linearly
-    double **create_matrix();
+    arma::mat create_matrix();
 
-    void delete_matrix(double **matrix);
+    void delete_matrix(arma::mat matrix);
 
     // alloc binomial matrix
     int **create_binomialMat();
@@ -149,17 +136,20 @@ class BStiff2DQuad : public BMoment2DQuad
 
     double getMatrixValue(int i, int j)
     {
-        if (i < lenStiff && j < lenStiff)
-            return Matrix[i][j];
-        else
-            return 0.0;
+        return Matrix(i, j);
     }
+
+    void setFunction(arma::vec Fval);
+
+    void setFunction(arma::mat Fval);
+
+    void setFunction(std::function<double(double, double)> f);
 
     void compute_matrix();
 
-    void compute_matrix(double *Fval);
+    void compute_matrix(arma::vec Fval);
 
-    void compute_matrix(double (*f)(double, double));
+    void compute_matrix(std::function<double(double, double)> f);
 };
 
 class BStiff3D : public BMoment3D

@@ -1,7 +1,16 @@
+/** el.cpp
+ * 
+ * This file make a test for the computation
+ * of the finite element matrix = Mass Matrix + Stiffness Matrix
+ * for 1D elements using Bernstein polynomials
+ */
+
 #include <iostream>
 
 #define USE_MATH_DEFINES
 #include <cmath>
+
+#include <armadillo>
 
 #include "Elem1D.cpp"
 #include "JacobiGaussNodes.h"
@@ -24,15 +33,11 @@ int main()
 
     // set functions values (mass, stiffness and load vec) all as 1
     {
-        double *Fval = new double[q];
-        for (int i = 0; i < q; i++)
-            Fval[i] = 1.0;
+        arma::vec Fval(q, arma::fill::ones);
         
         elem.setLoadFunction(Fval);
         elem.setMassFunction(Fval);
         elem.setStiffFunction(Fval);
-
-        delete Fval;
     }
 
     // compute element mass matrix, stiffness matrix and load vector

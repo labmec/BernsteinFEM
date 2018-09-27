@@ -1,77 +1,36 @@
 #include "MassM.h"
 
-BMass2DQuad::BMass2DQuad(int q, int n) : BMoment2DQuad(q, 2 * n)
+#define LEN(n) ((n + 1) * (n + 1))
+
+BMass2DQuad::BMass2DQuad(int q, int n)
+    : BMoment2DQuad(q, 2 * n),
+      Matrix(LEN(n), LEN(n), arma::fill::none),
+      BinomialMat(n + 1, n + 1, arma::fill::zeros)
 {
     this->q = q;
     this->n = n;
 
-    lenMass = (n + 1) * (n + 1);
-    lenBinomialMat = 2 * n + 2;
-
-    Matrix = create_matrix();
-    BinomialMat = create_binomialMat();
+    lenMass = LEN(n);
+    lenBinomialMat = n + 1;
 }
 
 BMass2DQuad::~BMass2DQuad()
 {
-    delete_matrix(Matrix);
-    delete_binomialMat(BinomialMat);
-}
-
-double **BMass2DQuad::create_matrix()
-{
-    double *aux = new double[lenMass * lenMass];
-    double **matrix = new double *[lenMass];
-
-    for (int i = 0; i < lenMass; aux += lenMass, i++)
-        matrix[i] = aux;
-
-    return matrix;
-}
-
-void BMass2DQuad::delete_matrix(double **matrix)
-{
-    delete matrix[0];
-    delete matrix;
-}
-
-int **BMass2DQuad::create_binomialMat()
-{
-    int *aux = new int[lenBinomialMat * lenBinomialMat];
-    int **matrix = new int *[lenBinomialMat];
-
-    for (int i = 0; i < lenBinomialMat; aux += lenBinomialMat, i++)
-        matrix[i] = aux;
-
-    return matrix;
-}
-
-void BMass2DQuad::delete_binomialMat(int **binomialMat)
-{
-    delete binomialMat[0];
-    delete binomialMat;
 }
 
 void BMass2DQuad::compute_binomials()
 {
     for (int i = 0; i < lenBinomialMat; i++)
-    {
-        for (int j = 0; j < lenBinomialMat; j++)
-        {
-            BinomialMat[i][j] = 0;
-        }
-    }
-    for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat[i][0] += 1;
+        BinomialMat.at(i, 0) += 1;
 
     for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat[0][j] += 1;
+        BinomialMat.at(0, j) += 1;
 
     for (int k = 1; k < lenBinomialMat; k++)
     {
         for (int l = 1; l < lenBinomialMat; l++)
         {
-            BinomialMat[k][l] += BinomialMat[k][l - 1] + BinomialMat[k - 1][l];
+            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
         }
     }
 }
@@ -81,28 +40,36 @@ void BMass2DQuad::compute_matrix()
     compute_moments();
     compute_binomials();
 
-    double Const = 1.0 / (BinomialMat[n][n] * BinomialMat[n][n]);
+    double Const = 1.0 / (BinomialMat.at(n, n) * BinomialMat.at(n, n)); // constant due to integration
 
     // since it is a simple tensor product, this is just like in the 1D case
-    // except it's doubled
-    for (int i = 0; i < lenMass; i++)
+    // except for indexing
+    for (int a1 = 0; a1 <= n; a1++)
     {
-        for (int j = 0; j < lenMass; j++)
+        for (int a2 = 0; a2 <= n; a2++)
         {
-            double w = Const * BinomialMat[i][j] * BinomialMat[i][j];
-            w *= (BinomialMat[n - i][n - j] * BinomialMat[n - i][n - j]);
-            Matrix[i][j] = w * get_bmoment(i + j);
+            for (int b1 = 0; b1 <= n; b1++)
+            {
+                for (int b2 = 0; b2 <= n; b2++)
+                {
+                    double w = Const * BinomialMat.at(a1, b1) * BinomialMat.at(a2, b2);
+                    w *= (BinomialMat.at(n - a1, n - b1) * BinomialMat.at(n - a2, n - b2));
+                    int i = position(a1, a2, n);
+                    int j = position(b1, b2, n);
+                    Matrix.at(i, j) = w * get_bmoment(a1 + b1, a2 + b2, 0);
+                }
+            }
         }
     }
 }
 
-void BMass2DQuad::compute_matrix(double (*f)(double, double))
+void BMass2DQuad::compute_matrix(std::function<double(double, double)> f)
 {
     setFunction(f);
     compute_matrix();
 }
 
-void BMass2DQuad::compute_matrix(double *Fval)
+void BMass2DQuad::compute_matrix(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_matrix();

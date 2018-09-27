@@ -1,3 +1,10 @@
+/** stif.cpp
+ * 
+ * This file makes a test for the computation
+ * of the finite element Stiffness Matrix for
+ * 1D elements using Bernstein polynomials
+ */
+
 #include <iostream>
 
 #define _USE_MATH_DEFINES
@@ -5,6 +12,8 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+#include <armadillo>
 
 #include "StiffM.h"
 #include "JacobiGaussNodes.h"
@@ -33,9 +42,10 @@ int main()
 
     // sets function values (1)
     {
-        double *Fval = new double[q];
-        for (int i = 0; i < q; i++)
-            Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 );
+        arma::vec Fval(q, arma::fill::ones);
+
+        /* for (int i = 0; i < q; i++)
+            Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 ); */
 
         stif.setFunction(Fval);
     }
@@ -44,10 +54,21 @@ int main()
     stif.compute_matrix();
 
     // prints stiffness matrix
-    for (int i = 0; i < n+1; i++)
+    cout << "{";
+    for (int i = 0; i < (n+1) * (n+1); i++)
     {
-        for (int j = 0; j < n+1; j++)
-            cout << scientific << stif.getMatrixValue(i, j) << " ,  ";
-        cout << endl;
+        cout << "{";
+        for (int j = 0; j < (n+1) * (n+1); j++)
+            if (j < (n+1)*(n+1) - 1)
+                cout << stif.getMatrixValue(i, j) << ", ";
+            else   
+                cout << stif.getMatrixValue(i, j);
+        if (i < (n+1)*(n+1) - 1)
+            cout << "},";
+        else
+            cout << "}";
     }
+    cout << "}" << endl;
+
+	return 0;
 }
