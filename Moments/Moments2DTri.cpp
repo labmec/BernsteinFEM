@@ -151,6 +151,7 @@ void BMoment2DTri::assignQuadra()
 }
 
 //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
+// function by M. Ainsworth, G. Andriamaro and O. Davydov.
 void BMoment2DTri::bary2cart2d(double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2])
 {
     v[0] = b1 * v1[0] + b2 * v2[0] + b3 * v3[0];
@@ -312,18 +313,17 @@ void BMoment2DTri::compute_moments()
         if (functVal == 0)
             computeFunctionDef();
 
-        double xi, wgt, s, r, B;
         double scalingConst = 2 * Area2d(vertices); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
         {
-            xi = quadraWN(i, 1);
-            wgt = quadraWN(i, 0);
+            double xi = quadraWN(i, 1);
+            double wgt = quadraWN(i, 0);
 
-            s = 1 - xi;
-            r = xi / s;
+            double s = 1 - xi;
+            double r = xi / s;
 
-            B = wgt * pow(s, n);
+            double B = wgt * pow(s, n);
             for (int a1 = 0; a1 <= n; a1++)
             {
                 for (int j = 0; j < q; j++)
@@ -344,15 +344,15 @@ void BMoment2DTri::compute_moments()
         // convert second index (l=1)
         for (int i = 0; i < q; i++)
         {
-            xi = quadraWN(i, 3);
-            wgt = quadraWN(i, 2);
+            double xi = quadraWN(i, 3);
+            double wgt = quadraWN(i, 2);
 
-            s = 1 - xi;
-            r = xi / s;
+            double s = 1 - xi;
+            double r = xi / s;
 
             for (int a1 = 0; a1 <= n; a1++)
             {
-                B = wgt * pow(s, n - a1);
+                double B = wgt * pow(s, n - a1);
                 for (int a2 = 0; a2 <= n - a1; a2++)
                 {
                     int index_a1a2 = position(a1, a2, n);
