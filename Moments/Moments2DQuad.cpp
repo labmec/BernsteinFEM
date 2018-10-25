@@ -263,15 +263,7 @@ void BMoment2DQuad::compute_moments()
                     int index_ij = position(i, j, q - 1);
 
                     for (int ell = 0; ell < nb_Array; ell++)
-                    try {
                         Bmoment_inter(index_a1j, ell) += B * Cval(index_ij, ell);
-                    } catch (std::exception e) {
-                        std::cout << e.what() << std::endl;
-                        std::cout << "index_a1j = " << index_a1j << "MAX: " << Bmoment_inter.n_rows << std::endl;
-                        std::cout << "index_ij = " << index_ij << "MAX: " << Cval.n_rows << std::endl;
-                        std::terminate();
-                    }
-                    
                 }
                 B = B * r * (n - a1) / (1 + a1);
             }
@@ -295,16 +287,7 @@ void BMoment2DQuad::compute_moments()
                     int index_a1i = position(a1, i, max_nq);
 
                     for (int ell = 0; ell < nb_Array; ell++)
-                    {
-                        try {
-                            Bmoment(index_a1a2, 0) += B * Bmoment_inter(index_a1i, 0);
-                        } catch (std::exception e ) {
-                            std::cout << e.what() << std::endl;
-                            std::cout << "index_a1a2 = " << index_a1a2 << "MAX: " << Bmoment.n_rows << std::endl;
-                            std::cout << "index_a1i = " << index_a1i << "MAX: " << Bmoment_inter.n_rows << std::endl;
-                            std::terminate();
-                        }
-                    }
+                        Bmoment(index_a1a2, 0) += B * Bmoment_inter(index_a1i, 0);
                     
                     B = B * r * (m - a2) / (1 + a2);
                 }
