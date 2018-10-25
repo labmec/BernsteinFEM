@@ -146,7 +146,7 @@ protected:
   arma::mat Matrix;               // matrix containing coefficients
   int lenBinom;                   // length of the binomial (Pascal) matrix
   arma::Mat<int64_t> BinomialMat; // Pascal matrix
-  arma::mat Fval;                 // function values at quadrature nodes
+  arma::vec Fval;                 // function values at quadrature nodes
   arma::mat vertices;             // Triangle vertices
 
 public:
@@ -156,9 +156,15 @@ public:
 
   void setTriangle(double v1[], double v2[], double v3[]);
 
+  double area();
+
   int Len() { return len; }
 
-  arma::mat getMatrix() { return Matrix; }
+  void Zero() { Matrix.zeros(); }
+
+  const arma::mat &getMatrix() { return Matrix; }
+
+  double getMatrixValue(int i, int j) { return Matrix(i, j); }
 
   void setFunction(const arma::mat &Fval);
 
@@ -168,8 +174,18 @@ public:
     compute_matrix();
   }
 
+  // prints the Matrix in format compatible with Mathematica to the specified stream
+  // default stream: cout
+  void print_mathematica(std::ostream &stream = std::cout);
+
+  // prints the Matrix in readable format to the specified stream
+  // default stream: cout
+  void print(std::ostream &stream = std::cout);
+
   // compute matrix coefficients
   virtual void compute_matrix() = 0;
+
+  const double &operator() (int i, int j);
 };
 
 class dXi_dXi : public TriangleDerivative
@@ -181,7 +197,7 @@ public:
   void compute_matrix();
 };
 
-class dEta_dEta : TriangleDerivative
+class dEta_dEta : public TriangleDerivative
 {
 public:
   dEta_dEta(int q, int n);
@@ -189,11 +205,48 @@ public:
   void compute_matrix();
 };
 
-class dXi_dEta : TriangleDerivative
+class dXi_dEta : public TriangleDerivative
 {
 public:
   dXi_dEta(int q, int n);
 
+  void compute_matrix();
+};
+
+class StiffnessMatrix : public TriangleDerivative
+{
+  dXi_dXi Xi_Xi;
+  dXi_dEta Xi_Eta;
+  dEta_dEta Eta_Eta;
+
+  arma::mat vertices;
+
+  // makes Duffy Transform with respect to the Triangle in this object
+  // using points X, returns the values in points Xi
+  void duffyTransform (const arma::vec &X, arma::vec &Xi);
+  
+  // makes Duffy Transform with respect to the Triangle in this object
+  // using parameter b1,b2,b3, returns the values in points Xi
+  void duffyTransform (double b1, double b2, double b3, arma::vec &Xi);
+
+public:
+  StiffnessMatrix(int q, int n);
+
+  void Zero()
+  {
+    Xi_Xi.Zero();
+    Xi_Eta.Zero();
+    Eta_Eta.Zero();
+    TriangleDerivative::Zero();
+  }
+
+  void setFunction(const arma::vec &Fval);
+
+  void setTriangle(const arma::mat &vertices);
+
+  arma::mat getIntegrationPoints();
+
+  // compute matrix coefficients
   void compute_matrix();
 };
 } // namespace TriD

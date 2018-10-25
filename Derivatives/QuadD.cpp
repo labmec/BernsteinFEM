@@ -13,10 +13,10 @@ using namespace arma;
 void QuadDerivative::compute_binomials(Mat<int64_t> &BinomialMat, int lenBinom)
 {
     for (int i = 0; i < lenBinom; i++)
+    {
         BinomialMat.at(i, 0) = 1;
-
-    for (int j = 1; j < lenBinom; j++)
-        BinomialMat.at(0, j) = 1;
+        BinomialMat.at(0, i) = 1;
+    }
 
     for (int k = 1; k < lenBinom; k++)
     {
