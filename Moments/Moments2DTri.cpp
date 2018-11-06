@@ -276,6 +276,9 @@ arma::mat BMoment2DTri::getIntegrationPoints()
 {
     arma::mat points(q * q * nb_Array, 2); // vector with q * q * nb_Array elements
     double b1, b2, b3;
+    double v1[2] = {vertices(0, 0), vertices(0, 1)};
+    double v2[2] = {vertices(1, 0), vertices(1, 1)};
+    double v3[2] = {vertices(2, 0), vertices(2, 1)};
 
     for (int i = 0; i < q; i++)
     {
@@ -285,7 +288,7 @@ arma::mat BMoment2DTri::getIntegrationPoints()
             double v[2];
             b2 = quadraWN(j, 3) * (1 - b1);
             b3 = 1 - b1 - b2;
-            bary2cart2d(b1, b2, b3, vertices.colptr(0), vertices.colptr(1), vertices.colptr(2), v); // stores b1*v1+b2*v2+b3*v3 into v;
+            bary2cart2d(b1, b2, b3, v1, v2, v3, v); // stores b1*v1+b2*v2+b3*v3 into v;
             int index_ij = position(i, j, q - 1);
             points(index_ij, 0) = v[0];
             points(index_ij, 1) = v[1];

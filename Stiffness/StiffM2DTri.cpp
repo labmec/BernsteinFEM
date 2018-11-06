@@ -5,25 +5,22 @@
 #endif
 #define LEN(n) ((n + 1) * (n + 1))
 
+using namespace arma;
+
 BStiff2DTri::BStiff2DTri(int q, int n)
-    : BMoment2DTri(q, 2 * (n - 1), 6),
-      Matrix(LEN(n), LEN(n), arma::fill::none),
-      BinomialMat(n + 1, n + 1, arma::fill::zeros),
-      normalMat(3, 2, arma::fill::none)
+    : BMoment2DTri(q, 2 * (n - 1)),
+      Matrix(LEN(n), LEN(n), arma::fill::zeros),
+      normalMat(3, 2, arma::fill::none),
+      BinomialMat(n + 1, n + 1, arma::fill::zeros)
 {
     this->q = q;
     this->n = n;
-
-    Moments = new BMoment2DTri(q, 2 * (n - 1), 3);
 
     lenStiff = (n + 1) * (n + 1);
     lenBinomialMat = n + 1;
 }
 
-BStiff2DTri::~BStiff2DTri()
-{
-    delete Moments;
-}
+BStiff2DTri::~BStiff2DTri() { }
 
 void BStiff2DTri::compute_binomials()
 {
@@ -50,97 +47,100 @@ void BStiff2DTri::compute_normals()
     normalMat(1, 1) = vertices(0, 0) - vertices(2, 0);
     normalMat(2, 0) = vertices(0, 1) - vertices(1, 1);
     normalMat(2, 1) = vertices(1, 0) - vertices(0, 0);
+
+    // normalize_normals();
+    // the normals computed this way have the same length as the opposite side of the vertex
+    // which is a property we're gonna make use of
 }
 
-/* modified function bmoment2d from 'bbfem.cpp' to fit into this implementation */
+void BStiff2DTri::normalize_normals()
+{
+    double norm0 = sqrt(normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1));
+    double norm1 = sqrt(normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1));
+    double norm2 = sqrt(normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1));
+
+    normalMat(0, 0) = normalMat(0, 0) / norm0;
+    normalMat(0, 1) = normalMat(0, 1) / norm0;
+    normalMat(1, 0) = normalMat(1, 0) / norm1;
+    normalMat(1, 1) = normalMat(1, 1) / norm1;
+    normalMat(2, 0) = normalMat(2, 0) / norm2;
+    normalMat(2, 1) = normalMat(2, 1) / norm2;
+}
+
+void BStiff2DTri::compute_normals_products(vec &N)
+{
+    if (N.size() < 6) {
+        N.resize(6);
+    }
+    N[0] = normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1); // n1 . n1
+    N[1] = normalMat(0, 0) * normalMat(1, 0) + normalMat(0, 1) * normalMat(1, 1); // n1 . n2
+    N[2] = normalMat(0, 0) * normalMat(2, 0) + normalMat(0, 1) * normalMat(2, 1); // n1 . n3
+    N[3] = normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1); // n2 . n2
+    N[4] = normalMat(1, 0) * normalMat(2, 0) + normalMat(1, 1) * normalMat(2, 1); // n2 . n3
+    N[5] = normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1); // n3 . n3
+}
+
 void BStiff2DTri::compute_matrix()
 {
-    Moments->compute_moments();
-    compute_normals();
-    transform_BmomentC_Stiff2d(Moments, normalMat);
+    vec N(6, fill::none);
+    compute_binomials();         // computes the binomials that will be used
+    compute_moments();           // computes the moments necessary for the computation of the stiffness matrix
+    compute_normals();           // computes the normal vectors, used in the gradient
+    compute_normals_products(N); // computes the product of each combination of the normals
+    // transform_BmomentC_Stiff2d(Moments, normalMat);
 
-    // initialize matrix with 0's
-    for (int i = 0; i < lenStiff; i++)
-        for (int j = 0; j < lenStiff; j++)
-            Matrix(i, j) = 0.0;
+    Matrix.zeros();
     double area = Area2d(vertices);
     double Const = n * n / 4. / area / area / BinomialMat(n - 1, n - 1); // taking account of scaling between normals and gradients
 
-    int m = n - 1;
-    int M = MAX(2 * n - 2, q - 1);
-
-    // the same loop as in Mass, but with m=n-1 instead of n, and with moving stencil
-    // of position2ds in the stiffness matrix
-    int iMu = 0;
-    int iMu1 = 1;
-    int iMu2 = 2;
-
-    for (int mu0 = m; mu0 >= 0; mu0--, iMu1++, iMu2++)
+    
+    // com
+    for (int a1 = 0; a1 < n; a1++)
     {
-        int iEta = 0;
-        int iEta1 = 1;
-        int iEta2 = 2;
-
-        for (int eta0 = m; eta0 >= 0; eta0--, iEta1++, iEta2++)
+        for (int b1 = 0; b1 < n; b1++)
         {
-            int iMuEta0 = (mu0 + eta0) * (M + 1);
-
-            double v = BinomialMat(mu0, eta0); //to reduce the number of accesses to binomialMat, for 3D and higher
-            //this way the number of multiplications may be reduced, too
-
-            int mu2 = 0; // mu1=m-mu0-mu2
-            for (int mu1 = m - mu0; mu1 >= 0; mu1--, mu2++, iMu++, iMu1++, iMu2++)
+            double w1 = Const * BinomialMat(a1, b1);
+            for (int a2 = 0; a2 < n - a1; a2++)
             {
-
-                int eta2 = 0; // eta2=m-eta0
-                for (int eta1 = m - eta0; eta1 >= 0; eta1--, eta2++, iEta++, iEta1++, iEta2++)
+                for (int b2 = 0; b2 < n - b1; b2++)
                 {
+                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1); // trouble here, at the second BinomialMat expression
+                    w2 *= get_bmoment(a1 + b1, a2 + b2, 0);
+                    int i = position(a1, b1, n);
+                    int j = position(a2, b2, n);
+                    int I = position(a1 + 1, b1 + 1, n);
+                    int J = position(a2 + 1, b2 + 1, n);
+                    int I_a = position(a1 + 1, b1, n);
+                    int J_a = position(a2 + 1, b2, n);
+                    int I_b = position(a1, b1 + 1, n);
+                    int J_b = position(a2, b2 + 1, n);
 
-                    double w = v * BinomialMat(mu1, eta1) * BinomialMat(mu2, eta2); //use Pascal directly
+                    double n1n2 = w2 * N[1];
+                    double n1n3 = w2 * N[2];
+                    double n2n3 = w2 * N[4];
 
-                    w *= Const;
-                    int iMuEta;
-
-                    iMuEta = iMuEta0 + mu1 + eta1;
-
-                    Matrix(iMu, iEta) += w * get_bmoment(iMuEta, 0);  //alfa=[1,0,0], beta=[1,0,0]
-                    Matrix(iMu, iEta1) += w * get_bmoment(iMuEta, 1); //beta=[0,1,0]
-                    Matrix(iMu, iEta2) += w * get_bmoment(iMuEta, 2); //beta=[0,0,1]
-
-                    Matrix(iMu1, iEta) += w * get_bmoment(iMuEta, 1);  //alfa=[0,1,0], beta=[1,0,0]
-                    Matrix(iMu1, iEta1) += w * get_bmoment(iMuEta, 3); //beta=[0,1,0]
-                    Matrix(iMu1, iEta2) += w * get_bmoment(iMuEta, 4); //beta=[0,0,1]
-
-                    Matrix(iMu2, iEta) += w * get_bmoment(iMuEta, 2);  //alfa=[0,0,1], beta=[1,0,0]
-                    Matrix(iMu2, iEta1) += w * get_bmoment(iMuEta, 4); //beta=[0,1,0]
-                    Matrix(iMu2, iEta2) += w * get_bmoment(iMuEta, 5); //beta=[0,0,1]
+                    Matrix(I, j)     += w2 * N[0]; // n1 . n1
+                    Matrix(I_a, J_b) += n1n2;      // n1 . n2
+                    Matrix(I_b, J_a) += n1n2;      // n2 . n1
+                    Matrix(I_a, j)   += n1n3;      // n1 . n3
+                    Matrix(I_b, j)   += n1n3;      // n3 . n1
+                    Matrix(i, J)     += w2 * N[3]; // n2 . n2
+                    Matrix(i, J_a)   += n2n3;      // n2 . n3
+                    Matrix(i, J_b)   += n2n3;      // n3 . n2
+                    Matrix(i, j)     += w2 * N[5]; // n3 . n3
                 }
-
-                if (mu1 > 0) //return iEta, iEta1, iEta2 to process the next mu1
-                {
-                    iEta -= eta2; //iEta -= m - eta0 +1;
-                    iEta1 -= eta2;
-                    iEta2 -= eta2;
-                }
-            }
-
-            if (eta0 > 0) //return iMu, iMu1, iMu2 to process the next eta0
-            {
-                iMu -= mu2; //iMu -= n - mu0 + 1; //iMu = iMu_temp;
-                iMu1 -= mu2;
-                iMu2 -= mu2;
             }
         }
     }
 }
 
-void BStiff2DTri::compute_matrix(arma::vec Fval)
+void BStiff2DTri::compute_matrix(const arma::vec &Fval)
 {
     setFunction(Fval);
     compute_matrix();
 }
 
-void BStiff2DTri::compute_matrix(double (*f)(double, double))
+void BStiff2DTri::compute_matrix(std::function<double (double, double)> f)
 {
     setFunction(f);
     compute_matrix();

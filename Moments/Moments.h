@@ -55,7 +55,10 @@ public:
   int getNbArray() { return nb_Array; }
 
   // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-  int position(int i, int n) { return i; }
+  static int position(int i, int n) { return i; }
+
+  // zeroes the moments vector
+  void zero() { Bmoment.zeros(); }
 
   // returns the whole Bmoment matrix
   const arma::mat &get_bmoment() { return Bmoment; }
@@ -172,7 +175,7 @@ public:
     double x3 = vertices(2, 0);
     double y3 = vertices(2, 1);
 
-    return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
+    return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
   }
 
   // sets the dimension number of the function multiplying the Bernstein basis polynomial
@@ -187,6 +190,9 @@ public:
 
   // return the index for the (i, j, n-i-j) triangle coordinate
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
+
+  // zeroes the moments vector
+  void zero() { Bmoment.zeros(); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
   double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
@@ -288,6 +294,9 @@ public:
 
   // return the index for the (i, j) quadrilateral node
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
+
+  // zeroes the moments vector
+  void zero() { Bmoment.zeros(); }
 
   // return the Bmoment matrix
   const arma::mat &get_bmoment() { return Bmoment; }
