@@ -45,14 +45,15 @@ void BMass1D::compute_matrix()
     compute_binomials();
 
     double Const = 1.0 / BinomialMat.at(n, n);
-    double binom;
 
     for (int i = 0; i < lenMass; i++)
     {
+        int I = position(i, n);
         for (int j = 0; j < lenMass; j++)
         {
-            binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
-            Matrix.at(i, j) = binom * get_bmoment(i + j);
+            double binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
+            int J = position(j, n);
+            Matrix.at(I, J) = binom * get_bmoment(position(i + j, n));
         }
     }
 }
