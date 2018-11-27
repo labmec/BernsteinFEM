@@ -50,7 +50,7 @@ void BStiff2DTri::compute_normals()
 
     // normalize_normals();
     // the normals computed this way have the same length as the opposite side of the vertex
-    // which is a property we're gonna make use of
+    // which is a property we're gonna make use of, so there's no need to normalize
 }
 
 void BStiff2DTri::normalize_normals()
