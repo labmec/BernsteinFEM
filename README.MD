@@ -14,7 +14,7 @@ This library can be built for Linux, Windows or OSX.
 
 ### Linux:
   * You can build this library using the make command, it is recommended to use `make -j` to build multithreaded. This will make a BernsteinFEM.a static library which can be used when compiling your source code.
-  * You can use the config file with the command `. config` to set variables to use when compiling your source while in the working directory of this project.
+  * You can use the config file with the command `source config.sh` to set variables to use when compiling your source while in the working directory of this project.
   * Then build executables (e.g. from the source in Tests directory) with `g++ <your_source.cpp> $lib $flags $inc_dir`
   * You can also use CMake for building the library with your preferred IDE.
   
