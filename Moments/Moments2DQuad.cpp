@@ -19,7 +19,7 @@ BMoment2DQuad::BMoment2DQuad()
     cout << endl;
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
 
@@ -41,7 +41,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n)
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;
@@ -62,7 +62,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, int m, int nb_Array)
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;
@@ -145,7 +145,7 @@ void BMoment2DQuad::computeFunctionDef()
         for (j = 0; j < q; j++)
         {
             nodalShape(X, dX, quadraWN.at(i, 1), quadraWN.at(j, 1));
-            index_ij = position(i, j, q);
+            index_ij = position_q(i, j, q);
             Cval.at(index_ij, 0) = f(X[0], X[1]) * dX;
         }
     }
@@ -220,8 +220,9 @@ arma::mat BMoment2DQuad::getIntegrationPoints()
         for (int j = 0; j < q; j++)
         {
             nodalShape(X, dX, quadraWN.at(i, 1), quadraWN.at(j, 1));
-            points.at(i * q + j, 0) = X[0];
-            points.at(i * q + j, 1) = X[1];
+            int index_ij = position_q(i, j, q);
+            points.at(index_ij, 0) = X[0];
+            points.at(index_ij, 1) = X[1];
         }
     }
 
@@ -258,9 +259,9 @@ void BMoment2DQuad::compute_moments()
             {
                 for (int j = 0; j < q; j++)
                 {
-                    int index_a1j = position(a1, j, max_nq);
+                    int index_a1j = position_q(a1, j, max_nq);
 
-                    int index_ij = position(i, j, q - 1);
+                    int index_ij = position_q(i, j, q);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                         Bmoment_inter(index_a1j, ell) += B * Cval(index_ij, ell);
@@ -284,7 +285,7 @@ void BMoment2DQuad::compute_moments()
                 for (int a2 = 0; a2 <= m; a2++)
                 {
                     int index_a1a2 = position(a1, a2, max_nm);
-                    int index_a1i = position(a1, i, max_nq);
+                    int index_a1i = position_q(a1, i, max_nq);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                         Bmoment(index_a1a2, 0) += B * Bmoment_inter(index_a1i, 0);

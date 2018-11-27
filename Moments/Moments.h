@@ -277,7 +277,7 @@ protected:
   arma::mat vertices; // vertices of the quadrilateral element
 
   // helps indexing quadrature points vectors
-  int position_q(int i, int j, int q);
+  int position_q(int i, int j, int q) { return i * q + j; }
 
 public:
   // constructors

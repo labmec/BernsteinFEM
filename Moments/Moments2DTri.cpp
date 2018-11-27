@@ -21,7 +21,7 @@ BMoment2DTri::BMoment2DTri()
     std::cout << std::endl;
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
 
@@ -43,7 +43,7 @@ BMoment2DTri::BMoment2DTri(int q, int n)
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;
@@ -64,7 +64,7 @@ BMoment2DTri::BMoment2DTri(int q, int n, double T[][2])
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;

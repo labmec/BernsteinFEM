@@ -20,7 +20,7 @@ BMoment1D::BMoment1D()
     cout << endl;
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The polynomial order is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
 
@@ -38,7 +38,7 @@ BMoment1D::BMoment1D(int q, int n)
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The number of quadrature points is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;
@@ -57,7 +57,7 @@ BMoment1D::BMoment1D(int q, int n, int nb_Array)
 {
     if (q > MAX_QUADRA_ORDER)
     {
-        std::cerr << "The number of quadrature points is too large.\n";
+        std::cerr << "The number of quadrature points (q) is too large.\n";
         throw std::bad_alloc();
     }
     this->q = q;
