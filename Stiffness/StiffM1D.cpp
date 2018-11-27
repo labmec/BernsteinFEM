@@ -48,8 +48,14 @@ void BStiff1D::compute_matrix()
             w *= BinomialMat.at(n - i - 1, n - j - 1);
 
             for (int k = 1; k <= 2; k++)
+            {
                 for (int l = 1; l <= 2; l++)
+                {
+                    int I = position(i + 2 - k, n);
+                    int J = position(j + 2 - l, n);
                     Matrix.at(i + 2 - k, j + 2 - l) += (n * n) * w * grad(k, l) * get_bmoment(i + j);
+                }
+            }
         }
     }
 }

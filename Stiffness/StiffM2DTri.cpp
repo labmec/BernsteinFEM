@@ -104,7 +104,7 @@ void BStiff2DTri::compute_matrix()
             {
                 for (int b2 = 0; b2 < n - b1; b2++)
                 {
-                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1); // trouble here, at the second BinomialMat expression
+                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     w2 *= get_bmoment(a1 + b1, a2 + b2, 0);
                     int i = position(a1, b1, n);
                     int j = position(a2, b2, n);
