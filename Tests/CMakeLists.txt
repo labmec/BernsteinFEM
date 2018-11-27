@@ -7,11 +7,6 @@ file(GLOB headers *.h)
 set(test ${sources} PARENT_SCOPE)
 
 #some tests
-add_executable(ELEM_TEST el.cpp)
-add_dependencies(ELEM_TEST Elem_lib)
-target_link_libraries(ELEM_TEST Elem_lib)
-target_include_directories(ELEM_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} ELEM_TEST)
 
 add_executable(MASS_TEST mas.cpp)
 add_dependencies(MASS_TEST Mass_lib)
@@ -42,13 +37,6 @@ add_dependencies(MOMENTS_TRI_TEST Moments_lib)
 target_link_libraries(MOMENTS_TRI_TEST Moments_lib)
 target_include_directories(MOMENTS_TRI_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
 set(allTests ${allTests} MOMENTS_TRI_TEST)
-
-file(GLOB deriv_src quad_d*.cpp)
-add_executable(DERIV_1ST_TEST ${deriv_src})
-add_dependencies(DERIV_1ST_TEST Deriv_lib Quadra_lib Moments_lib)
-target_link_libraries(DERIV_1ST_TEST Deriv_lib Quadra_lib Moments_lib)
-target_include_directories(DERIV_1ST_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} DERIV_1ST_TEST)
 
 add_executable(QUAD_STIF_CPU_TEST cpu_test.cpp)
 add_dependencies(QUAD_STIF_CPU_TEST Deriv_lib)

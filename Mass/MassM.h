@@ -49,16 +49,6 @@ class BMass2DTri : public BMoment2DTri
 	int lenBinomialMat;				// length of the binomials matrix
 	arma::Mat<int64_t> BinomialMat; // computes a Pascal Matrix with size lenBinomialMat
 
-	//alloc matrix linearly
-	__attribute_deprecated__ arma::mat create_matrix();
-
-	__attribute_deprecated__ void delete_matrix(arma::mat matrix);
-
-	// alloc binomial matrix
-	int **create_binomialMat();
-
-	void delete_binomialMat(int **binomialMat);
-
 	// precompute the binomial cofficients necessary
 	void compute_binomials();
 
