@@ -133,6 +133,9 @@ protected:
   arma::mat vertices; // triangle vertices coordinates
   arma::mat quadraWN; // quadrature points and weights
 
+  // helps indexing quadrature points vectors
+  int position_q(int i, int j, int q) { return i * q + j; }
+
   // routine used to pre-multiply normals with the Bmoments
   void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, const arma::mat &normalMat);
 
@@ -272,6 +275,9 @@ protected:
   int nb_Array = 1;   // dimension of function Image (function is scalar valued by default)
   arma::mat quadraWN; // quadrature points and weights
   arma::mat vertices; // vertices of the quadrilateral element
+
+  // helps indexing quadrature points vectors
+  int position_q(int i, int j, int q);
 
 public:
   // constructors

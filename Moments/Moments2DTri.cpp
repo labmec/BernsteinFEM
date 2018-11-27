@@ -255,13 +255,13 @@ void BMoment2DTri::setTriangle(const arma::mat &vertices)
 
 void BMoment2DTri::computeFunctionDef()
 {
-    arma::mat points = getIntegrationPoints();
+    arma::mat points(getIntegrationPoints());
 
     for (int i = 0; i < q; i++)
     {
         for (int j = 0; j < q; j++)
         {
-            int index_ij = position(i, j, q - 1);
+            int index_ij = position_q(i, j, q);
             CVal(index_ij, 0) = f(points(i, 0), points(j, 1));
         }
     }
@@ -289,7 +289,7 @@ arma::mat BMoment2DTri::getIntegrationPoints()
             b2 = quadraWN(j, 3) * (1 - b1);
             b3 = 1 - b1 - b2;
             bary2cart2d(b1, b2, b3, v1, v2, v3, v); // stores b1*v1+b2*v2+b3*v3 into v;
-            int index_ij = position(i, j, q - 1);
+            int index_ij = position_q(i, j, q);
             points(index_ij, 0) = v[0];
             points(index_ij, 1) = v[1];
         }
@@ -331,9 +331,9 @@ void BMoment2DTri::compute_moments()
             {
                 for (int j = 0; j < q; j++)
                 {
-                    int index_a1j = position(a1, j, m);
+                    int index_a1j = position_q(a1, j, m);
 
-                    int index_ij = position(i, j, q - 1);
+                    int index_ij = position_q(i, j, q);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
@@ -359,7 +359,7 @@ void BMoment2DTri::compute_moments()
                 for (int a2 = 0; a2 <= n - a1; a2++)
                 {
                     int index_a1a2 = position(a1, a2, n);
-                    int index_a1i = position(a1, i, m);
+                    int index_a1i = position_q(a1, i, m);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
@@ -385,6 +385,7 @@ void BMoment2DTri::compute_moments(const arma::vec &Fval)
 }
 
 /* modified from 'bbfem.cpp' to fit into this implementation */
+// Deprecated
 void BMoment2DTri::transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, const arma::mat &normalMat)
 {
     int m, mm;
