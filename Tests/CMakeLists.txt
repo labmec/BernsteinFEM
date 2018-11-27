@@ -59,3 +59,8 @@ add_executable(QUAD_CONVERGENCE_TEST convergence_test.cpp)
 add_dependencies(QUAD_CONVERGENCE_TEST Deriv_lib)
 target_link_libraries(QUAD_CONVERGENCE_TEST Deriv_lib Quadra_lib Moments_lib)
 target_include_directories(QUAD_CONVERGENCE_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
+
+add_executable(TRI_STIF_CPU_TEST cpu_test_tri.cpp)
+add_dependencies(TRI_STIF_CPU_TEST Stiff_lib)
+target_link_libraries(TRI_STIF_CPU_TEST Stiff_lib Quadra_lib Moments_lib)
+target_include_directories(TRI_STIF_CPU_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
