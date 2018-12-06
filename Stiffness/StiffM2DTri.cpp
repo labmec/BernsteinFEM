@@ -25,28 +25,28 @@ BStiff2DTri::~BStiff2DTri() { }
 void BStiff2DTri::compute_binomials()
 {
     for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat(i, 0) += 1;
+        BinomialMat.at(i, 0) += 1;
 
     for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat(0, j) += 1;
+        BinomialMat.at(0, j) += 1;
 
     for (int k = 1; k < lenBinomialMat; k++)
     {
         for (int l = 1; l < lenBinomialMat; l++)
         {
-            BinomialMat(k, l) += BinomialMat(k, l - 1) + BinomialMat(k - 1, l);
+            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
         }
     }
 }
 
 void BStiff2DTri::compute_normals()
 {
-    normalMat(0, 0) = vertices(1, 1) - vertices(2, 1);
-    normalMat(0, 1) = vertices(2, 0) - vertices(1, 0);
-    normalMat(1, 0) = vertices(2, 1) - vertices(0, 1);
-    normalMat(1, 1) = vertices(0, 0) - vertices(2, 0);
-    normalMat(2, 0) = vertices(0, 1) - vertices(1, 1);
-    normalMat(2, 1) = vertices(1, 0) - vertices(0, 0);
+    normalMat.at(0, 0) = vertices.at(1, 1) - vertices.at(2, 1);
+    normalMat.at(0, 1) = vertices.at(2, 0) - vertices.at(1, 0);
+    normalMat.at(1, 0) = vertices.at(2, 1) - vertices.at(0, 1);
+    normalMat.at(1, 1) = vertices.at(0, 0) - vertices.at(2, 0);
+    normalMat.at(2, 0) = vertices.at(0, 1) - vertices.at(1, 1);
+    normalMat.at(2, 1) = vertices.at(1, 0) - vertices.at(0, 0);
 
     // normalize_normals();
     // the normals computed this way have the same length as the opposite side of the vertex
@@ -55,16 +55,16 @@ void BStiff2DTri::compute_normals()
 
 void BStiff2DTri::normalize_normals()
 {
-    double norm0 = sqrt(normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1));
-    double norm1 = sqrt(normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1));
-    double norm2 = sqrt(normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1));
+    double norm0 = sqrt(normalMat.at(0, 0) * normalMat.at(0, 0) + normalMat.at(0, 1) * normalMat.at(0, 1));
+    double norm1 = sqrt(normalMat.at(1, 0) * normalMat.at(1, 0) + normalMat.at(1, 1) * normalMat.at(1, 1));
+    double norm2 = sqrt(normalMat.at(2, 0) * normalMat.at(2, 0) + normalMat.at(2, 1) * normalMat.at(2, 1));
 
-    normalMat(0, 0) = normalMat(0, 0) / norm0;
-    normalMat(0, 1) = normalMat(0, 1) / norm0;
-    normalMat(1, 0) = normalMat(1, 0) / norm1;
-    normalMat(1, 1) = normalMat(1, 1) / norm1;
-    normalMat(2, 0) = normalMat(2, 0) / norm2;
-    normalMat(2, 1) = normalMat(2, 1) / norm2;
+    normalMat.at(0, 0) = normalMat.at(0, 0) / norm0;
+    normalMat.at(0, 1) = normalMat.at(0, 1) / norm0;
+    normalMat.at(1, 0) = normalMat.at(1, 0) / norm1;
+    normalMat.at(1, 1) = normalMat.at(1, 1) / norm1;
+    normalMat.at(2, 0) = normalMat.at(2, 0) / norm2;
+    normalMat.at(2, 1) = normalMat.at(2, 1) / norm2;
 }
 
 void BStiff2DTri::compute_normals_products(vec &N)
@@ -72,12 +72,12 @@ void BStiff2DTri::compute_normals_products(vec &N)
     if (N.size() < 6) {
         N.resize(6);
     }
-    N[0] = normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1); // n1 . n1
-    N[1] = normalMat(0, 0) * normalMat(1, 0) + normalMat(0, 1) * normalMat(1, 1); // n1 . n2
-    N[2] = normalMat(0, 0) * normalMat(2, 0) + normalMat(0, 1) * normalMat(2, 1); // n1 . n3
-    N[3] = normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1); // n2 . n2
-    N[4] = normalMat(1, 0) * normalMat(2, 0) + normalMat(1, 1) * normalMat(2, 1); // n2 . n3
-    N[5] = normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1); // n3 . n3
+    N[0] = normalMat.at(0, 0) * normalMat.at(0, 0) + normalMat.at(0, 1) * normalMat.at(0, 1); // n1 . n1
+    N[1] = normalMat.at(0, 0) * normalMat.at(1, 0) + normalMat.at(0, 1) * normalMat.at(1, 1); // n1 . n2
+    N[2] = normalMat.at(0, 0) * normalMat.at(2, 0) + normalMat.at(0, 1) * normalMat.at(2, 1); // n1 . n3
+    N[3] = normalMat.at(1, 0) * normalMat.at(1, 0) + normalMat.at(1, 1) * normalMat.at(1, 1); // n2 . n2
+    N[4] = normalMat.at(1, 0) * normalMat.at(2, 0) + normalMat.at(1, 1) * normalMat.at(2, 1); // n2 . n3
+    N[5] = normalMat.at(2, 0) * normalMat.at(2, 0) + normalMat.at(2, 1) * normalMat.at(2, 1); // n3 . n3
 }
 
 void BStiff2DTri::compute_matrix()
@@ -99,12 +99,12 @@ void BStiff2DTri::compute_matrix()
     {
         for (int b1 = 0; b1 < n; b1++)
         {
-            double w1 = Const * BinomialMat(a1, b1);
+            double w1 = Const * BinomialMat.at(a1, b1);
             for (int a2 = 0; a2 < n - a1; a2++)
             {
                 for (int b2 = 0; b2 < n - b1; b2++)
                 {
-                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1);
+                    double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     w2 *= get_bmoment(a1 + b1, a2 + b2, 0);
                     int i = position(a1, b1, n);
                     int j = position(a2, b2, n);
@@ -119,15 +119,15 @@ void BStiff2DTri::compute_matrix()
                     double n1n3 = w2 * N[2];
                     double n2n3 = w2 * N[4];
 
-                    Matrix(I, j)     += w2 * N[0]; // n1 . n1
-                    Matrix(I_a, J_b) += n1n2;      // n1 . n2
-                    Matrix(I_b, J_a) += n1n2;      // n2 . n1
-                    Matrix(I_a, j)   += n1n3;      // n1 . n3
-                    Matrix(I_b, j)   += n1n3;      // n3 . n1
-                    Matrix(i, J)     += w2 * N[3]; // n2 . n2
-                    Matrix(i, J_a)   += n2n3;      // n2 . n3
-                    Matrix(i, J_b)   += n2n3;      // n3 . n2
-                    Matrix(i, j)     += w2 * N[5]; // n3 . n3
+                    Matrix.at(I, j)     += w2 * N[0]; // n1 . n1
+                    Matrix.at(I_a, J_b) += n1n2;      // n1 . n2
+                    Matrix.at(I_b, J_a) += n1n2;      // n2 . n1
+                    Matrix.at(I_a, j)   += n1n3;      // n1 . n3
+                    Matrix.at(I_b, j)   += n1n3;      // n3 . n1
+                    Matrix.at(i, J)     += w2 * N[3]; // n2 . n2
+                    Matrix.at(i, J_a)   += n2n3;      // n2 . n3
+                    Matrix.at(i, J_b)   += n2n3;      // n3 . n2
+                    Matrix.at(i, j)     += w2 * N[5]; // n3 . n3
                 }
             }
         }
