@@ -1,7 +1,7 @@
 #include "Elements.h"
 
 template <>
-arma::mat Element<LinearEl>::jac(1, 1, arma::fill::none);
+arma::mat Element<LinearEl>::jac(1, 1, arma::fill::zeros);
 
 template <>
 Element<LinearEl>::Element()
