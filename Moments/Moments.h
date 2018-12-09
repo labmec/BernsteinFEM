@@ -1,61 +1,153 @@
+#pragma once
 #include <armadillo>
-
-#ifndef MOMENTS_H
-#define MOMENTS_H
+#include "Elements.h"
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
-/*****************************************************************************
- * 1-dimensional Bernstein moments                                           *
- *****************************************************************************/
-class BMoment1D
+// Abstract class
+template <typename _signature, Element_t EL>
+class BMoment
 {
-  int q;                // number of quadrature points in one dimension
-  int n;                // Bernstein polynomial order
+  int q; // number of quadrature points in one dimension
+  int n; // Bernstein polynomial order
+
+protected:
   int lenMoments;       // length of the Bmoment vector
+  int lenCval;          // length of the Cval array
   arma::mat Bmoment;    // vector where the b-moments are stored
   arma::mat Cval;       // vector where the function values are stored
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
+  int functVal;         // determines if will use function value or function definition (use function dvalue by default)
+  int nb_Array;         // dimension of function Image (function is scalar valued by default)
+  Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
+  arma::mat quadraWN;   // quadrature points and weights
 
   // function definition for the computation of the b-moments
-  std::function<double(double)> f;
+  std::function<_signature> f;
 
+// protected virtual methods
   // assign the quadrature points and weights
-  void assignQuadra();
+  virtual void assignQuadra() = 0;
 
   // loads the function definition values at quadrature points into Cval
-  void loadFunctionDef();
-
-protected:
-  int functVal = 1;   // determines if will use function value or function definition (use function dvalue by default)
-  int nb_Array = 1;   // dimension of function Image (function is scalar valued by default)
-  double a, b;        // interval [a, b] variables
-  arma::mat quadraWN; // quadrature points and weights
+  virtual void loadFunctionDef() = 0;
 
 public:
-  // constructors
-  // default constructor
-  BMoment1D();
-  // quadrature and polynomial order constructor
-  BMoment1D(int q, int n);
-  BMoment1D(int q, int n, int nb_Array);
+// constructors
+  BMoment(int q, int n, int nb_Array = 1, Element<EL> element = Element<EL>())
+    : element(element), Bmoment(), Cval(), quadraWN()
+  {
+    this->q = q;
+    this->n = n;
+    this->nb_Array = nb_Array;
+  }
 
-  // destructor
-  ~BMoment1D();
+  // copy constructor
+  BMoment(const BMoment<double(double), LinearEl> &cp)
+  {
+    this->q = cp.q;
+    this->n = cp.n;
+    this->nb_Array = cp.nb_Array;
+  }
 
-  // sets the dimension number of the function multiplying the Bernstein basis polynomial (default value: 1)
+// destructor
+  ~BMoment();
+
+// getters
+  // returns number of integration points
+  int getNumIntegrationPoints() { return q; }
+
+  // returns polynomial order
+  int getPOrder() { return n; }
+
+  // returns moments array length
+  int getLenMoments() { return lenMoments; }
+
+  // returns number
+  int getLenCval() { return lenCval; }
+
+  // return the dimension of function Image (function is scalar valued by default)
+  int getNbArray() { return nb_Array; }
+
+  // returns wether you will be using function values or function definition (0 or 1, respectively)
+  int getFunctVal() { return functVal; }
+
+  // returns the element used for computing
+  Element<EL> getElement() { return element; }
+
+  // returns the whole Bmoment matrix
+  const arma::mat &getBMoment() { return Bmoment; }
+
+// setters
+  // sets number of integration points
+  void setNumIntegrationPoints(int q) { this->q = q; }
+
+  // sets polynomial order
+  void setPOder(int n) { this->n = n; }
+
+  // sets the dimension of function Image (function is scalar valued by default)
   void setNbArray(int nb_Array)
   {
     this->nb_Array = nb_Array;
     Bmoment.resize(lenMoments, nb_Array);
-    Cval.resize(q * q, nb_Array);
+    Cval.resize(lenCval, nb_Array);
   }
 
-  int getNbArray() { return nb_Array; }
+  void setFunctionValues(const arma::vec &Cval) { this->Cval.swap(Cval); }
+
+  void setFunctionValues(const arma::mat &Cval) { this->Cval.swap(Cval); }
+
+  void setFunctionDefinition(std::function<_signature> f) { this->f = f; }
+
+  void setElement(Element<EL> element) { this->element = element; }
+
+// inline methods
+
+  void zero() { Bmoment.zeros(); }
+
+  void useFunctionDef() { functVal = 0; }
+
+  void useFunctionValue() { functVal = 1; }
+
+  void compute_moments(std::function<_signature> f)
+  {
+    setFunctionDefinition(f);
+    compute_moments();
+  }
+
+  void compute_moments(const arma::mat &Cval)
+  {
+    setFunctionValues(Cval);
+    compute_moments();
+  }
+
+// virtual methods
+  // returns the position of a specified point in the matrix (the point is defined by the element)
+  virtual int position() = 0;
+
+  // returns the vector with the integration points over the object's element, following the moments organization
+  virtual arma::vec getIntegrationPoints() = 0;
+
+  // computes the moments and store it in the Bmoment array, use getBMoment to get it
+  virtual void computeMoments() = 0;
+};
+
+/*****************************************************************************
+ * 1-dimensional Bernstein moments                                           *
+ *****************************************************************************/
+class BMoment1D : BMoment<double(double), LinearEl>
+{
+public:
+  // constructors
+  BMoment1D(int q, int n, int nb_Array = 1, Element<LinearEl> element = Element<LinearEl>())
+    : BMoment(q, n, nb_Array, element) { }
+
+  // destructor
+  ~BMoment1D();
 
   // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-  static int position(int i, int n) { return i; }
+  int position(int i, int n) { return i; }
 
   // zeroes the moments vector
   void zero() { Bmoment.zeros(); }
@@ -359,5 +451,3 @@ public:
 class BMoment3D
 {
 };
-
-#endif

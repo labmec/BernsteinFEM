@@ -10,6 +10,9 @@ enum Element_t
   TetrahedronEl
 };
 
+// simplicial elements (e.g. triangle, tetrahedron) are mapped
+// using the Duffy Transform, from the equivalent quadrilateral/cube master element
+
 template <Element_t EL>
 class Element
 {

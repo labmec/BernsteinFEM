@@ -1,8 +1,7 @@
+#pragma once
+
 #include <armadillo>
 #include "Moments.h"
-
-#ifndef MASSM_H
-#define MASSM_H
 
 /*****************************************************************************
  * Bernstein Mass Matrix for 1-dimensional elements                          *
@@ -107,5 +106,3 @@ class BMass2DQuad : public BMoment2DQuad
 class BMass3D : public BMoment3D
 {
 };
-
-#endif

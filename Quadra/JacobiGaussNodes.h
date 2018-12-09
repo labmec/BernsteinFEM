@@ -1,7 +1,6 @@
-/* Defines functions to get the quadrature points an weights */
+#pragma once
 
-#ifndef JACOBI_GAUSS_NODES_H
-#define JACOBI_GAUSS_NODES_H
+/* Defines functions to get the quadrature points and weights */
 
 #define MAX_QUADRA_ORDER 80
 
@@ -13,5 +12,3 @@ double legendre_w(int q, int i);
 
 double jacobi2_xi(int q, int i);
 double jacobi1_w(int q, int i);
-
-#endif

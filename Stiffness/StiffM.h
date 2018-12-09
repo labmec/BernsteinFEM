@@ -1,5 +1,4 @@
-#ifndef STIFFM_H
-#define STIFFM_H
+#pragma once
 
 #include <armadillo>
 #include "Moments.h"

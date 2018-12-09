@@ -1,5 +1,4 @@
-#ifndef DERIVATIVES_H
-#define DERIVATIVES_H
+#pragma once
 
 #include <armadillo>
 #include <stdint.h>
@@ -250,5 +249,3 @@ public:
   void compute_matrix();
 };
 } // namespace TriD
-
-#endif
