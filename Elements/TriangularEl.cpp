@@ -1,6 +1,6 @@
 #include "Elements.h"
 
-#define TEL TriangularEl
+#define TEL Element_t::TriangularEl
 
 template <>
 arma::mat Element<TEL>::jac(2, 2, arma::fill::zeros);

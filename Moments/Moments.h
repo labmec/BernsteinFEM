@@ -44,7 +44,7 @@ public:
   }
 
   // copy constructor
-  BMoment(const BMoment<double(double), LinearEl> &cp)
+  BMoment(const BMoment<double(double), Element_t::LinearEl> &cp)
   {
     this->q = cp.q;
     this->n = cp.n;
@@ -136,11 +136,11 @@ public:
 /*****************************************************************************
  * 1-dimensional Bernstein moments                                           *
  *****************************************************************************/
-class BMoment1D : BMoment<double(double), LinearEl>
+class BMoment1D : BMoment<double(double), Element_t::LinearEl>
 {
 public:
   // constructors
-  BMoment1D(int q, int n, int nb_Array = 1, Element<LinearEl> element = Element<LinearEl>())
+  BMoment1D(int q, int n, int nb_Array = 1, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>())
     : BMoment(q, n, nb_Array, element) { }
 
   // destructor

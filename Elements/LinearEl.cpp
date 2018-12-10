@@ -1,6 +1,6 @@
 #include "Elements.h"
 
-#define LEL LinearEl
+#define LEL Element_t::LinearEl
 
 template <>
 arma::mat Element<LEL>::jac(1, 1, arma::fill::zeros);

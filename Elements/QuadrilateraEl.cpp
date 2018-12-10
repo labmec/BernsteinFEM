@@ -1,6 +1,6 @@
 #include "Elements.h"
 
-#define QEL QuadrilateralEl
+#define QEL Element_t::QuadrilateralEl
 
 template <>
 arma::mat Element<QEL>::jac(2, 2, arma::fill::zeros);

@@ -1,7 +1,7 @@
 #pragma once
 #include <armadillo>
 
-enum Element_t
+enum class Element_t
 {
   LinearEl,
   QuadrilateralEl,
