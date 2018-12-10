@@ -4,12 +4,11 @@ project(BernsteinFEM CXX)
 
 find_package(Armadillo REQUIRED)
 
-if(WIN32)
-    find_package(BLAS REQUIRED)
-    find_package(LAPACK REQUIRED)
-    set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
-    #append blas and lapack libraries into armadillo when on windows
-endif()
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+#append blas and lapack libraries into armadillo
+
 
 #adds directories
 include_directories(
