@@ -12,6 +12,7 @@ enum Element_t
 
 // simplicial elements (e.g. triangle, tetrahedron) are mapped
 // using the Duffy Transform, from the equivalent quadrilateral/cube master element
+// e.g. you should use the square [0,1] X [0,1] as master element to the TriangleEl
 
 template <Element_t EL>
 class Element
@@ -28,7 +29,16 @@ public:
   // constructor by the vertices of the element, the first coord
   Element(const arma::mat &vertices);
 
+  // copy constructor
   Element(const Element<EL> &cp);
+
+  // copy assignment operator
+  Element &operator=(const Element& cp)
+  {
+    if (this != &cp)
+    vertices = cp.vertices;
+    return *this;
+  }
 
   // get last jacobian matrix that was computed
   static const arma::mat &getLastJacobian() { return jac; }
