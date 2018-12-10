@@ -1,4 +1,3 @@
-#include <armadillo>
 #include "Elements.h"
 
 #define QEL QuadrilateralEl
@@ -11,14 +10,10 @@ Element<QEL>::Element()
     : vertices(4, 2, arma::fill::none),
       coordinates(1, 2, arma::fill::none)
 {
-    vertices(0, 0) = 0.0;
-    vertices(0, 1) = 0.0;
-    vertices(1, 0) = 1.0;
-    vertices(1, 1) = 0.0;
-    vertices(2, 0) = 1.0;
-    vertices(2, 1) = 1.0;
-    vertices(3, 0) = 0.0;
-    vertices(3, 1) = 1.0;
+    vertices(0, 0) = 0.0; vertices(0, 1) = 0.0; // v1 = (0,0)
+    vertices(1, 0) = 1.0; vertices(1, 1) = 0.0; // v2 = (1,0)
+    vertices(2, 0) = 1.0; vertices(2, 1) = 1.0; // v3 = (1,1)
+    vertices(3, 0) = 0.0; vertices(3, 1) = 1.0; // v4 = (0,1)
 }
 
 template <>
@@ -28,7 +23,7 @@ Element<QEL>::Element(const arma::mat &v)
 {
     if (v.n_rows < 4 || v.n_cols < 2)
     {
-        throw std::invalid_argument("QuadrilateralEl vertices constructor: not enough size in matrix");
+        throw std::invalid_argument("QuadrilateralEl vertices constructor: not enough size in argument (at least 4x2)");
     }
     else
     {
