@@ -1,10 +1,12 @@
 #include "Elements.h"
 
-template <>
-arma::mat Element<LinearEl>::jac(1, 1, arma::fill::zeros);
+#define LEL LinearEl
 
 template <>
-Element<LinearEl>::Element()
+arma::mat Element<LEL>::jac(1, 1, arma::fill::zeros);
+
+template <>
+Element<LEL>::Element()
     : vertices(2, 1, arma::fill::none),
       coordinates(1, 1, arma::fill::none)
 {
@@ -13,13 +15,13 @@ Element<LinearEl>::Element()
 }
 
 template <>
-Element<LinearEl>::Element(const arma::mat &v)
+Element<LEL>::Element(const arma::mat &v)
     : vertices(2, 1, arma::fill::none),
       coordinates(1, 1, arma::fill::none)
 {
     if (vertices.n_rows < 2)
     {
-        throw std::invalid_argument("Invalid constructor argument, LinearEl vertices should have at least size 2");
+        throw std::invalid_argument("LinearEl vertices constructor: not enough size in argument (at least 2)");
     }
     else
     {
@@ -29,12 +31,12 @@ Element<LinearEl>::Element(const arma::mat &v)
 }
 
 template <>
-Element<LinearEl>::Element(const Element<LinearEl> &cp)
+Element<LEL>::Element(const Element<LEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 1, arma::fill::none) {}
 
 template <>
-const arma::mat &Element<LinearEl>::mapToElement(const arma::mat &coordinates, arma::mat &jacobian)
+const arma::mat &Element<LEL>::mapToElement(const arma::mat &coordinates, arma::mat &jacobian)
 {
     try
     {
