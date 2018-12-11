@@ -1,3 +1,14 @@
+/***************************************************************
+ * Author: Lucas B. Andrade
+ * 
+ * This file contains definitions of a Elements template class
+ * The template argument is an enum Element_t, which specifies
+ * the type of element of the object
+ * 
+ * The types of elements are in respect to its geometrical
+ * properties (e.g. LinearEl is the 1D line element)
+ ***************************************************************/
+
 #pragma once
 #include <armadillo>
 
