@@ -1,14 +1,8 @@
-cmake_minimum_required(VERSION 3.4.0)
-
-#project()
+cmake_minimum_required(VERSION 3.0.0)
 
 file(GLOB sources *.cpp)
 
 file(GLOB headers Moments.h)
 
-add_library(Moments_lib STATIC ${sources} ${headers})
-
-set(LIBRARIES ${LIBRARIES} Moments_lib)
-
-add_dependencies(Moments_lib Quadra_lib)
-target_link_libraries(Moments_lib Quadra_lib ${ARMADILLO_LIBRARIES})
+set(lib_sources ${lib_sources} ${sources} PARENT_SCOPE)
+set(lib_headers ${lib_headers} ${headers} PARENT_SCOPE)

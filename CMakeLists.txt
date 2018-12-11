@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.0)
+cmake_minimum_required(VERSION 3.0.0)
 
 project(BernsteinFEM CXX)
 
@@ -36,9 +36,7 @@ if (BUILD_TESTS)
     add_subdirectory(Tests)
 endif()
 
-file(GLOB sources *.cpp)
-
-file(GLOB headers *.h)
+add_library(BernsteinFEM STATIC ${lib_sources} ${lib_headers})
 
 #find_package(pz)
 #target_link_libraries(MAIN Moments_lib Mass_lib Stiff_lib Elem_lib)
