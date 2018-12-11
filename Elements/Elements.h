@@ -44,7 +44,7 @@ public:
   Element(const Element<EL> &cp);
 
   // copy assignment operator
-  Element &operator=(const Element& cp)
+  Element<EL> &operator=(const Element<EL>& cp)
   {
     if (this != &cp)
     vertices = cp.vertices;
