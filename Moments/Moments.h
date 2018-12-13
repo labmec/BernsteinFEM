@@ -8,10 +8,9 @@
 template <typename _signature, Element_t EL>
 class BMoment
 {
-  int q; // number of quadrature points in one dimension
-  int n; // Bernstein polynomial order
-
 protected:
+  int q;                // number of quadrature points in one dimension
+  int n;                // Bernstein polynomial order
   int lenMoments;       // length of the Bmoment vector
   int lenCval;          // length of the Cval array
   arma::mat Bmoment;    // vector where the b-moments are stored
@@ -139,6 +138,11 @@ public:
  *****************************************************************************/
 class BMoment1D : BMoment<double(double), Element_t::LinearEl>
 {
+protected:
+  void assignQuadra() final;
+
+  void loadFunctionDef() final;
+
 public:
   // constructors
   BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1)
@@ -155,6 +159,8 @@ public:
 
   // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
   double getBMoment(int i, int dim) { return Bmoment(i, dim - 1); }
+
+  arma::mat getIntegrationPoints();
 
   // compute the B-moments using the values already assigned in the object
   void computeMoments() final;
