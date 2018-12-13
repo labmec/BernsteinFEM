@@ -145,8 +145,7 @@ protected:
 
 public:
   // constructors
-  BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1)
-    : BMoment(q, n, element, nb_Array) { }
+  BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1);
 
   // destructor
   ~BMoment1D();
@@ -169,56 +168,23 @@ public:
 /*****************************************************************************
  * Bernstein moments for triangles/simpleces (2-dimensional)                 *
  *****************************************************************************/
-class BMoment2DTri
+class BMoment2DTri : public BMoment<double(double, double), Element_t::TriangularEl>
 {
-  int q;                // number of quadrature points in one dimension
-  int n;                // Bernstein polynomial order
-  int lenMoments;       //length of the Bmoment vectors
-  arma::mat CVal;       // stores function values at quadrature points
-  arma::mat Bmoment;    // Vectors to store the Bernstein Moments
-  bool fValSet = false; // is true if the function value is set
-  bool fDefSet = false; // is true if the function definition is set
-
-  // function definition for the computation of the b-moments
-  std::function<double(double, double)> f;
+  arma::mat BMomentInter;
+protected:
 
   // map to obtain Gauss-Jacobi rule on unit interval
-  void assignQuadra();
+  void assignQuadra() final;
 
-  //convert barycentric coordinates (b1,b2,b3) of a point w.r.t. vertices v1,v2,v3 into Cartesian coordinates v
-  void bary2cart2d(double b1, double b2, double b3, double v1[2], double v2[2], double v3[2], double v[2]);
-
-  //initialize Bmoment by the values of the function f at the quadrature points of order q
-  void init_BmomentC_Bmom2d();
-
-  //initialize Bmoment with the values of the function f, stored at CVal
-  void init_Bmoment2d_Cval();
-
-protected:
-  int functVal = 1;   // determines if will use function value or function definition (use function value by default)
-  int nb_Array = 1;   // dimension of function Image (function is scalar valued by default)
-  arma::mat vertices; // triangle vertices coordinates
-  arma::mat quadraWN; // quadrature points and weights
+  void loadFunctionDef() final;
 
   // helps indexing quadrature points vectors
   int position_q(int i, int j, int q) { return i * q + j; }
 
-  // routine used to pre-multiply normals with the Bmoments
-  void transform_BmomentC_Stiff2d(BMoment2DTri *Bmomentab, const arma::mat &normalMat);
-
 public:
-  // default constructor
-  BMoment2DTri();
 
-  // quadrature and polynomial order constructor;
-  BMoment2DTri(int q, int n);
-
-  BMoment2DTri(int q, int n, int nb_Array);
-
-  // constructor setting q, n and the triangle vertices
-  BMoment2DTri(int q, int n, double T[][2]);
-
-  BMoment2DTri(int q, int n, int nb_Array, double T[][2]);
+  BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1)
+    : BMoment(q, n, element, nb_Array) { }
 
   ~BMoment2DTri();
 
@@ -248,30 +214,19 @@ public:
     return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
   }
 
-  // sets the dimension number of the function multiplying the Bernstein basis polynomial
-  void setNbArray(int nb_Array)
-  {
-    this->nb_Array = nb_Array;
-    Bmoment.resize(lenMoments, nb_Array);
-    CVal.resize(MAX(n + 1, q) * MAX(n + 1, q), nb_Array);
-  }
-
-  int getNbArray() { return nb_Array; }
+  int position(int i, int n) final;
 
   // return the index for the (i, j, n-i-j) triangle coordinate
   static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-  // zeroes the moments vector
-  void zero() { Bmoment.zeros(); }
-
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-  double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
+  double getBMoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
   // get the i-th bmoment in the array, only use if you really know what you're doing
-  double get_bmoment(int i) { return Bmoment(i, 0); }
+  double getBMoment(int i) { return Bmoment(i, 0); }
 
   // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-  double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
+  double getBMoment(int i, int dim) { return Bmoment(i, dim); }
 
   // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
   // Assuming: points = getIntegrationPoints(); then
@@ -279,34 +234,8 @@ public:
   // points(i, 1) == y i-th coordinate
   arma::mat getIntegrationPoints();
 
-  // call if you're going to use the function definition as parameters instead of the function value (as in default)
-  void useFunctionDef() { functVal = 0; }
-
-  // call if you're going back to using the function values
-  void useFunctionValue() { functVal = 1; }
-
-  // set the function value at quadrature points, as in Fval, the Fval vector must use the order given by the position() function
-  void setFunction(const arma::vec &Fval);
-  void setFunction(const arma::mat &Fval);
-
-  // set the function that multiplies the B-polynomial by definition
-  void setFunction(std::function<double(double, double)> f);
-
-  // set the element triangle vertices
-  void setTriangle(double v1[2], double v2[2], double v3[2]);
-  void setTriangle(const arma::mat &vertices);
-
-  // computes the function definition into the function values vector
-  void computeFunctionDef();
-
   // compute the b-moments using the values already assigned in the object
-  void compute_moments();
-
-  // compute the b-moments for the specified f function
-  void compute_moments(std::function<double(double, double)> f);
-
-  // compute the b-moments for the Fval function values
-  void compute_moments(const arma::vec &Fval);
+  virtual void computeMoments() final;
 };
 
 /*****************************************************************************

@@ -1,12 +1,19 @@
 #include <iostream>
 #include <cmath>
-#include <cstdlib>
-using std::cin;
-using std::cout;
-using std::endl;
-
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
+
+inline
+BMoment1D::BMoment1D(int q, int n, Element<Element_t::LinearEl> element, int nb_Array)
+    : BMoment(q, n, element, nb_Array)
+{
+    lenMoments = n + 1;
+    lenCval = q;
+    Bmoment.set_size(lenMoments, nb_Array);
+    quadraWN.set_size(lenCval);
+    Cval.set_size(lenCval, nb_Array);
+    assignQuadra();
+}
 
 inline
 void BMoment1D::assignQuadra()
@@ -54,12 +61,11 @@ arma::mat BMoment1D::getIntegrationPoints()
 inline
 void BMoment1D::computeMoments()
 {
-    if (functVal == 0 && !fValSet)
+    if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 1 && !fValSet)
+    else if (!functVal && !fDefSet)
     {
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
-        loadFunctionDef();
     }
     else
     {
