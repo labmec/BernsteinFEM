@@ -289,14 +289,11 @@ public:
   void computeMoments() final;
 };
 
-  // compute the b-moments for the specified f function
-  void compute_moments(std::function<double(double, double)> f);
-
-  // compute the b-moments for the Fval function values
-  void compute_moments(const arma::vec &Fval);
+// Future class definition
+class BMomentCube3D : public BMoment<double(double, double, double), Element_t::CubeEl>
+{
 };
 
-// Future class definition
-class BMoment3D
+class BMomentTetra3D : public BMoment<double(double, double, double), Element_t::TetrahedronEl>
 {
 };
