@@ -279,12 +279,6 @@ public:
   // points(i, 1) == y i-th coordinate
   arma::mat getIntegrationPoints();
 
-  // Returns the nodal shape function of the elements quadrilateral, and the jacobian determinant
-  // the points are stored in the parameter X and the jacobian determinant in dX
-  void nodalShape(double X[], double &dX, double xi, double eta);
-  void nodalShape(arma::vec &X, double &dX, double xi, double eta);
-  void nodalShape(arma::vec &X, arma::mat &jac, double &dX, double xi, double eta);
-
   // compute the b-moments using the values already assigned in the object
   void computeMoments() final;
 };
