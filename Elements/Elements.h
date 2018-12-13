@@ -51,6 +51,9 @@ public:
     return *this;
   }
 
+  // returns the vertices of the element object
+  const arma::mat &getVertices() { return vertices; }
+
   // get last jacobian matrix that was computed
   static const arma::mat &getLastJacobian() { return jac; }
 
