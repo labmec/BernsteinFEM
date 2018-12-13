@@ -183,8 +183,7 @@ protected:
 
 public:
 
-  BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1)
-    : BMoment(q, n, element, nb_Array) { }
+  BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
 
   ~BMoment2DTri();
 
