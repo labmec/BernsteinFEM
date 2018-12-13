@@ -63,4 +63,6 @@ const arma::mat &Element<QEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
     jacobian.at(0, 1) = (1.0 - xi_) * (vertices.at(3, 0) - vertices.at(0, 0)) + xi_ * (vertices.at(2, 0) - vertices.at(1, 0));
     jacobian.at(1, 0) = (1.0 - eta_) * (vertices.at(1, 1) - vertices.at(0, 1)) + eta_ * (vertices.at(2, 1) - vertices.at(3, 1));
     jacobian.at(1, 1) = (1.0 - xi_) * (vertices.at(3, 1) - vertices.at(0, 1)) + xi_ * (vertices.at(2, 1) - vertices.at(1, 1));
+
+    return coordinates;
 }
