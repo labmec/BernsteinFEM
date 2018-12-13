@@ -23,7 +23,7 @@ protected:
   arma::mat quadraWN;   // quadrature points and weights
 
   // function definition for the computation of the b-moments
-  std::function<_signature> f;
+  std::function<_signature> &f;
 
 // protected virtual methods
   // assign the quadrature points and weights
