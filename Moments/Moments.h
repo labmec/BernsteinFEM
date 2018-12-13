@@ -70,8 +70,8 @@ public:
   // return the dimension of function Image (function is scalar valued by default)
   int getNbArray() { return nb_Array; }
 
-  // returns wether you will be using function values or function definition (0 or 1, respectively)
-  int getFunctVal() { return functVal; }
+  // returns wether you will be using function values or function definition (true for function values)
+  bool getFunctVal() { return functVal; }
 
   // returns the element used for computing
   Element<EL> getElement() { return element; }
@@ -106,9 +106,9 @@ public:
 
   void zero() { Bmoment.zeros(); }
 
-  void useFunctionDef() { functVal = 0; }
+  void useFunctionDef() { functVal = false; }
 
-  void useFunctionValue() { functVal = 1; }
+  void useFunctionValue() { functVal = true; }
 
   void compute_moments(std::function<_signature> f)
   {
@@ -123,11 +123,12 @@ public:
   }
 
 // virtual methods
-  // returns the position of a specified point in the matrix (the point is defined by the element)
-  virtual int position() = 0;
+  // returns the position of a specified point in the matrix (the point is defined by the element and polynomial order)
+  virtual int position(int i, int n) = 0;
+  int position(int i) { position(i, this->n); }
 
   // returns the vector with the integration points over the object's element, following the moments organization
-  virtual arma::vec getIntegrationPoints() = 0;
+  virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
 
   // computes the moments and store it in the Bmoment array, use getBMoment to get it
   virtual void computeMoments() = 0;
@@ -147,48 +148,16 @@ public:
   ~BMoment1D();
 
   // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-  int position(int i, int n) { return i; }
-
-  // zeroes the moments vector
-  void zero() { Bmoment.zeros(); }
-
-  // returns the whole Bmoment matrix
-  const arma::mat &get_bmoment() { return Bmoment; }
+  int position(int i, int n) final;
 
   // returns the value of the i-th indexed B-moment
-  double get_bmoment(int i) { return Bmoment(i, 0); }
+  double getBMoment(int i) { return Bmoment(i, 0); }
 
   // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
-  double get_bmoment(int i, int dim) { return Bmoment(i, dim - 1); }
-
-  // returns the vector with the integration points over the object's element, following the moments organization
-  arma::vec getIntegrationPoints();
-
-  // call if you're going to use the function definition as parameters instead of the function value (as in default)
-  void useFunctionDef() { functVal = 0; }
-
-  // call if you're going back to using the function values
-  void useFunctionValue() { functVal = 1; }
-
-  // set the function values for computation
-  void setFunction(const arma::vec &Fval);
-
-  // set the function values for computation when you have more than one dimension
-  void setFunction(const arma::mat &Fval);
-
-  // set the function definition for computation
-  void setFunction(std::function<double(double)> f);
-
-  void setInterval(double a, double b);
+  double getBMoment(int i, int dim) { return Bmoment(i, dim - 1); }
 
   // compute the B-moments using the values already assigned in the object
-  void compute_moments();
-
-  // compute the b-moments for the specified f function
-  void compute_moments(std::function<double(double)> f);
-
-  // compute the b-moments for the Fval function values
-  void compute_moments(const arma::vec &Fval);
+  void computeMoments() final;
 };
 
 /*****************************************************************************
