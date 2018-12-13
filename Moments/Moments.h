@@ -18,7 +18,7 @@ protected:
   arma::mat Cval;       // vector where the function values are stored
   bool fValSet = false; // is true if the function value is set
   bool fDefSet = false; // is true if the function definition is set
-  int functVal;         // determines if will use function value or function definition (use function dvalue by default)
+  bool functVal;         // determines if will use function value or function definition (use function value by default)
   int nb_Array;         // dimension of function Image (function is scalar valued by default)
   Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
   arma::mat quadraWN;   // quadrature points and weights
