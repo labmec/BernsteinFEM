@@ -35,7 +35,7 @@ protected:
 
 public:
 // constructors
-  BMoment(int q, int n, int nb_Array = 1, Element<EL> element = Element<EL>())
+  BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1)
     : element(element), Bmoment(), Cval(), quadraWN()
   {
     this->q = q;
@@ -140,8 +140,8 @@ class BMoment1D : BMoment<double(double), Element_t::LinearEl>
 {
 public:
   // constructors
-  BMoment1D(int q, int n, int nb_Array = 1, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>())
-    : BMoment(q, n, nb_Array, element) { }
+  BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1)
+    : BMoment(q, n, element, nb_Array) { }
 
   // destructor
   ~BMoment1D();
