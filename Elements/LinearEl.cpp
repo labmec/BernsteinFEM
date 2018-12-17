@@ -48,4 +48,6 @@ const arma::mat &Element<LEL>::mapToElement(const arma::mat &coordinates, arma::
         std::cerr << e.what() << std::endl;
         std::cerr << "invalid arguments (probably the size) in 'mapToElement' method call" << std::endl;
     }
+
+    return coordinates;
 }

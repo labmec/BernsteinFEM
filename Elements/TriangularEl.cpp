@@ -63,4 +63,6 @@ const arma::mat &Element<TEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
     }
 
     // TODO: implement jacobian
+
+    return coordinates;
 }
