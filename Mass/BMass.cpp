@@ -5,7 +5,7 @@ BMass::BMass(int q, int n)
 {
     this->q = q;
     this->n = n;
-    lenBinomialMat = n;
+    lenBinomialMat = n + 1;
     computeBinomials();
 }
 
