@@ -8,129 +8,105 @@
 template <typename _signature, Element_t EL>
 class BMoment
 {
-protected:
-  int q;                // number of quadrature points in one dimension
-  int n;                // Bernstein polynomial order
-  int lenMoments;       // length of the Bmoment vector
-  int lenCval;          // length of the Cval array
-  arma::mat Bmoment;    // vector where the b-moments are stored
-  arma::mat Cval;       // vector where the function values are stored
-  bool fValSet = false; // is true if the function value is set
-  bool fDefSet = false; // is true if the function definition is set
-  bool functVal;         // determines if will use function value or function definition (use function value by default)
-  int nb_Array;         // dimension of function Image (function is scalar valued by default)
-  Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
-  arma::mat quadraWN;   // quadrature points and weights
+  protected:
+    int q;                // number of quadrature points in one dimension
+    int n;                // Bernstein polynomial order
+    int lenMoments;       // length of the Bmoment vector
+    int lenCval;          // length of the Cval array
+    arma::mat Bmoment;    // vector where the b-moments are stored
+    arma::mat Cval;       // vector where the function values are stored
+    bool fValSet = false; // is true if the function value is set
+    bool fDefSet = false; // is true if the function definition is set
+    bool functVal;        // determines if will use function value or function definition (use function value by default)
+    int nb_Array;         // dimension of function Image (function is scalar valued by default)
+    Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
+    arma::mat quadraWN;   // quadrature points and weights
 
-  // function definition for the computation of the b-moments
-  std::function<_signature> &f;
+    // function definition for the computation of the b-moments
+    std::function<_signature> &f;
 
-// protected virtual methods
-  // assign the quadrature points and weights
-  virtual void assignQuadra() = 0;
+    // protected virtual methods
+    // assign the quadrature points and weights
+    virtual void assignQuadra() = 0;
 
-  // loads the function definition values at quadrature points into Cval
-  virtual void loadFunctionDef() = 0;
+    // loads the function definition values at quadrature points into Cval
+    virtual void loadFunctionDef() = 0;
 
-public:
-// constructors
-  BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1)
-    : Bmoment(), Cval(), element(element), quadraWN(), f()
-  {
-    this->q = q;
-    this->n = n;
-    this->nb_Array = nb_Array;
-  }
+  public:
+    // constructors
+    BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1);
 
-  // copy constructor
-  BMoment(const BMoment<double(double), Element_t::LinearEl> &cp)
-  {
-    this->q = cp.q;
-    this->n = cp.n;
-    this->nb_Array = cp.nb_Array;
-  }
+    // copy constructor
+    BMoment(const BMoment<double(double), Element_t::LinearEl> &cp);
 
-// destructor
-  ~BMoment() { }
+    // destructor
+    ~BMoment() {}
 
-// getters
-  // returns number of integration points
-  int getNumIntegrationPoints() { return q; }
+    // getters
+    // returns number of integration points
+    int getNumIntegrationPoints();
 
-  // returns polynomial order
-  int getPOrder() { return n; }
+    // returns polynomial order
+    int getPOrder();
 
-  // returns moments array length
-  int getLenMoments() { return lenMoments; }
+    // returns moments array length
+    int getLenMoments();
 
-  // returns number
-  int getLenCval() { return lenCval; }
+    // returns number
+    int getLenCval();
 
-  // return the dimension of function Image (function is scalar valued by default)
-  int getNbArray() { return nb_Array; }
+    // return the dimension of function Image (function is scalar valued by default)
+    int getNbArray();
 
-  // returns wether you will be using function values or function definition (true for function values)
-  bool getFunctVal() { return functVal; }
+    // returns wether you will be using function values or function definition (true for function values)
+    bool getFunctVal();
 
-  // returns the element used for computing
-  Element<EL> getElement() { return element; }
+    // returns the element used for computing
+    Element<EL> getElement();
 
-  // returns the whole Bmoment matrix
-  const arma::mat &getBMoment() { return Bmoment; }
+    // returns the whole Bmoment matrix
+    const arma::mat &getBMoment();
 
-// setters
-  // sets number of integration points
-  void setNumIntegrationPoints(int q) { this->q = q; }
+    // setters
+    // sets number of integration points
+    void setNumIntegrationPoints(int q);
 
-  // sets polynomial order
-  void setPOder(int n) { this->n = n; }
+    // sets polynomial order
+    void setPOder(int n);
 
-  // sets the dimension of function Image (function is scalar valued by default)
-  void setNbArray(int nb_Array)
-  {
-    this->nb_Array = nb_Array;
-    Bmoment.resize(lenMoments, nb_Array);
-    Cval.resize(lenCval, nb_Array);
-  }
+    // sets the dimension of function Image (function is scalar valued by default)
+    void setNbArray(int nb_Array);
 
-  void setFunctionValues(const arma::vec &Cval) { this->Cval.swap(Cval); }
+    void setFunctionValues(const arma::vec &Cval);
 
-  void setFunctionValues(const arma::mat &Cval) { this->Cval.swap(Cval); }
+    void setFunctionValues(const arma::mat &Cval);
 
-  void setFunctionDefinition(std::function<_signature> f) { this->f = f; }
+    void setFunctionDefinition(std::function<_signature> f);
 
-  void setElement(Element<EL> element) { this->element = element; }
+    void setElement(Element<EL> element);
 
-// inline methods
+    // inline methods
 
-  void zero() { Bmoment.zeros(); }
+    void zero();
 
-  void useFunctionDef() { functVal = false; }
+    void useFunctionDef();
 
-  void useFunctionValue() { functVal = true; }
+    void useFunctionValue();
 
-  void compute_moments(std::function<_signature> f)
-  {
-    setFunctionDefinition(f);
-    compute_moments();
-  }
+    void computeMoments(std::function<_signature> f);
 
-  void compute_moments(const arma::mat &Cval)
-  {
-    setFunctionValues(Cval);
-    compute_moments();
-  }
+    void computeMoments(const arma::mat &Cval);
 
-// virtual methods
-  // returns the position of a specified point in the matrix (the point is defined by the element and polynomial order)
-  virtual int position(int i, int n) = 0;
-  int position(int i) { return position(i, this->n); }
+    // virtual methods
+    // returns the position of a specified point in the matrix (the point is defined by the element and polynomial order)
+    virtual int position(int i, int n) = 0;
+    int position(int i);
 
-  // returns the vector with the integration points over the object's element, following the moments organization
-  virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
+    // returns the vector with the integration points over the object's element, following the moments organization
+    virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
 
-  // computes the moments and store it in the Bmoment array, use getBMoment to get it
-  virtual void computeMoments() = 0;
+    // computes the moments and store it in the Bmoment array, use getBMoment to get it
+    virtual void computeMoments() = 0;
 };
 
 /*****************************************************************************
@@ -138,31 +114,31 @@ public:
  *****************************************************************************/
 class BMoment1D : BMoment<double(double), Element_t::LinearEl>
 {
-protected:
-  void assignQuadra() final;
+  protected:
+    void assignQuadra() final;
 
-  void loadFunctionDef() final;
+    void loadFunctionDef() final;
 
-public:
-  // constructors
-  BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1);
+  public:
+    // constructors
+    BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1);
 
-  // destructor
-  ~BMoment1D();
+    // destructor
+    ~BMoment1D();
 
-  // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-  int position(int i, int n) final;
+    // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
+    int position(int i, int n) final;
 
-  // returns the value of the i-th indexed B-moment
-  double getBMoment(int i) { return Bmoment(i, 0); }
+    // returns the value of the i-th indexed B-moment
+    double getBMoment(int i) { return Bmoment(i, 0); }
 
-  // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
-  double getBMoment(int i, int dim) { return Bmoment(i, dim - 1); }
+    // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
+    double getBMoment(int i, int dim) { return Bmoment(i, dim - 1); }
 
-  arma::mat getIntegrationPoints();
+    arma::mat getIntegrationPoints();
 
-  // compute the B-moments using the values already assigned in the object
-  void computeMoments() final;
+    // compute the B-moments using the values already assigned in the object
+    void computeMoments() final;
 };
 
 /*****************************************************************************
@@ -170,71 +146,70 @@ public:
  *****************************************************************************/
 class BMoment2DTri : public BMoment<double(double, double), Element_t::TriangularEl>
 {
-  arma::mat BMomentInter;
-protected:
+    arma::mat BMomentInter;
 
-  // map to obtain Gauss-Jacobi rule on unit interval
-  void assignQuadra() final;
+  protected:
+    // map to obtain Gauss-Jacobi rule on unit interval
+    void assignQuadra() final;
 
-  void loadFunctionDef() final;
+    void loadFunctionDef() final;
 
-  // helps indexing quadrature points vectors
-  int position_q(int i, int j, int q) { return i * q + j; }
+    // helps indexing quadrature points vectors
+    int position_q(int i, int j, int q) { return i * q + j; }
 
-public:
+  public:
+    BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
 
-  BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
+    ~BMoment2DTri();
 
-  ~BMoment2DTri();
+    // computes area of triangle < v1,v2,v3 >
+    static double Area2d(double v1[2], double v2[2], double v3[2])
+    {
+        double x1 = v1[0];
+        double y1 = v1[1];
+        double x2 = v2[0];
+        double y2 = v2[1];
+        double x3 = v3[0];
+        double y3 = v3[1];
 
-  // computes area of triangle < v1,v2,v3 >
-  static double Area2d(double v1[2], double v2[2], double v3[2])
-  {
-    double x1 = v1[0];
-    double y1 = v1[1];
-    double x2 = v2[0];
-    double y2 = v2[1];
-    double x3 = v3[0];
-    double y3 = v3[1];
+        return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
+    }
 
-    return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
-  }
+    // computes area of triangle defined by vertices
+    static double Area2d(const arma::mat &vertices)
+    {
+        double x1 = vertices(0, 0);
+        double y1 = vertices(0, 1);
+        double x2 = vertices(1, 0);
+        double y2 = vertices(1, 1);
+        double x3 = vertices(2, 0);
+        double y3 = vertices(2, 1);
 
-  // computes area of triangle defined by vertices
-  static double Area2d(const arma::mat &vertices)
-  {
-    double x1 = vertices(0, 0);
-    double y1 = vertices(0, 1);
-    double x2 = vertices(1, 0);
-    double y2 = vertices(1, 1);
-    double x3 = vertices(2, 0);
-    double y3 = vertices(2, 1);
+        return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
+    }
 
-    return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
-  }
+    int position(int i, int n) final;
 
-  int position(int i, int n) final;
+    // return the index for the (i, j, n-i-j) triangle coordinate
+    static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-  // return the index for the (i, j, n-i-j) triangle coordinate
-  static int position(int i, int j, int n) { return i * (n + 1) + j; }
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+    double getBMoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
-  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-  double getBMoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
+    // get the i-th bmoment in the array, only use if you really know what you're doing
+    double getBMoment(int i) { return Bmoment(i, 0); }
 
-  // get the i-th bmoment in the array, only use if you really know what you're doing
-  double getBMoment(int i) { return Bmoment(i, 0); }
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
+    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
 
-  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-  double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+    // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
+    // Assuming: points = getIntegrationPoints(); then
+    // points(i, 0) == x i-th coordinate
+    // points(i, 1) == y i-th coordinate
+    arma::mat getIntegrationPoints();
 
-  // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
-  // Assuming: points = getIntegrationPoints(); then
-  // points(i, 0) == x i-th coordinate
-  // points(i, 1) == y i-th coordinate
-  arma::mat getIntegrationPoints();
-
-  // compute the b-moments using the values already assigned in the object
-  virtual void computeMoments() final;
+    // compute the b-moments using the values already assigned in the object
+    virtual void computeMoments() final;
 };
 
 /*****************************************************************************
@@ -245,41 +220,42 @@ public:
 // add the second order of polynomial degree to computation
 class BMoment2DQuad : public BMoment<double(double, double), Element_t::QuadrilateralEl>
 {
-  arma::mat BMomentInter;
-protected:
-  // map to obtain Gauss-Jacobi rule on unit interval
-  void assignQuadra() final;
+    arma::mat BMomentInter;
 
-  // computes the function by the definition and stores it in Cval
-  void loadFunctionDef() final;
+  protected:
+    // map to obtain Gauss-Jacobi rule on unit interval
+    void assignQuadra() final;
 
-  // helps indexing quadrature points vectors
-  int position_q(int i, int j, int q) { return i * q + j; }
+    // computes the function by the definition and stores it in Cval
+    void loadFunctionDef() final;
 
-public:
-  BMoment2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+    // helps indexing quadrature points vectors
+    int position_q(int i, int j, int q) { return i * q + j; }
 
-  // return the index for the (i, j) quadrilateral node
-  static int position(int i, int j, int n) { return i * (n + 1) + j; }
+  public:
+    BMoment2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
 
-  int position(int i, int n) { return i; }
+    // return the index for the (i, j) quadrilateral node
+    static int position(int i, int j, int n) { return i * (n + 1) + j; }
 
-  // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-  double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
+    int position(int i, int n) { return i; }
 
-  // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-  double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
+    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
+    double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
 
-  // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-  double get_bmoment(int i) { return Bmoment(i, 0); }
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
+    double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
-  // returns the vector with the integration points (x, y) over the object's element, following the moments organization
-  // points(i, 0) == x i-th coordinate
-  // points(i, 1) == y i-th coordinate
-  arma::mat getIntegrationPoints();
+    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
+    double get_bmoment(int i) { return Bmoment(i, 0); }
 
-  // compute the b-moments using the values already assigned in the object
-  void computeMoments() final;
+    // returns the vector with the integration points (x, y) over the object's element, following the moments organization
+    // points(i, 0) == x i-th coordinate
+    // points(i, 1) == y i-th coordinate
+    arma::mat getIntegrationPoints();
+
+    // compute the b-moments using the values already assigned in the object
+    void computeMoments() final;
 };
 
 // Future class definition
