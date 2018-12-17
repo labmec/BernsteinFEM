@@ -2,7 +2,7 @@
 
 // constructors
 template <typename _s, Element_t EL>
-inline BMoment<_s, EL>::BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1)
+BMoment<_s, EL>::BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1)
     : Bmoment(), Cval(), element(element), quadraWN(), f()
 {
     this->q = q;
@@ -12,7 +12,7 @@ inline BMoment<_s, EL>::BMoment(int q, int n, Element<EL> element = Element<EL>(
 
 // copy constructor
 template <typename _s, Element_t EL>
-inline BMoment<_s, EL>::BMoment(const BMoment<double(double), Element_t::LinearEl> &cp)
+BMoment<_s, EL>::BMoment(const BMoment<double(double), Element_t::LinearEl> &cp)
 {
     this->q = cp.q;
     this->n = cp.n;
@@ -21,7 +21,7 @@ inline BMoment<_s, EL>::BMoment(const BMoment<double(double), Element_t::LinearE
 
 // destructor
 template <typename _s, Element_t EL>
-inline BMoment<_s, EL>::~BMoment() {}
+BMoment<_s, EL>::~BMoment() {}
 
 // getters
 // returns number of integration points
