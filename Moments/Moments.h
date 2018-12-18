@@ -34,10 +34,13 @@ class BMoment
 
   public:
     // constructors
-    BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1);
+    BMoment(int q, int n, const Element<EL> &element = Element<EL>(), int nb_Array = 1);
 
     // copy constructor
     BMoment(const BMoment<double(double), Element_t::LinearEl> &cp);
+
+    // copy assignment operator
+    BMoment &operator= (const BMoment &cp);
 
     // destructor
     ~BMoment() {}
@@ -65,7 +68,7 @@ class BMoment
     Element<EL> getElement();
 
     // returns the whole Bmoment matrix
-    const arma::mat &getBMoment();
+    const arma::mat &getMoments();
 
     // setters
     // sets number of integration points
@@ -112,7 +115,7 @@ class BMoment
 /*****************************************************************************
  * 1-dimensional Bernstein moments                                           *
  *****************************************************************************/
-class BMoment1D : BMoment<double(double), Element_t::LinearEl>
+class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
 {
   protected:
     void assignQuadra() final;
@@ -121,7 +124,13 @@ class BMoment1D : BMoment<double(double), Element_t::LinearEl>
 
   public:
     // constructors
-    BMoment1D(int q, int n, Element<Element_t::LinearEl> element = Element<Element_t::LinearEl>(), int nb_Array = 1);
+    BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>(), int nb_Array = 1);
+
+    // copy constructor
+    BMoment1D(const BMoment1D &cp);
+
+    // copy assignment operator
+    BMoment1D &operator=(const BMoment1D &cp);
 
     // destructor
     ~BMoment1D();
@@ -158,7 +167,14 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
     int position_q(int i, int j, int q) { return i * q + j; }
 
   public:
-    BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
+    // default constructor
+    BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
+
+    // copy constructor
+    BMoment2DTri(const BMoment2DTri &cp);
+
+    // copy assignment operator
+    BMoment2DTri &operator=(const BMoment2DTri &cp);
 
     ~BMoment2DTri();
 
@@ -233,7 +249,14 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     int position_q(int i, int j, int q) { return i * q + j; }
 
   public:
-    BMoment2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+    // default constructor
+    BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+
+    // copy constructor
+    BMoment2DQuad(const BMoment2DQuad &cp);
+
+    // copy assignment operator
+    BMoment2DQuad &operator=(const BMoment2DQuad &cp);
 
     // return the index for the (i, j) quadrilateral node
     static int position(int i, int j, int n) { return i * (n + 1) + j; }
@@ -241,13 +264,13 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     int position(int i, int n) { return i; }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-    double get_bmoment(int i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double get_bmoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
+    double getBMoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-    double get_bmoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(int i) { return Bmoment(i, 0); }
 
     // returns the vector with the integration points (x, y) over the object's element, following the moments organization
     // points(i, 0) == x i-th coordinate

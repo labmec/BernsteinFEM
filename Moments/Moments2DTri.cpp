@@ -10,8 +10,7 @@
 #endif
 #define LEN(n, q) (MAX(n + 1, q) * MAX(n + 1, q))
 
-inline
-BMoment2DTri::BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> element, int nb_Array)
+BMoment2DTri::BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element, int nb_Array)
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n, q - 1) + 1) * (MAX(n, q - 1) + 1), nb_Array, arma::fill::zeros)
 {
@@ -23,7 +22,29 @@ BMoment2DTri::BMoment2DTri(int q, int n, Element<Element_t::TriangularEl> elemen
     assignQuadra();
 }
 
+BMoment2DTri::BMoment2DTri(const BMoment2DTri &cp)
+    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array)
+{
+    lenMoments = cp.lenMoments;
+    lenCval = cp.lenCval;
+    Bmoment = cp.Bmoment;
+    Cval = cp.Cval;
+}
 
+BMoment2DTri &BMoment2DTri::operator=(const BMoment2DTri &cp)
+{
+    if (this != &cp)
+    {
+        q = cp.q;
+        n = cp.n;
+        nb_Array = cp.nb_Array;
+        lenMoments = cp.lenMoments;
+        lenCval = cp.lenCval;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
+}
 
 inline
 void BMoment2DTri::assignQuadra()

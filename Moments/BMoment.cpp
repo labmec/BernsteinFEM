@@ -2,7 +2,7 @@
 
 // constructors
 template <typename _s, Element_t EL>
-BMoment<_s, EL>::BMoment(int q, int n, Element<EL> element = Element<EL>(), int nb_Array = 1)
+BMoment<_s, EL>::BMoment(int q, int n, const Element<EL> &element = Element<EL>(), int nb_Array = 1)
     : Bmoment(), Cval(), element(element), quadraWN(), f()
 {
     this->q = q;
@@ -17,6 +17,19 @@ BMoment<_s, EL>::BMoment(const BMoment<double(double), Element_t::LinearEl> &cp)
     this->q = cp.q;
     this->n = cp.n;
     this->nb_Array = cp.nb_Array;
+}
+
+// copy asignment operator
+template <typename _s, Element_t EL>
+inline BMoment<_s, EL> &BMoment<_s, EL>::operator=(const BMoment &cp)
+{
+    if (this != &cp)
+    {
+        this->q = cp.q;
+        this->n = cp.n;
+        this->nb_Array = cp.nb_Array;
+    }
+    return *this;
 }
 
 // destructor
@@ -54,7 +67,7 @@ inline Element<EL> BMoment<_s, EL>::getElement() { return element; }
 
 // returns the whole Bmoment matrix
 template <typename _s, Element_t EL>
-inline const arma::mat &BMoment<_s, EL>::getBMoment() { return Bmoment; }
+inline const arma::mat &BMoment<_s, EL>::getMoments() { return Bmoment; }
 
 // setters
 // sets number of integration points

@@ -3,8 +3,7 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-inline
-BMoment1D::BMoment1D(int q, int n, Element<Element_t::LinearEl> element, int nb_Array)
+BMoment1D::BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element, int nb_Array)
     : BMoment(q, n, element, nb_Array)
 {
     lenMoments = n + 1;
@@ -13,6 +12,30 @@ BMoment1D::BMoment1D(int q, int n, Element<Element_t::LinearEl> element, int nb_
     quadraWN.set_size(lenCval);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
+}
+
+BMoment1D::BMoment1D(const BMoment1D &cp)
+    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array)
+{
+    lenMoments = cp.lenMoments;
+    lenCval = cp.lenCval;
+    Bmoment = cp.Bmoment;
+    Cval = cp.Cval;
+}
+
+BMoment1D &BMoment1D::operator=(const BMoment1D &cp)
+{
+    if (this != &cp)
+    {
+        q = cp.q;
+        n = cp.n;
+        nb_Array = cp.nb_Array;
+        lenMoments = cp.lenMoments;
+        lenCval = cp.lenCval;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 inline

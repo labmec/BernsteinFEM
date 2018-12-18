@@ -1,7 +1,7 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-BMoment2DQuad::BMoment2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> element, int nb_Array)
+BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
 {
@@ -11,6 +11,32 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> e
     quadraWN.set_size(lenCval);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
+}
+
+// copy constructor
+BMoment2DQuad::BMoment2DQuad(const BMoment2DQuad &cp)
+    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array)
+{
+    lenMoments = cp.lenMoments;
+    lenCval = cp.lenCval;
+    Bmoment = cp.Bmoment;
+    Cval = cp.Cval;
+}
+
+// copy assignment operator
+BMoment2DQuad &BMoment2DQuad::operator=(const BMoment2DQuad &cp)
+{
+    if (this != &cp)
+    {
+        q = cp.q;
+        n = cp.n;
+        nb_Array = cp.nb_Array;
+        lenMoments = cp.lenMoments;
+        lenCval = cp.lenCval;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 inline
