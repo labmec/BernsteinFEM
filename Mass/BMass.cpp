@@ -19,7 +19,22 @@ BMass::BMass(const BMass &cp)
     BinomialMat = cp.BinomialMat;
 }
 
-inline void BMass::computeBinomials()
+BMass &BMass::operator=(const BMass &cp)
+{
+    if (this != &cp)
+    {
+        q = cp.q;
+        n = cp.n;
+        lenMass = cp.lenMass;
+        lenBinomialMat = cp.lenBinomialMat;
+        Matrix = cp.Matrix;
+        BinomialMat = cp.BinomialMat;
+    }
+    return *this;
+}
+
+inline
+void BMass::computeBinomials()
 {
     for (int k = 1; k < lenBinomialMat; k++)
     {
@@ -32,25 +47,29 @@ inline void BMass::computeBinomials()
 
 // getters
 
-inline int BMass::length()
+inline
+int BMass::length()
 {
     return lenMass;
 }
 
 // returns the polynomial order of the basis
-inline int BMass::getPOrder()
+inline
+int BMass::getPOrder()
 {
     return n;
 }
 
 // returns a reference to the Mass Matrix
-inline const arma::mat &BMass::getMatrix()
+inline
+const arma::mat &BMass::getMatrix()
 {
     return Matrix;
 }
 
 // returns the value of Matrix[i][j]
-inline double BMass::getMatrixValue(int i, int j)
+inline
+double BMass::getMatrixValue(int i, int j)
 {
     try
     {
@@ -62,11 +81,3 @@ inline double BMass::getMatrixValue(int i, int j)
         std::cerr << "Max value for arguments: " << Matrix.n_cols << std::endl;
     }
 };
-
-// setters
-
-// sets the polynomial order of the basis
-inline void BMass::setPOrder(int n)
-{
-    this->n = n;
-}

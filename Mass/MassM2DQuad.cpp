@@ -6,8 +6,34 @@ BMass2DQuad::BMass2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> el)
     : BMass(q, n), BMoment2DQuad(q, 2 * n, el)
 {
     lenMass = LEN(n);
-
     Matrix.set_size(lenMass, lenMass);
+}
+
+BMass2DQuad::BMass2DQuad(const BMass2DQuad &cp)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array)
+{
+    lenMass = cp.lenMass;
+    Matrix = cp.Matrix;
+}
+
+BMass2DQuad &BMass2DQuad::operator=(const BMass2DQuad &cp)
+{
+    if (this != &cp)
+    {
+        BMass::q = cp.BMass::q;
+        BMass::n = cp.BMass::n;
+        Matrix = cp.Matrix;
+        BinomialMat = cp.BinomialMat;
+        lenMass = cp.lenMass;
+        lenBinomialMat = cp.lenBinomialMat;
+        BMoment2DQuad::q = cp.BMoment2DQuad::q;
+        BMoment2DQuad::n = cp.BMoment2DQuad::n;
+        lenCval = cp.lenCval;
+        lenMoments = cp.lenMoments;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 BMass2DQuad::~BMass2DQuad()

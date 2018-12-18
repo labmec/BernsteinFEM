@@ -10,11 +10,38 @@
 #endif
 #define LENB(n) (2 * n + 2)
 
-BMass2DTri::BMass2DTri(int q, int n)
-    : BMass(q, n), BMoment2DTri(q, 2 * n)
+BMass2DTri::BMass2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
+    : BMass(q, n), BMoment2DTri(q, 2 * n, el)
 {
     lenMass = ((n + 2) * (n + 1)) / 2;
     Matrix.set_size(lenMass, lenMass);
+}
+
+BMass2DTri::BMass2DTri(const BMass2DTri &cp)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DTri(cp.BMoment2DTri::q, cp.BMoment2DTri::n, cp.element)
+{
+    lenMass = cp.lenMass;
+    Matrix = cp.Matrix;
+}
+
+BMass2DTri &BMass2DTri::operator=(const BMass2DTri &cp)
+{
+    if (this != &cp)
+    {
+        BMass::q = cp.BMass::q;
+        BMass::n = cp.BMass::n;
+        Matrix = cp.Matrix;
+        BinomialMat = cp.BinomialMat;
+        lenMass = cp.lenMass;
+        lenBinomialMat = cp.lenBinomialMat;
+        BMoment2DTri::q = cp.BMoment2DTri::q;
+        BMoment2DTri::n = cp.BMoment2DTri::n;
+        lenCval = cp.lenCval;
+        lenMoments = cp.lenMoments;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 BMass2DTri::~BMass2DTri()
