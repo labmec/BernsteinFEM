@@ -65,7 +65,7 @@ public:
 
   void setFunction(const arma::vec &Fval)
   {
-    BMoment2DQuad::setFunction(Fval);
+    BMoment2DQuad::setFunctionValues(Fval);
   }
 
   // compute matrix coefficients
@@ -79,7 +79,7 @@ public:
 
   void setFunction(const arma::vec &Fval)
   {
-    BMoment2DQuad::setFunction(Fval);
+    BMoment2DQuad::setFunctionValues(Fval);
   }
 
   // compute matrix coefficients
@@ -93,7 +93,7 @@ public:
 
   void setFunction(const arma::vec &Fval)
   {
-    BMoment2DQuad::setFunction(Fval);
+    BMoment2DQuad::setFunctionValues(Fval);
   }
 
   // compute matrix coefficients
@@ -106,10 +106,10 @@ class StiffnessMatrix : public QuadDerivative
   dXi_dEta Xi_Eta;
   dEta_dEta Eta_Eta;
 
-  arma::mat vertices;
+  Element<Element_t::QuadrilateralEl> element;
 
 public:
-  StiffnessMatrix(int q, int n);
+  StiffnessMatrix(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
   void Zero()
   {

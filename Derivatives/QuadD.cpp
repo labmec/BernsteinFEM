@@ -104,7 +104,7 @@ dXi_dXi::dXi_dXi(int q, int n)
 
 void dXi_dXi::compute_matrix()
 {
-    BMoment2DQuad::compute_moments();
+    BMoment2DQuad::computeMoments();
 
     // test if the moments were calculated correctly
     // std::ofstream file;
@@ -128,7 +128,7 @@ void dXi_dXi::compute_matrix()
                 for (int b2 = 0; b2 <= n; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2, n - b2);
-                    double mom = w2 * get_bmoment(a1 + b1, a2 + b2, 0);
+                    double mom = w2 * getBMoment(a1 + b1, a2 + b2, 0);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
@@ -158,7 +158,7 @@ dEta_dEta::dEta_dEta(int q, int n)
 
 void dEta_dEta::compute_matrix()
 {
-    BMoment2DQuad::compute_moments();
+    BMoment2DQuad::computeMoments();
     // dEta_dEta is basically the same as dXi_dXi, we could do it by transposing the FVal matrix
     // and then transposing the resulting matrix
 
@@ -184,7 +184,7 @@ void dEta_dEta::compute_matrix()
                 for (int b2 = 0; b2 < n; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2 - 1, n - b2 - 1);
-                    double mom = w2 * get_bmoment(a1 + b1, a2 + b2, 0);
+                    double mom = w2 * getBMoment(a1 + b1, a2 + b2, 0);
 
                     int i = BMoment2DQuad::position(a1, a2, n);
                     int j = BMoment2DQuad::position(b1, b2, n);
@@ -214,7 +214,7 @@ dXi_dEta::dXi_dEta(int q, int n)
 
 void dXi_dEta::compute_matrix()
 {
-    BMoment2DQuad::compute_moments();
+    BMoment2DQuad::computeMoments();
 
     // test if the moments were calculated correctly
     // std::ofstream file;
@@ -237,7 +237,7 @@ void dXi_dEta::compute_matrix()
                 for (int b2 = 0; b2 < n; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2, n - b2 - 1);
-                    double mom = w2 * get_bmoment((a1 + b1) * (n + n) + a2 + b2);
+                    double mom = w2 * getBMoment((a1 + b1) * (n + n) + a2 + b2);
 
                     int i = position(a1, a2, n);
                     int j = position(b1, b2, n);
@@ -259,14 +259,12 @@ void dXi_dEta::compute_matrix()
  ********** Stiffness Matrix ************
  ****************************************/
 
-StiffnessMatrix::StiffnessMatrix(int q, int n)
-    : QuadDerivative(q, n), Xi_Xi(q, n), Xi_Eta(q, n), Eta_Eta(q, n) {}
+StiffnessMatrix::StiffnessMatrix(int q, int n, const Element<Element_t::QuadrilateralEl> &el)
+    : QuadDerivative(q, n), Xi_Xi(q, n), Xi_Eta(q, n), Eta_Eta(q, n), element(el) {}
 
 void StiffnessMatrix::setFunction(const vec &Fval)
 {
     // auxiliary object to compute nodal shape function
-    BMoment2DQuad nodalAux(1, 1);
-    nodalAux.setQuadrilateral(this->vertices);
     mat jac(2, 2, fill::none);
     vec X(2, fill::none);
 
@@ -278,10 +276,10 @@ void StiffnessMatrix::setFunction(const vec &Fval)
     {
         for (int j = 0; j < q; j++)
         {
-            double dX;
             double xi = (legendre_xi(q, i) + 1.0) * 0.5;
             double eta = (legendre_xi(q, j) + 1.0) * 0.5;
-            nodalAux.nodalShape(X, jac, dX, xi, eta);
+            element.mapToElement({xi, eta}, jac);
+            double dX = det(jac);
             mat jac_inv = inv(jac);
 
             Fval1.at(i * q + j) *= (jac_inv.at(0, 0) * jac_inv.at(0, 0) + jac_inv.at(0, 1) * jac_inv.at(0, 1)) * dX;
@@ -297,17 +295,13 @@ void StiffnessMatrix::setFunction(const vec &Fval)
 
 void StiffnessMatrix::setQuadrilateral(const mat &vertices)
 {
-    this->vertices = vertices;
+    element = Element<Element_t::QuadrilateralEl>(vertices);
 }
 
 arma::mat StiffnessMatrix::getIntegrationPoints()
 {
     int q = QuadDerivative::q;
     arma::mat points(q * q, 2);
-    arma::vec X(2, arma::fill::none);
-    BMoment2DQuad nodalAux(1, 1);
-    nodalAux.setQuadrilateral(this->vertices);
-    double dX;
 
     for (int i = 0; i < q; i++)
     {
@@ -315,7 +309,7 @@ arma::mat StiffnessMatrix::getIntegrationPoints()
         {
             double xi = (legendre_xi(q, i) + 1.0) * 0.5;
             double eta = (legendre_xi(q, j) + 1.0) * 0.5;
-            nodalAux.nodalShape(X, dX, xi, eta);
+            auto X = element.mapToElement({xi, eta});
             points.at(i * q + j, 0) = X[0];
             points.at(i * q + j, 1) = X[1];
         }
