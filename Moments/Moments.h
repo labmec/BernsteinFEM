@@ -236,7 +236,8 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 // add the second order of polynomial degree to computation
 class BMoment2DQuad : public BMoment<double(double, double), Element_t::QuadrilateralEl>
 {
-    arma::mat BMomentInter;
+    int m;                  // second polynomial order
+    arma::mat BMomentInter; // auxiliary matrix to compute moments
 
   protected:
     // map to obtain Gauss-Jacobi rule on unit interval
@@ -251,6 +252,8 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
   public:
     // default constructor
     BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+
+    BMoment2DQuad(int q, int n, int m, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
 
     // copy constructor
     BMoment2DQuad(const BMoment2DQuad &cp);
@@ -282,10 +285,10 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
 };
 
 // Future class definition
-class BMomentCube3D : public BMoment<double(double, double, double), Element_t::CubeEl>
+class BMoment3DCube : public BMoment<double(double, double, double), Element_t::CubeEl>
 {
 };
 
-class BMomentTetra3D : public BMoment<double(double, double, double), Element_t::TetrahedronEl>
+class BMoment3DTetra : public BMoment<double(double, double, double), Element_t::TetrahedronEl>
 {
 };

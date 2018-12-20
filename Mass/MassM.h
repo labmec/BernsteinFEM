@@ -112,6 +112,6 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
     void computeMatrix();
 };
 
-class BMassCube3D : public BMomentCube3D
+class BMass3DCube : public BMoment3DCube
 {
 };

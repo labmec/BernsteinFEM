@@ -151,6 +151,11 @@ class BStiff2DQuad
 };
 #endif
 
-class BStiff3DCube : public BMomentCube3D
+class BStiff3DCube : public BMoment3DCube
 {
+};
+
+class BStiff3DTetra : public BMoment3DTetra
+{
+
 };

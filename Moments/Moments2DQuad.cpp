@@ -5,7 +5,21 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::Quadrilatera
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
 {
+    m = n;
     lenMoments = (n + 1) * (n + 1);
+    lenCval = q * q;
+    Bmoment.set_size(lenMoments, nb_Array);
+    quadraWN.set_size(lenCval);
+    Cval.set_size(lenCval, nb_Array);
+    assignQuadra();
+}
+
+BMoment2DQuad::BMoment2DQuad(int q, int n, int m, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
+    : BMoment(q, n, element, nb_Array),
+      BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
+{
+    int max = MAX(n, m);
+    lenMoments = (max + 1) * (max + 1);
     lenCval = q * q;
     Bmoment.set_size(lenMoments, nb_Array);
     quadraWN.set_size(lenCval);
@@ -103,6 +117,7 @@ void BMoment2DQuad::computeMoments()
             loadFunctionDef();
 
         int max_nq = MAX(n, q - 1);
+        int max_nm = MAX(n, m);
         Bmoment.zeros();
 
         // convert first index (l=2)
@@ -141,16 +156,16 @@ void BMoment2DQuad::computeMoments()
 
             for (int a1 = 0; a1 <= n; a1++)
             {
-                double B = wgt * pow(s, n);
+                double B = wgt * pow(s, m);
                 int index_a1i = position_q(a1, i, max_nq);
-                for (int a2 = 0; a2 <= n; a2++)
+                for (int a2 = 0; a2 <= m; a2++)
                 {
-                    int index_a1a2 = position(a1, a2, n);
+                    int index_a1a2 = position(a1, a2, max_nm);
 
                     for (int ell = 0; ell < nb_Array; ell++)
                         Bmoment(index_a1a2, 0) += B * BMomentInter(index_a1i, 0);
                     
-                    B = B * r * (n - a2) / (1 + a2);
+                    B = B * r * (m - a2) / (1 + a2);
                 }
             }
         }
