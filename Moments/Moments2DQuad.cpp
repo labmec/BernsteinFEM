@@ -9,7 +9,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::Quadrilatera
     lenMoments = (n + 1) * (n + 1);
     lenCval = q * q;
     Bmoment.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(lenCval);
+    quadraWN.set_size(q, 2);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
 }
@@ -107,13 +107,13 @@ arma::mat BMoment2DQuad::getIntegrationPoints()
 inline
 void BMoment2DQuad::computeMoments()
 {
-    if (functVal == 1 && !fValSet)
+    if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 0 && !fDefSet)
+    else if (!functVal && !fDefSet)
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
     else
     {
-        if (functVal == 0)
+        if (!functVal)
             loadFunctionDef();
 
         int max_nq = MAX(n, q - 1);

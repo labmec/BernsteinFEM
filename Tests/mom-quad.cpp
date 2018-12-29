@@ -27,15 +27,15 @@ int main()
     int n = 4;
     int q = 2 * n;
 
-    BMoment2DQuad mom_quad(q, n);
+    
 
-    // sets quadrilateral to compute 
-    double v1[2] = {0, 0};
-    double v2[2] = {1, 0};
-    double v3[2] = {1, 1};
-    double v4[2] = {0, 1};
-    mom_quad.setQuadrilateral(v1, v2, v3, v4);
-    // you should set the quadrilateral before getting the integration points
+    // declares element to compute (default is [0,1]^2)
+    // Element<Element_t::QuadrilateralEl> quad_el({{0,0},{1,0},{1,1},{0,1}});
+
+    // declares moment object
+    // BMoment2DQuad mom_quad(q, n, quad_el);
+    BMoment2DQuad mom_quad(q, n);
+    
 
     // sets function values
     arma::mat quadPoints = mom_quad.getIntegrationPoints();
@@ -44,10 +44,10 @@ int main()
     for (int i = 0; i < Fval.n_rows; i++)
         Fval(i) = f(quadPoints(i, 0), quadPoints(i, 1));
 
-    mom_quad.setFunction(Fval);
+    mom_quad.setFunctionValues(Fval);
 
     // computes moments
-    mom_quad.compute_moments();
+    mom_quad.computeMoments();
 
     ofstream file;
     file.open("results/mom_quad2.txt");
@@ -57,7 +57,7 @@ int main()
          << endl;
     for (int i = 0; i < n + 1; i++)
         for (int j = 0; j < n + 1; j++)
-            file << "Bmoment[" << i << ", " << j << "] : " << mom_quad.get_bmoment(i, j, 0) << endl;
+            file << "Bmoment[" << i << ", " << j << "] : " << mom_quad.getBMoment(i, j, 0) << endl;
 
     file.close();
 

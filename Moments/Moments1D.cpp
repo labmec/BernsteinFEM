@@ -9,7 +9,7 @@ BMoment1D::BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element, 
     lenMoments = n + 1;
     lenCval = q;
     Bmoment.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(lenCval);
+    quadraWN.set_size(q);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
 }
@@ -37,6 +37,8 @@ BMoment1D &BMoment1D::operator=(const BMoment1D &cp)
     }
     return *this;
 }
+
+BMoment1D::~BMoment1D() {}
 
 inline
 void BMoment1D::assignQuadra()

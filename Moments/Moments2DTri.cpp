@@ -17,8 +17,6 @@ BMoment2DTri::BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> 
     lenMoments = (n + 1) * (n + 1); // FIXME: it's possible to do this with (n + 1)*(n + 2) / 2, just fix positioning problem
     lenCval = q * q;
     Bmoment.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(lenCval);
-    Cval.set_size(lenCval, nb_Array);
     assignQuadra();
 }
 
@@ -46,11 +44,13 @@ BMoment2DTri &BMoment2DTri::operator=(const BMoment2DTri &cp)
     return *this;
 }
 
+BMoment2DTri::~BMoment2DTri() {}
+
 inline
 void BMoment2DTri::assignQuadra()
 {
     int k;
-
+    quadraWN.zeros(q, 4);
     double *x = quadraWN.colptr(1); // x is pointer which points to the address l_x, thus the effective MODIFICATION of l_x entries
     double *w = quadraWN.colptr(0);
 
@@ -74,7 +74,7 @@ inline
 void BMoment2DTri::loadFunctionDef()
 {
     arma::mat points(getIntegrationPoints());
-
+    Cval.set_size(lenCval, nb_Array);
     for (int i = 0; i < q; i++)
     {
         for (int j = 0; j < q; j++)
@@ -115,30 +115,32 @@ arma::mat BMoment2DTri::getIntegrationPoints()
 inline
 void BMoment2DTri::computeMoments()
 {
-    if (functVal == 1 && !fValSet)
-        std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 0 && !fDefSet)
-        std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
+    if (functVal && !fValSet)
+        std::cerr << "missing function values for computation of the moments in \'computeMoments()\'\n";
+    else if (!functVal && !fDefSet)
+        std::cerr << "missing function definition for computation of the moments in \'computeMoments()\'\n";
     else
     {
         int m = MAX(n, q - 1); // m will be used for indexing
         Bmoment.zeros();
 
         // compute the function definition into the function values vector
-        if (functVal == 0)
+        if (!functVal)
             loadFunctionDef();
 
         double scalingConst = 2 * Area2d(element.getVertices()); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
+        
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
         {
-            double xi = quadraWN(i, 1);
-            double wgt = quadraWN(i, 0);
+            double xi = quadraWN.at(i, 1);
+            double wgt = quadraWN.at(i, 0);
 
             double s = 1 - xi;
             double r = xi / s;
 
             double B = wgt * pow(s, n);
+            
             for (int a1 = 0; a1 <= n; a1++)
             {
                 for (int j = 0; j < q; j++)
@@ -149,7 +151,15 @@ void BMoment2DTri::computeMoments()
 
                     for (int ell = 0; ell < nb_Array; ell++)
                     {
+                        try{
                         BMomentInter(index_a1j, ell) += scalingConst * B * Cval(index_ij, ell);
+                        }
+                        catch(std::logic_error &e)
+                        {
+                            std::cerr << "erro no BMomentInter" << std::endl;
+                            std::cerr << "indexa1j = " << index_a1j << "max: " << BMomentInter.size();
+                            
+                        }
                     }
                 }
                 B = B * r * (n - a1) / (1 + a1);
@@ -159,8 +169,8 @@ void BMoment2DTri::computeMoments()
         // convert second index (l=1)
         for (int i = 0; i < q; i++)
         {
-            double xi = quadraWN(i, 3);
-            double wgt = quadraWN(i, 2);
+            double xi = quadraWN.at(i, 3);
+            double wgt = quadraWN.at(i, 2);
 
             double s = 1 - xi;
             double r = xi / s;
