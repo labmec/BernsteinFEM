@@ -68,7 +68,6 @@ const arma::mat &BMass::getMatrix()
 }
 
 // returns the value of Matrix[i][j]
-inline
 double BMass::getMatrixValue(int i, int j)
 {
     try
@@ -79,5 +78,6 @@ double BMass::getMatrixValue(int i, int j)
     {
         std::cerr << e.what() << std::endl;
         std::cerr << "Max value for arguments: " << Matrix.n_cols << std::endl;
+        throw std::logic_error(e);
     }
 };

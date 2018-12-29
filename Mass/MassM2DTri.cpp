@@ -13,7 +13,7 @@
 BMass2DTri::BMass2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
     : BMass(q, n), BMoment2DTri(q, 2 * n, el)
 {
-    lenMass = ((n + 2) * (n + 1)) / 2;
+    lenMass = ((n + 1) * (n + 1));
     Matrix.set_size(lenMass, lenMass);
 }
 
