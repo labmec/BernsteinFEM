@@ -34,105 +34,71 @@ class BMoment
 
   public:
     // constructors
-    BMoment(int q, int n, const Element<EL> &element = Element<EL>(), int nb_Array = 1)
-        : Bmoment(), Cval(), element(element), quadraWN(), f()
-    {
-      this->q = q;
-      this->n = n;
-      this->nb_Array = nb_Array;
-    }
+    BMoment(int q, int n, const Element<EL> &element = Element<EL>(), int nb_Array = 1);
 
     // copy constructor
-    BMoment(const BMoment<_signature, EL> &cp)
-        : Bmoment(cp.Bmoment), Cval(cp.Cval), element(cp.element), quadraWN(cp.quadraWN), f(cp.f)
-    {
-        this->q = cp.q;
-        this->n = cp.n;
-        this->nb_Array = cp.nb_Array;
-    }
+    BMoment(const BMoment<_signature, EL> &cp);
 
     // copy assignment operator
-    BMoment &operator= (const BMoment &cp)
-    {
-        if (this != &cp)
-        {
-            this->q = cp.q;
-            this->n = cp.n;
-            this->nb_Array = cp.nb_Array;
-        }
-        return *this;
-    }
+    BMoment &operator=(const BMoment &cp);
 
     // destructor
-    ~BMoment() {}
+    ~BMoment();
 
     // getters
     // returns number of integration points
-    int getNumIntegrationPoints() { return q; }
+    int getNumIntegrationPoints();
 
     // returns polynomial order
-    int getPOrder() { return n; }
+    int getPOrder();
 
     // returns moments array length
-    int getLenMoments() { return lenMoments; }
+    int getLenMoments();
 
     // returns number
-    int getLenCval() { return lenCval; }
+    int getLenCval();
 
     // return the dimension of function Image (function is scalar valued by default)
-    int getNbArray() { return nb_Array; }
+    int getNbArray();
 
     // returns wether you will be using function values or function definition (true for function values)
-    bool getFunctVal() { return functVal; }
+    bool getFunctVal();
 
     // returns the element used for computing
-    Element<EL> getElement() { return element; }
+    Element<EL> getElement();
 
     // returns the whole Bmoment matrix
-    const arma::mat &getMoments() { return Bmoment; }
+    const arma::mat &getMoments();
 
     // setters
     // sets number of integration points
-    void setNumIntegrationPoints(int q) { this->q = q; }
+    void setNumIntegrationPoints(int q);
 
     // sets polynomial order
-    void setPOder(int n) { this->n = n; }
+    void setPOder(int n);
 
     // sets the dimension of function Image (function is scalar valued by default)
-    void setNbArray(int nb_Array)
-    {
-        this->nb_Array = nb_Array;
-        Bmoment.resize(lenMoments, nb_Array);
-        Cval.resize(lenCval, nb_Array);
-    }
+    void setNbArray(int nb_Array);
 
-    void setFunctionValues(const arma::vec &Cval) { this->Cval = Cval; fValSet = true;}
+    void setFunctionValues(const arma::vec &Cval);
 
-    void setFunctionValues(const arma::mat &Cval) { this->Cval = Cval; fValSet = true;}
+    void setFunctionValues(const arma::mat &Cval);
 
-    void setFunctionDefinition(std::function<_signature> f) { this->f = f; fDefSet = true; }
+    void setFunctionDefinition(std::function<_signature> f);
 
-    void setElement(Element<EL> element)  { this->element = element; }
+    void setElement(Element<EL> element);
 
     // inline methods
 
-    void zero() { Bmoment.zeros(); }
+    void zero();
 
-    void useFunctionDef() { functVal = false; }
+    void useFunctionDef();
 
-    void useFunctionValue() { functVal = true; }
+    void useFunctionValue();
 
-    void computeMoments(std::function<_signature> f)
-    {
-        setFunctionDefinition(f);
-        computeMoments();
-    }
+    void computeMoments(std::function<_signature> f);
 
-    void computeMoments(const arma::mat &Cval)
-    {
-        setFunctionValues(Cval);
-        computeMoments();
-    }
+    void computeMoments(const arma::mat &Cval);
 
     // virtual methods
     // returns the position of a specified point in the matrix (the point is defined by the element and polynomial order)
@@ -244,12 +210,12 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
     double getBMoment(int a1, int a2, int dim)
-    { 
+    {
         try
         {
             return Bmoment(position(a1, a2, n), dim);
         }
-        catch(std::logic_error &e)
+        catch (std::logic_error &e)
         {
             std::cerr << "at function: " << __func__ << std::endl;
             std::cerr << "arguments values ot of range: " << std::endl;
