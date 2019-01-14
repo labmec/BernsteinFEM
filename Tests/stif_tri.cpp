@@ -35,16 +35,13 @@ int main()
     int n = 2;
     int q = 2 * n;
 
+    // geometry element (default: {{0,0},{1,0},{0,1}})
+    // Element<Element_t::LinearEl> el({{1,-1},{2,2},{0,0}});
+
+    // Mass matrix object
+    // BStiff2DTri stif(q, n, el);
     BStiff2DTri stif(q, n);
 
-    // sets triangle
-    {
-        arma::mat vertices = {{0.,0.},{2.,0.},{0.,1.}};
-
-        stif.setTriangle(vertices);
-    }
-    
-    
     arma::mat quadPoints = stif.getIntegrationPoints();
 
     // sets function values
@@ -58,16 +55,17 @@ int main()
             Fval(i) = f(quadPoints(i, 0), quadPoints(i, 1));
         }
         quadPoints.print("quadPoints:");
-        stif.setFunction(Fval);
+        stif.setFunctionValues(Fval);
     }
 
     // computes stiffness matrix
-    stif.compute_matrix();
+    stif.computeMatrix();
 
-    ofstream file;
+    // ofstream file;
 
-    file.open("results/stif_tri.txt");
-    file.precision(5);
+    // file.open("results/stif_tri.txt");
+    // file.precision(5);
+    #define file cout
     // prints stiffness matrix to file
     file << "{";
     for (int i = 0; i < (n+1) * (n+1); i++)
@@ -85,7 +83,7 @@ int main()
     }
     file << "}" << endl;
 
-    file.close();
+    // file.close();
 
 	return 0;
 }
