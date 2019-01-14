@@ -27,18 +27,15 @@ double function(double x)
 
 int main()
 {
-    int n = 4;
-    int q = 2 * n;
+    int n = 4;      // basis order
+    int q = 2 * n;  // number of integration points
 
+    // geometry element (default: [0,1])
+    // Element<Element_t::LinearEl> el({0, 1});
+
+    // Mass matrix object
+    // BStiff1D stif(q, n, el);
     BStiff1D stif(q, n);
-
-    // sets interval
-    {
-        double a = 0.0;
-        double b = 1.0;
-        stif.setInterval(a, b);
-    }
-    
 
     // sets function values (1)
     {
@@ -47,24 +44,24 @@ int main()
         /* for (int i = 0; i < q; i++)
             Fval[i] = 1.0; //function( (legendre_xi(q, i) + 1.0) * 0.5 ); */
 
-        stif.setFunction(Fval);
+        stif.setFunctionValues(Fval);
     }
 
     // computes stiffness matrix
-    stif.compute_matrix();
+    stif.computeMatrix();
 
     // prints stiffness matrix
     cout << "{";
-    for (int i = 0; i < (n+1) * (n+1); i++)
+    for (int i = 0; i < (n+1); i++)
     {
         cout << "{";
-        for (int j = 0; j < (n+1) * (n+1); j++)
-            if (j < (n+1)*(n+1) - 1)
+        for (int j = 0; j < (n+1); j++)
+            if (j < n)
                 cout << stif.getMatrixValue(i, j) << ", ";
             else   
                 cout << stif.getMatrixValue(i, j);
-        if (i < (n+1)*(n+1) - 1)
-            cout << "},";
+        if (i < n)
+            cout << "}," << endl;
         else
             cout << "}";
     }

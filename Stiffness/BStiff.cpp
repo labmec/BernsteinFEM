@@ -36,7 +36,6 @@ BStiff &BStiff::operator=(const BStiff &cp)
     return *this;
 }
 
-inline
 void BStiff::computeBinomials()
 {
     for (int k = 1; k < lenBinomialMat; k++)
@@ -49,21 +48,18 @@ void BStiff::computeBinomials()
 }
 
 // returns the length of the matrix
-inline
 int BStiff::length()
 {
     return lenStiff;
 }
 
 // returns the value of Matrix[i][j]
-inline
 double BStiff::getMatrixValue(int i, int j)
 {
     return Matrix(i, j);
 }
 
 // returns the matrix
-inline
 const arma::mat &BStiff::getMatrix()
 {
     return Matrix;
@@ -72,7 +68,6 @@ const arma::mat &BStiff::getMatrix()
 // other methods
 
 // assign 0 to all elements of the matrix
-inline
 void BStiff::zero()
 {
     Matrix.zeros();
