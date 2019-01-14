@@ -136,3 +136,5 @@ void BMoment<_s, EL>::computeMoments(const arma::mat &Cval)
 template class BMoment<double(double), Element_t::LinearEl>;
 template class BMoment<double (double, double), Element_t::TriangularEl>;
 template class BMoment<double (double, double), Element_t::QuadrilateralEl>;
+template class BMoment<double(double, double, double), Element_t::CubeEl>;
+template class BMoment<double(double, double, double), Element_t::TetrahedronEl>;
