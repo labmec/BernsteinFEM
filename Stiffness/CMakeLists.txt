@@ -1,15 +1,8 @@
-cmake_minimum_required(VERSION 3.4.0)
+cmake_minimum_required(VERSION 3.0.0)
 
 file(GLOB sources ./*.cpp)
 
 file(GLOB headers *.h)
 
-set(stiff ${sources} PARENT_SCOPE)
-
-add_library(Stiff_lib STATIC ${sources} ${headers})
-
-target_include_directories(Stiff_lib INTERFACE  ../../externallibs/include)
-set(LIBRARIES ${LIBRARIES} Stiff_lib)
-
-add_dependencies(Stiff_lib Moments_lib)
-target_link_libraries(Stiff_lib Moments_lib ${ARMADILLO_LIBRARIES})
+set(lib_sources ${lib_sources} ${sources} PARENT_SCOPE)
+set(lib_headers ${lib_headers} ${headers} PARENT_SCOPE)

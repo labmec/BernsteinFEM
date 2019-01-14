@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 3.4.0)
+cmake_minimum_required(VERSION 3.0.0)
 
 file(GLOB sources ./*.cpp)
 
 file(GLOB headers *.h)
 
-set(quadra ${sources} PARENT_SCOPE)
-
-add_library(Quadra_lib STATIC ${sources} ${headers})
-
-set(LIBRARIES ${LIBRARIES} Quadra_lib)
+set(lib_sources ${lib_sources} ${sources} PARENT_SCOPE)
+set(lib_headers ${lib_headers} ${headers} PARENT_SCOPE)

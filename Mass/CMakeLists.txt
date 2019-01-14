@@ -1,14 +1,8 @@
-cmake_minimum_required(VERSION 3.4.0)
+cmake_minimum_required(VERSION 3.0.0)
 
 file(GLOB sources ./*.cpp)
 
 file(GLOB headers *.h)
 
-set(mass ${sources} PARENT_SCOPE)
-
-add_library(Mass_lib STATIC ${sources} ${headers})
-
-set(LIBRARIES ${LIBRARIES} Mass_lib)
-
-add_dependencies(Mass_lib Moments_lib)
-target_link_libraries(Mass_lib Moments_lib ${ARMADILLO_LIBRARIES})
+set(lib_sources ${lib_sources} ${sources} PARENT_SCOPE)
+set(lib_headers ${lib_headers} ${headers} PARENT_SCOPE)

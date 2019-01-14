@@ -1,15 +1,14 @@
-cmake_minimum_required(VERSION 3.4.0)
+cmake_minimum_required(VERSION 3.0.0)
 
 project(BernsteinFEM CXX)
 
 find_package(Armadillo REQUIRED)
 
-if(WIN32)
-    find_package(BLAS REQUIRED)
-    find_package(LAPACK REQUIRED)
-    set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
-    #append blas and lapack libraries into armadillo when on windows
-endif()
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+#append blas and lapack libraries into armadillo
+
 
 #adds directories
 include_directories(
@@ -37,9 +36,7 @@ if (BUILD_TESTS)
     add_subdirectory(Tests)
 endif()
 
-file(GLOB sources *.cpp)
-
-file(GLOB headers *.h)
+add_library(BernsteinFEM STATIC ${lib_sources} ${lib_headers})
 
 #find_package(pz)
 #target_link_libraries(MAIN Moments_lib Mass_lib Stiff_lib Elem_lib)
