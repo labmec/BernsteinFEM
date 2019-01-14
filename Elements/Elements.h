@@ -19,6 +19,7 @@ enum class Element_t
   TriangularEl,
   CubeEl,
   TetrahedronEl
+  // Add whatever kind of element here, then specialize the template parameter at its own cpp file
 };
 
 // simplicial elements (e.g. triangle, tetrahedron) are mapped
@@ -34,7 +35,7 @@ class Element
 
 public:
   // constructors
-  // default constructor, makes a element equal to the Master Element
+  // default constructor, makes a element equivalent to the Master Element
   Element();
 
   // constructor by the vertices of the element, the first coord
