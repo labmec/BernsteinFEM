@@ -17,8 +17,9 @@
 
 using namespace std;
 
-double f(double x, double y) {
-    return 2 - sin(x*y);
+double f(double x, double y)
+{
+    return 2 - sin(x * y);
 }
 
 int main()
@@ -26,23 +27,29 @@ int main()
     int n = 4;
     int q = 2 * n;
 
+    // geometry element
+    //Element<Element_t::TriangularEl> el({{0, 1}, {1, 0}, {0, 1}});
+
+    // mass matrix computation object
+    //BMass2DTri mass_tri(q, n, el);
     BMass2DTri mass_tri(q, n);
 
-    { // sets Triangle
-        double v1[2] = {0, 0};
-        double v2[2] = {1, 0};
-        double v3[2] = {0, 1};
-        mass_tri.setTriangle(v1, v2, v3);
-    }
-
-    // sets function values (1)
+    // sets function values
     {
-        arma::vec Fval(q * q, arma::fill::ones);
-        mass_tri.setFunction(Fval);
+        auto p = mass_tri.getIntegrationPoints();
+        arma::vec Fval(p.n_rows, arma::fill::ones);
+
+        // evaluate the function at integration points
+        // for (int i = 0; i < p.n_rows; i++)
+        // {
+        //     Fval(i) = f(p(i, 0), p(i, 1));
+        // }
+
+        mass_tri.setFunctionValues(Fval);
     }
 
     // computes mass matrix
-    mass_tri.compute_matrix();
+    mass_tri.computeMatrix();
 
     // for (int a1 = 0; a1 < n; a1++) {
     //     for (int a2 = 0; a2 < n - a1; a2 ++)

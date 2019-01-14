@@ -1,4 +1,5 @@
-#include "MassM.h" // TODO: test
+// TODO: test
+#include "MassM.h"
 
 #ifdef LEN
 #undef LEN
@@ -9,51 +10,42 @@
 #endif
 #define LENB(n) (2 * n + 2)
 
-BMass2DTri::BMass2DTri(int q, int n)
-    : BMoment2DTri(q, 2 * n),
-      Matrix(LEN(n), LEN(n), arma::fill::none),
-      BinomialMat(LENB(n), LENB(n), arma::fill::zeros)
+BMass2DTri::BMass2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
+    : BMass(q, n), BMoment2DTri(q, 2 * n, el)
 {
-    this->q = q;
-    this->n = n;
-
-    lenMass = ((n + 2) * (n + 1)) / 2;
-    lenBinomialMat = 2 * n + 2;
+    lenMass = ((n + 1) * (n + 1));
+    Matrix.set_size(lenMass, lenMass);
 }
 
-BMass2DTri::BMass2DTri(int q, int n, double T[][2])
-    : BMoment2DTri(q, 2 * n, T),
-      Matrix(LEN(n), LEN(n), arma::fill::none),
-      BinomialMat(LENB(n), LENB(n), arma::fill::zeros)
+BMass2DTri::BMass2DTri(const BMass2DTri &cp)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DTri(cp.BMoment2DTri::q, cp.BMoment2DTri::n, cp.element)
 {
-    this->q = q;
-    this->n = n;
+    lenMass = cp.lenMass;
+    Matrix = cp.Matrix;
+}
 
-    lenMass = ((n + 2) * (n + 1)) / 2;
-    lenBinomialMat = 2 * n + 2;
-
-    setTriangle(T[0], T[1], T[2]);
+BMass2DTri &BMass2DTri::operator=(const BMass2DTri &cp)
+{
+    if (this != &cp)
+    {
+        BMass::q = cp.BMass::q;
+        BMass::n = cp.BMass::n;
+        Matrix = cp.Matrix;
+        BinomialMat = cp.BinomialMat;
+        lenMass = cp.lenMass;
+        lenBinomialMat = cp.lenBinomialMat;
+        BMoment2DTri::q = cp.BMoment2DTri::q;
+        BMoment2DTri::n = cp.BMoment2DTri::n;
+        lenCval = cp.lenCval;
+        lenMoments = cp.lenMoments;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 BMass2DTri::~BMass2DTri()
 {
-}
-
-void BMass2DTri::compute_binomials()
-{
-    for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat.at(i, 0) += 1;
-
-    for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat.at(0, j) += 1;
-
-    for (int k = 1; k < lenBinomialMat; k++)
-    {
-        for (int l = 1; l < lenBinomialMat; l++)
-        {
-            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
-        }
-    }
 }
 
 // this method was based on the code by M. Ainsworth
@@ -97,10 +89,10 @@ void BMass2DTri::compute_binomials()
 //     }
 // }
 
-void BMass2DTri::compute_matrix()
+void BMass2DTri::computeMatrix()
 {
-    compute_moments();
-    compute_binomials();
+    int n = BMass::n;
+    computeMoments();
 
     double Const = 1.0 / BinomialMat(n, n);
 
@@ -112,23 +104,9 @@ void BMass2DTri::compute_matrix()
                     double w2 = w1 * BinomialMat(a2, b2);
                     int i = BMoment2DTri::position(a1, a2, n);
                     int j = BMoment2DTri::position(b1, b2, n);
-                    Matrix(i, j) = w2 * get_bmoment(a1 + b1, a2 + b2, 0);
+                    Matrix(i, j) = w2 * getBMoment(a1 + b1, a2 + b2, 0);
                 } 
             }
         }
     }
-
-
-}
-
-void BMass2DTri::compute_matrix(std::function<double(double, double)> f)
-{
-    setFunction(f);
-    compute_matrix();
-}
-
-void BMass2DTri::compute_matrix(const arma::vec &Fval)
-{
-    setFunction(Fval);
-    compute_matrix();
 }

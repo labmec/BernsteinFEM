@@ -7,46 +7,24 @@
 
 using namespace arma;
 
-BStiff2DTri::BStiff2DTri(int q, int n)
-    : BMoment2DTri(q, 2 * (n - 1)),
-      Matrix(LEN(n), LEN(n), arma::fill::zeros),
-      normalMat(3, 2, arma::fill::none),
-      BinomialMat(n + 1, n + 1, arma::fill::zeros)
+BStiff2DTri::BStiff2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
+    : BStiff(q, n), BMoment2DTri(q, 2 * (n - 1), el), normalMat(3, 2, arma::fill::none)
 {
-    this->q = q;
-    this->n = n;
-
     lenStiff = (n + 1) * (n + 1);
-    lenBinomialMat = n + 1;
+    Matrix.set_size(lenStiff, lenStiff);
 }
 
 BStiff2DTri::~BStiff2DTri() { }
 
-void BStiff2DTri::compute_binomials()
-{
-    for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat.at(i, 0) += 1;
-
-    for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat.at(0, j) += 1;
-
-    for (int k = 1; k < lenBinomialMat; k++)
-    {
-        for (int l = 1; l < lenBinomialMat; l++)
-        {
-            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
-        }
-    }
-}
-
 void BStiff2DTri::compute_normals()
 {
-    normalMat.at(0, 0) = vertices.at(1, 1) - vertices.at(2, 1);
-    normalMat.at(0, 1) = vertices.at(2, 0) - vertices.at(1, 0);
-    normalMat.at(1, 0) = vertices.at(2, 1) - vertices.at(0, 1);
-    normalMat.at(1, 1) = vertices.at(0, 0) - vertices.at(2, 0);
-    normalMat.at(2, 0) = vertices.at(0, 1) - vertices.at(1, 1);
-    normalMat.at(2, 1) = vertices.at(1, 0) - vertices.at(0, 0);
+    auto vertices = element.getVertices();
+    normalMat(0, 0) = vertices(1, 1) - vertices(2, 1);
+    normalMat(0, 1) = vertices(2, 0) - vertices(1, 0);
+    normalMat(1, 0) = vertices(2, 1) - vertices(0, 1);
+    normalMat(1, 1) = vertices(0, 0) - vertices(2, 0);
+    normalMat(2, 0) = vertices(0, 1) - vertices(1, 1);
+    normalMat(2, 1) = vertices(1, 0) - vertices(0, 0);
 
     // normalize_normals();
     // the normals computed this way have the same length as the opposite side of the vertex
@@ -80,17 +58,17 @@ void BStiff2DTri::compute_normals_products(vec &N)
     N[5] = normalMat.at(2, 0) * normalMat.at(2, 0) + normalMat.at(2, 1) * normalMat.at(2, 1); // n3 . n3
 }
 
-void BStiff2DTri::compute_matrix()
+void BStiff2DTri::computeMatrix()
 {
     vec N(6, fill::none);
-    compute_binomials();         // computes the binomials that will be used
-    compute_moments();           // computes the moments necessary for the computation of the stiffness matrix
+    computeMoments();           // computes the moments necessary for the computation of the stiffness matrix
     compute_normals();           // computes the normal vectors, used in the gradient
     compute_normals_products(N); // computes the product of each combination of the normals
     // transform_BmomentC_Stiff2d(Moments, normalMat);
 
     Matrix.zeros();
-    double area = Area2d(vertices);
+    int n = BStiff::n;
+    double area = Area2d(element.getVertices());
     double Const = n * n / 4. / area / area / BinomialMat(n - 1, n - 1); // taking account of scaling between normals and gradients
 
     
@@ -106,6 +84,7 @@ void BStiff2DTri::compute_matrix()
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     w2 *= get_bmoment(a1 + b1, a2 + b2, 0);
+
                     int i = position(a1, b1, n);
                     int j = position(a2, b2, n);
                     int I = position(a1 + 1, b1 + 1, n);
@@ -132,16 +111,4 @@ void BStiff2DTri::compute_matrix()
             }
         }
     }
-}
-
-void BStiff2DTri::compute_matrix(const arma::vec &Fval)
-{
-    setFunction(Fval);
-    compute_matrix();
-}
-
-void BStiff2DTri::compute_matrix(std::function<double (double, double)> f)
-{
-    setFunction(f);
-    compute_matrix();
 }

@@ -6,43 +6,48 @@ using std::endl;
 #include "MassM.h"
 
 // maybe trade q to 2*q in the base class constructor
-BMass1D::BMass1D(int q, int n)
-    : BMoment1D(q, 2 * n),
-      Matrix(n + 1, n + 1, arma::fill::zeros),
-      BinomialMat(n + 1, n + 1, arma::fill::zeros)
+BMass1D::BMass1D(int q, int n, const Element<Element_t::LinearEl> &el)
+    : BMass(q, n), BMoment1D(q, 2 * n, el)
 {
-    this->q = q;
-    this->n = n;
-
     lenMass = n + 1;
-    lenBinomialMat = n + 1;
+    Matrix.set_size(lenMass, lenMass);
+}
+
+BMass1D::BMass1D(const BMass1D &cp)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array)
+{
+    lenMass = cp.lenMass;
+    Matrix = cp.Matrix;
+}
+
+BMass1D &BMass1D::operator=(const BMass1D &cp)
+{
+    if (this != &cp)
+    {
+        BMass::q = cp.BMass::q;
+        BMass::n = cp.BMass::n;
+        Matrix = cp.Matrix;
+        BinomialMat = cp.BinomialMat;
+        lenMass = cp.lenMass;
+        lenBinomialMat = cp.lenBinomialMat;
+        BMoment1D::q = cp.BMoment1D::q;
+        BMoment1D::n = cp.BMoment1D::n;
+        lenCval = cp.lenCval;
+        lenMoments = cp.lenMoments;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
+    }
+    return *this;
 }
 
 BMass1D::~BMass1D()
 {
 }
 
-void BMass1D::compute_binomials()
+void BMass1D::computeMatrix()
 {
-    for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat.at(i, 0) += 1;
-
-    for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat.at(0, j) += 1;
-
-    for (int k = 1; k < lenBinomialMat; k++)
-    {
-        for (int l = 1; l < lenBinomialMat; l++)
-        {
-            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
-        }
-    }
-}
-
-void BMass1D::compute_matrix()
-{
-    compute_moments();
-    compute_binomials();
+    int n = BMass::n;
+    computeMoments();
 
     double Const = 1.0 / BinomialMat.at(n, n);
 
@@ -53,19 +58,7 @@ void BMass1D::compute_matrix()
         {
             double binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
             int J = position(j, n);
-            Matrix.at(I, J) = binom * get_bmoment(position(i + j, n));
+            Matrix.at(I, J) = binom * Bmoment(position(i + j, n));
         }
     }
-}
-
-void BMass1D::compute_matrix(std::function<double(double)> f)
-{
-    setFunction(f);
-    compute_matrix();
-}
-
-void BMass1D::compute_matrix(const arma::vec &Fval)
-{
-    setFunction(Fval);
-    compute_matrix();
 }

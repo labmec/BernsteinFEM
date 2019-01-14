@@ -1,42 +1,23 @@
 #include "StiffM.h"
 
-BStiff1D::BStiff1D(int q, int n)
-    : BMoment1D(q, 2 * (n - 1)),
-      Matrix(n + 1, n + 1, arma::fill::none),
-      BinomialMat(n + 1, n + 1, arma::fill::zeros)
+BStiff1D::BStiff1D(int q, int n, const Element<Element_t::LinearEl> &el)
+    : BStiff(q, n), BMoment1D(q, 2 * (n - 1), el)
 {
-    this->q = q;
-    this->n = n;
-
     lenStiff = n + 1;
-    lenBinomialMat = n + 1;
+    Matrix.zeros(lenStiff, lenStiff);
 }
 
 BStiff1D::~BStiff1D()
 {
 }
 
-void BStiff1D::compute_binomials()
+void BStiff1D::computeMatrix()
 {
-    for (int i = 0; i < lenBinomialMat; i++)
-        BinomialMat.at(i, 0) = 1;
+    computeMoments();
+    computeBinomials();
 
-    for (int j = 1; j < lenBinomialMat; j++)
-        BinomialMat.at(0, j) = 1;
-
-    for (int k = 1; k < lenBinomialMat; k++)
-    {
-        for (int l = 1; l < lenBinomialMat; l++)
-        {
-            BinomialMat.at(k, l) += BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
-        }
-    }
-}
-
-void BStiff1D::compute_matrix()
-{
-    compute_moments();
-    compute_binomials();
+    int n = BStiff::n;
+    int a = element.getVertices()(0), b = element.getVertices()(1);
 
     double Const = 1. / BinomialMat.at(n - 1, n - 1) / pow(b - a, n);
     
@@ -53,21 +34,9 @@ void BStiff1D::compute_matrix()
                 {
                     int I = position(i + 2 - k, n);
                     int J = position(j + 2 - l, n);
-                    Matrix.at(I, J) += (n * n) * w * grad(k, l) * get_bmoment(i + j);
+                    Matrix.at(I, J) += (n * n) * w * grad(k, l) * Bmoment(i + j);
                 }
             }
         }
     }
-}
-
-void BStiff1D::compute_matrix(const arma::vec &Fval)
-{
-    setFunction(Fval);
-    compute_matrix();
-}
-
-void BStiff1D::compute_matrix(std::function<double (double)> f)
-{
-    setFunction(f);
-    compute_matrix();
 }

@@ -37,32 +37,32 @@ int main()
     int n = 4;
     int q = 2 * n;
 
-    // interval variables
-    double a = 0.0;
-    double b = 1.0;
+    // geometry element (defaul [0, 1])
+    // Element<Element_t::LinearEl> el({0, 1});
 
+    // declares moments object 
+    // BMoment1D mom1d(q, n, el);
     BMoment1D mom1d(q, n);
 
-    mom1d.setInterval(a, b);
-
+    auto points = mom1d.getIntegrationPoints();
     // sets function values
     {
-        arma::vec Fval(q, arma::fill::ones);
+        arma::vec Fval(points.n_rows, arma::fill::ones);
 
         for (int i = 0; i < q; i++)
             Fval(i) = f( (legendre_xi(q, i) + 1.0) * 0.5 );
 
-        mom1d.setFunction(Fval);
+        mom1d.setFunctionValues(Fval);
     }
 
     // computes moments
-    mom1d.compute_moments();
+    mom1d.computeMoments();
 
     // prints moments
     cout << "Bernstein moments computed with the function sin(pi * x)" << endl
          << endl;
     for (int i = 0; i < n + 1; i++)
-        cout << "Bmoment[" << i << "] : " << mom1d.get_bmoment(i) << endl;
+        cout << "Bmoment[" << i << "] : " << mom1d.getBMoment(i) << endl;
 
     return 0;
 }

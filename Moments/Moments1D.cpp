@@ -1,78 +1,46 @@
 #include <iostream>
 #include <cmath>
-#include <cstdlib>
-using std::cin;
-using std::cout;
-using std::endl;
-
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-// default constructor
-BMoment1D::BMoment1D()
-    : Bmoment(), Cval(), quadraWN()
+BMoment1D::BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element, int nb_Array)
+    : BMoment(q, n, element, nb_Array)
 {
-    cout << "Enter a value for the polynomial order n:";
-    cin >> n;
-    cout << endl
-         << "Enter a value for the quadrature order q:";
-    cin >> q;
-    cout << endl;
-    if (q > MAX_QUADRA_ORDER)
-    {
-        std::cerr << "The number of quadrature points (q) is too large.\n";
-        throw std::bad_alloc();
-    }
-
-    int m = MAX(n, q - 1);
-    lenMoments = (m + 1);
-
-    Bmoment.zeros(lenMoments, 1);
-    Cval.zeros(q, 1);
-}
-
-// quadrature and polynomial order constructor
-BMoment1D::BMoment1D(int q, int n)
-    : Bmoment(MAX(n + 1, q), 1, arma::fill::zeros), Cval(q, 1, arma::fill::zeros),
-      quadraWN(q + 1, 2, arma::fill::zeros)
-{
-    if (q > MAX_QUADRA_ORDER)
-    {
-        std::cerr << "The number of quadrature points (q) is too large.\n";
-        throw std::bad_alloc();
-    }
-    this->q = q;
-    this->n = n;
-
+    lenMoments = n + 1;
+    lenCval = q;
+    Bmoment.set_size(lenMoments, nb_Array);
+    quadraWN.set_size(q);
+    Cval.set_size(lenCval, nb_Array);
     assignQuadra();
-
-    int m = MAX(n, q - 1);
-    lenMoments = (m + 1);
 }
 
-BMoment1D::BMoment1D(int q, int n, int nb_Array)
-    : Bmoment(MAX(n + 1, q), nb_Array, arma::fill::zeros),
-      Cval(q, nb_Array, arma::fill::zeros),
-      quadraWN(q + 1, 2, arma::fill::zeros)
+BMoment1D::BMoment1D(const BMoment1D &cp)
+    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array)
 {
-    if (q > MAX_QUADRA_ORDER)
+    lenMoments = cp.lenMoments;
+    lenCval = cp.lenCval;
+    Bmoment = cp.Bmoment;
+    Cval = cp.Cval;
+}
+
+BMoment1D &BMoment1D::operator=(const BMoment1D &cp)
+{
+    if (this != &cp)
     {
-        std::cerr << "The number of quadrature points (q) is too large.\n";
-        throw std::bad_alloc();
+        q = cp.q;
+        n = cp.n;
+        nb_Array = cp.nb_Array;
+        lenMoments = cp.lenMoments;
+        lenCval = cp.lenCval;
+        Bmoment = cp.Bmoment;
+        Cval = cp.Cval;
     }
-    this->q = q;
-    this->n = n;
-
-    assignQuadra();
-
-    int m = MAX(n, q - 1);
-    lenMoments = (m + 1);
+    return *this;
 }
 
-BMoment1D::~BMoment1D()
-{
-}
+BMoment1D::~BMoment1D() {}
 
+inline
 void BMoment1D::assignQuadra()
 {
     double *x = quadraWN.colptr(1);
@@ -85,54 +53,26 @@ void BMoment1D::assignQuadra()
     }
 }
 
+inline
 void BMoment1D::loadFunctionDef()
 {
+    arma::mat points = getIntegrationPoints();
     for (int i = 0; i < q; i++)
     {
         for (int el = 0; el < nb_Array; el++)
-            Cval.at(i, el) = f(quadraWN(i, 0));
+            Cval.at(i, el) = f(points(i));
     }
 
     fValSet = true;
 }
 
-// set the function values for computation (Fval must have at least q * nb_Array elements)
-void BMoment1D::setFunction(const arma::vec &Fval)
-{
-    for (int i = 0; i < q; i++)
-        for (int el = 0; el < nb_Array; el++)
-            Cval.at(i, el) = Fval.at(i + el * q);
-
-    fValSet = true;
-}
-
-// Fval must have at least q X nb_Array elements
-void BMoment1D::setFunction(const arma::mat &Fval)
-{
-    for (int i = 0; i < q; i++)
-        for (int el = 0; el < nb_Array; el++)
-            Cval.at(i, el) = Fval.at(i, el);
-
-    fValSet = true;
-}
-
-// set the function definition for computation
-void BMoment1D::setFunction(std::function<double (double)> function)
-{
-    f = function;
-    fDefSet = true;
-}
-
-void BMoment1D::setInterval(double a, double b)
-{
-    this->a = a;
-    this->b = b;
-}
-
 // returns the vector with the integration points over the object's element, following the moments organization
-arma::vec BMoment1D::getIntegrationPoints()
+inline
+arma::mat BMoment1D::getIntegrationPoints()
 {
-    arma::vec points(this->q); // vector with q elements
+    arma::mat points(q, nb_Array, arma::fill::none); // vector with q elements
+    double a = element.getVertices()(0);
+    double b = element.getVertices()(1);
 
     for(int i = 0; i < q; i++)
     {
@@ -143,14 +83,14 @@ arma::vec BMoment1D::getIntegrationPoints()
 }
 
 // compute the B-moments using the values already assigned in the object
-void BMoment1D::compute_moments()
+inline
+void BMoment1D::computeMoments()
 {
-    if (functVal == 0 && !fValSet)
+    if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
-    else if (functVal == 1 && !fValSet)
+    else if (!functVal && !fDefSet)
     {
         std::cerr << "missing function definition for computation of the moments in \'compute_moments()\'\n";
-        loadFunctionDef();
     }
     else
     {
@@ -174,18 +114,4 @@ void BMoment1D::compute_moments()
             }
         }
     }
-}
-
-// compute the b-moments for the specified f function
-void BMoment1D::compute_moments(std::function<double (double)> f)
-{
-    setFunction(f);
-    compute_moments();
-}
-
-// compute the b-moments for the Fval function values
-void BMoment1D::compute_moments(const arma::vec &Fval)
-{
-    setFunction(Fval);
-    compute_moments();
 }
