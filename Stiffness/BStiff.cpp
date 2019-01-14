@@ -17,13 +17,23 @@ BStiff::BStiff(const BStiff &cp)
     n = cp.n;
     lenBinomialMat = cp.lenBinomialMat;
     BinomialMat = cp.BinomialMat;
+    lenStiff = cp.lenStiff;
     Matrix = cp.Matrix;
 }
 
 // copy assignment operator (unnecessary)
 BStiff &BStiff::operator=(const BStiff &cp)
 {
-
+    if (this != &cp)
+    {
+        q = cp.q;
+        n = cp.n;
+        lenBinomialMat = cp.lenBinomialMat;
+        BinomialMat = cp.BinomialMat;
+        lenStiff = cp.lenStiff;
+        Matrix = cp.Matrix;
+    }
+    return *this;
 }
 
 inline
