@@ -83,8 +83,7 @@ arma::mat BMoment1D::getIntegrationPoints()
 }
 
 // compute the B-moments using the values already assigned in the object
-inline
-void BMoment1D::computeMoments()
+arma::mat &BMoment1D::computeMoments()
 {
     if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
@@ -114,4 +113,5 @@ void BMoment1D::computeMoments()
             }
         }
     }
+    return Bmoment;
 }

@@ -10,6 +10,11 @@
 #endif
 #define LEN(n, q) (MAX(n + 1, q) * MAX(n + 1, q))
 
+// helps indexing quadrature points vectors
+int position_q(int i, int j, int q) { return i * q + j; }
+double Area2d(double v1[2], double v2[2], double v3[2]);
+double Area2d(const arma::mat &vertices);
+
 BMoment2DTri::BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element, int nb_Array)
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n, q - 1) + 1) * (MAX(n, q - 1) + 1), nb_Array, arma::fill::zeros)
@@ -27,6 +32,7 @@ BMoment2DTri::BMoment2DTri(const BMoment2DTri &cp)
     lenCval = cp.lenCval;
     Bmoment = cp.Bmoment;
     Cval = cp.Cval;
+    quadraWN = cp.quadraWN;
 }
 
 BMoment2DTri &BMoment2DTri::operator=(const BMoment2DTri &cp)
@@ -40,6 +46,7 @@ BMoment2DTri &BMoment2DTri::operator=(const BMoment2DTri &cp)
         lenCval = cp.lenCval;
         Bmoment = cp.Bmoment;
         Cval = cp.Cval;
+        quadraWN = cp.quadraWN;
     }
     return *this;
 }
@@ -49,12 +56,11 @@ BMoment2DTri::~BMoment2DTri() {}
 inline
 void BMoment2DTri::assignQuadra()
 {
-    int k;
     quadraWN.zeros(q, 4);
     double *x = quadraWN.colptr(1); // x is pointer which points to the address l_x, thus the effective MODIFICATION of l_x entries
     double *w = quadraWN.colptr(0);
 
-    for (k = 0; k < q; k++)
+    for (int k = 0; k < q; k++)
     {
         x[k] = (1.0 + jacobi_xi(q, k)) * 0.5;
         w[k] = jacobi_w(q, k) * 0.25;
@@ -63,7 +69,7 @@ void BMoment2DTri::assignQuadra()
     x = quadraWN.colptr(3);
     w = quadraWN.colptr(2);
 
-    for (k = 0; k < q; k++)
+    for (int k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -87,7 +93,7 @@ void BMoment2DTri::loadFunctionDef()
 }
 
 // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
-// Assuming: points = getIntegrationPoints(); then
+// usage: points = getIntegrationPoints(); then
 // points(i, 0) == x i-th coordinate
 // points(i, 1) == y i-th coordinate
 inline
@@ -112,8 +118,7 @@ arma::mat BMoment2DTri::getIntegrationPoints()
 }
 
 //compute the b-moments
-inline
-void BMoment2DTri::computeMoments()
+arma::mat &BMoment2DTri::computeMoments()
 {
     if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'computeMoments()\'\n";
@@ -192,4 +197,31 @@ void BMoment2DTri::computeMoments()
             }
         }
     }
+    return Bmoment;
+}
+
+// computes area of triangle < v1,v2,v3 >
+double Area2d(double v1[2], double v2[2], double v3[2])
+{
+    double x1 = v1[0];
+    double y1 = v1[1];
+    double x2 = v2[0];
+    double y2 = v2[1];
+    double x3 = v3[0];
+    double y3 = v3[1];
+
+    return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
+}
+
+// computes area of triangle defined by vertices
+double Area2d(const arma::mat &vertices)
+{
+    double x1 = vertices(0, 0);
+    double y1 = vertices(0, 1);
+    double x2 = vertices(1, 0);
+    double y2 = vertices(1, 1);
+    double x3 = vertices(2, 0);
+    double y3 = vertices(2, 1);
+
+    return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
 }

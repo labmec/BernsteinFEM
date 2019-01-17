@@ -1,18 +1,11 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
+// helps indexing quadrature points vectors
+int position_q(int i, int j, int k, int q) { return i * q + j; }
+
 BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
-    : BMoment(q, n, element, nb_Array),
-      BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
-{
-    m = n;
-    lenMoments = (n + 1) * (n + 1);
-    lenCval = q * q;
-    Bmoment.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(q, 2);
-    Cval.set_size(lenCval, nb_Array);
-    assignQuadra();
-}
+    : BMoment2DQuad(q, n, n, element, nb_Array) {}
 
 BMoment2DQuad::BMoment2DQuad(int q, int n, int m, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
     : BMoment(q, n, element, nb_Array),
@@ -22,19 +15,21 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, int m, const Element<Element_t::Quadr
     lenMoments = (max + 1) * (max + 1);
     lenCval = q * q;
     Bmoment.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(lenCval);
+    quadraWN.set_size(q, 2);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
 }
 
 // copy constructor
 BMoment2DQuad::BMoment2DQuad(const BMoment2DQuad &cp)
-    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array)
+    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array),
+      BMomentInter(cp.BMomentInter)
 {
     lenMoments = cp.lenMoments;
     lenCval = cp.lenCval;
     Bmoment = cp.Bmoment;
     Cval = cp.Cval;
+    quadraWN = cp.quadraWN;
 }
 
 // copy assignment operator
@@ -49,6 +44,7 @@ BMoment2DQuad &BMoment2DQuad::operator=(const BMoment2DQuad &cp)
         lenCval = cp.lenCval;
         Bmoment = cp.Bmoment;
         Cval = cp.Cval;
+        quadraWN = cp.quadraWN;
     }
     return *this;
 }
@@ -78,7 +74,8 @@ void BMoment2DQuad::loadFunctionDef()
             arma::mat X = element.mapToElement({quadraWN.at(i, 1), quadraWN.at(j, 1)}, jac);
             double dX = det(jac);
             int index_ij = position_q(i, j, q);
-            Cval.at(index_ij, 0) = f(X[0], X[1]) * dX;
+            for (int el = 0; el < nb_Array; el++)
+                Cval.at(index_ij, 0) = f(X[0], X[1]) * dX;
         }
     }
 
@@ -104,8 +101,7 @@ arma::mat BMoment2DQuad::getIntegrationPoints()
     return points;
 }
 
-inline
-void BMoment2DQuad::computeMoments()
+arma::mat &BMoment2DQuad::computeMoments()
 {
     if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
@@ -116,9 +112,10 @@ void BMoment2DQuad::computeMoments()
         if (!functVal)
             loadFunctionDef();
 
-        int max_nq = MAX(n, q - 1);
         int max_nm = MAX(n, m);
+        int max_nq = MAX(max_nm, q - 1);
         Bmoment.zeros();
+        BMomentInter.zeros();
 
         // convert first index (l=2)
         for (int i = 0; i < q; i++)
@@ -154,21 +151,20 @@ void BMoment2DQuad::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
 
-            for (int a1 = 0; a1 <= n; a1++)
+            double B = wgt * pow(s, m);
+            for (int a2 = 0; a2 <= m; a2++)
             {
-                double B = wgt * pow(s, m);
-                int index_a1i = position_q(a1, i, max_nq);
-                for (int a2 = 0; a2 <= m; a2++)
+                for (int a1 = 0; a1 <= n; a1++)
                 {
+                    int index_a1i = position_q(a1, i, max_nq);
                     int index_a1a2 = position(a1, a2, max_nm);
 
                     for (int ell = 0; ell < nb_Array; ell++)
-                        Bmoment(index_a1a2, 0) += B * BMomentInter(index_a1i, 0);
-                    
-                    B = B * r * (m - a2) / (1 + a2);
+                        Bmoment(index_a1a2, ell) += B * BMomentInter(index_a1i, ell);
                 }
+                B = B * r * (m - a2) / (1 + a2);
             }
         }
-
     }
+    return Bmoment;
 }
