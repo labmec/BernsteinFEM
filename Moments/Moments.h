@@ -162,9 +162,6 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 
     void loadFunctionDef() final;
 
-    // helps indexing quadrature points vectors
-    int position_q(int i, int j, int q) { return i * q + j; }
-
   public:
     // default constructor
     BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
@@ -176,32 +173,6 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
     BMoment2DTri &operator=(const BMoment2DTri &cp);
 
     ~BMoment2DTri();
-
-    // computes area of triangle < v1,v2,v3 >
-    static double Area2d(double v1[2], double v2[2], double v3[2])
-    {
-        double x1 = v1[0];
-        double y1 = v1[1];
-        double x2 = v2[0];
-        double y2 = v2[1];
-        double x3 = v3[0];
-        double y3 = v3[1];
-
-        return abs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2;
-    }
-
-    // computes area of triangle defined by vertices
-    static double Area2d(const arma::mat &vertices)
-    {
-        double x1 = vertices(0, 0);
-        double y1 = vertices(0, 1);
-        double x2 = vertices(1, 0);
-        double y2 = vertices(1, 1);
-        double x3 = vertices(2, 0);
-        double y3 = vertices(2, 1);
-
-        return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
-    }
 
     int position(int i, int n) { return i; }
 
