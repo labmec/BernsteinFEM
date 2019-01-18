@@ -11,4 +11,4 @@ double legendre_xi(int q, int i);
 double legendre_w(int q, int i);
 
 double jacobi2_xi(int q, int i);
-double jacobi1_w(int q, int i);
+double jacobi2_w(int q, int i);
