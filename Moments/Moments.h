@@ -108,7 +108,7 @@ class BMoment
     virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
 
     // computes the moments and store it in the Bmoment array, use getBMoment to get it
-    virtual void computeMoments() = 0;
+    virtual arma::mat &computeMoments() = 0;
 };
 
 /*****************************************************************************
@@ -146,7 +146,7 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
     arma::mat getIntegrationPoints();
 
     // compute the B-moments using the values already assigned in the object
-    void computeMoments() final;
+    arma::mat &computeMoments() final;
 };
 
 /*****************************************************************************
@@ -238,7 +238,7 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
     arma::mat getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    virtual void computeMoments() final;
+    arma::mat &computeMoments() final;
 };
 
 /*****************************************************************************
@@ -294,7 +294,7 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     arma::mat getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    void computeMoments() final;
+    arma::mat &computeMoments() final;
 };
 
 // Future class definition
