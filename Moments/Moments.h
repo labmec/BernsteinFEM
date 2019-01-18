@@ -271,8 +271,108 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
 // Future class definition
 class BMoment3DCube : public BMoment<double(double, double, double), Element_t::CubeEl>
 {
+    int m;                  // second polynomial order
+    int p;                  // third polynomial order
+    arma::mat BMomentInter; // auxiliary matrix to compute moments
+
+  protected:
+    // map to obtain Gauss-Jacobi rule on unit interval
+    void assignQuadra() final;
+
+    // computes the function by the definition and stores it in Cval
+    void loadFunctionDef() final;
+
+  public:
+    // default constructor
+    BMoment3DCube(int q, int n, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), int nb_Array = 1);
+
+    BMoment3DCube(int q, int n, int m, int p, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), int nb_Array = 1);
+
+    // copy constructor
+    BMoment3DCube(const BMoment3DCube &cp);
+
+    // copy assignment operator
+    BMoment3DCube &operator=(const BMoment3DCube &cp);
+
+    // return the index for the (i, j, k) cube node
+    static int position(int i, int j, int k, int n) { return i * (n + 1) * (n + 1) + j * (n + 1) + k; }
+
+    int position(int i, int n) { return i; }
+
+    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
+    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
+    double getBMoment(int a1, int a2, int a3, int dim) { return Bmoment(position(a1, a2, a3, n), dim); }
+
+    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
+    double getBMoment(int i) { return Bmoment(i, 0); }
+
+    // returns the vector with the integration points (x, y) over the object's element, following the moments organization
+    // points(i, 0) == x i-th coordinate
+    // points(i, 1) == y i-th coordinate
+    arma::mat getIntegrationPoints();
+
+    // compute the b-moments using the values already assigned in the object
+    arma::mat &computeMoments() final;
 };
 
 class BMoment3DTetra : public BMoment<double(double, double, double), Element_t::TetrahedronEl>
 {
+    arma::mat BMomentInter;
+
+  protected:
+    // map to obtain Gauss-Jacobi rule on unit interval
+    void assignQuadra() final;
+
+    void loadFunctionDef() final;
+
+  public:
+    // default constructor
+    BMoment3DTetra(int q, int n, const Element<Element_t::TetrahedronEl> &element = Element<Element_t::TetrahedronEl>(), int nb_Array = 1);
+
+    // copy constructor
+    BMoment3DTetra(const BMoment3DTetra &cp);
+
+    // copy assignment operator
+    BMoment3DTetra &operator=(const BMoment3DTetra &cp);
+
+    ~BMoment3DTetra();
+
+    int position(int i, int n) { return i; }
+
+    // return the index for the (i, j, n-i-j) triangle coordinate
+    static int position(int i, int j, int k, int n) { return i * (n + 1) * (n + 1) + j * (n + 1) + k; }
+
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
+    double getBMoment(int a1, int a2, int a3, int dim)
+    {
+        try
+        {
+            return Bmoment(position(a1, a2, a3, n), dim);
+        }
+        catch (std::logic_error &e)
+        {
+            std::cerr << "at function: " << __func__ << std::endl;
+            std::cerr << "arguments values ot of range: " << std::endl;
+            std::cerr << "a1 = " << a1 << "; a2 = " << a2 << "; dim = " << dim << std::endl;
+            std::cerr << "a1 max: " << n << "a2 max:" << n - a1 << "dim max: " << nb_Array - 1 << std::endl;
+            throw std::logic_error(e);
+        }
+    }
+
+    // get the i-th bmoment in the array, only use if you really know what you're doing
+    double getBMoment(int i) { return Bmoment(i, 0); }
+
+    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
+    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+
+    // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
+    // Assuming: points = getIntegrationPoints(); then
+    // points(i, 0) == x i-th coordinate
+    // points(i, 1) == y i-th coordinate
+    arma::mat getIntegrationPoints();
+
+    // compute the b-moments using the values already assigned in the object
+    arma::mat &computeMoments() final;
 };
