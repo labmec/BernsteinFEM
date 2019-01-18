@@ -235,5 +235,5 @@ double Volume(arma::mat const &v)
     arma::mat m(4, 1, arma::fill::ones);
     m.insert_cols(1, v);
 
-    return fabs(arma::det(m)) / 2.;
+    return fabs(arma::det(m)) / 6.;
 }
