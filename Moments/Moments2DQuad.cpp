@@ -2,7 +2,7 @@
 #include "JacobiGaussNodes.h"
 
 // helps indexing quadrature points vectors
-int position_q(int i, int j, int k, int q) { return i * q + j; }
+int position_q(int i, int j, int q) { return i * q + j; }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
     : BMoment2DQuad(q, n, n, element, nb_Array) {}
@@ -11,6 +11,7 @@ BMoment2DQuad::BMoment2DQuad(int q, int n, int m, const Element<Element_t::Quadr
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
 {
+    this->m = m;
     int max = MAX(n, m);
     lenMoments = (max + 1) * (max + 1);
     lenCval = q * q;
