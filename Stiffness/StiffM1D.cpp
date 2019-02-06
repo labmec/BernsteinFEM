@@ -21,19 +21,19 @@ void BStiff1D::computeMatrix()
 
     double Const = 1. / BinomialMat.at(n - 1, n - 1) / pow(b - a, n);
     
-    for (int i = 0; i < lenStiff - 1; i++)
+    for (uint i = 0; i < lenStiff - 1; i++)
     {
-        for (int j = 0; j < lenStiff - 1; j++)
+        for (uint j = 0; j < lenStiff - 1; j++)
         {
             double w = BinomialMat.at(i, j) * Const;
             w *= BinomialMat.at(n - i - 1, n - j - 1);
 
-            for (int k = 1; k <= 2; k++)
+            for (uint k = 1; k <= 2; k++)
             {
-                for (int l = 1; l <= 2; l++)
+                for (uint l = 1; l <= 2; l++)
                 {
-                    int I = position(i + 2 - k, n);
-                    int J = position(j + 2 - l, n);
+                    uint I = element.position({i + 2 - k}, n);
+                    uint J = element.position({j + 2 - l}, n);
                     Matrix.at(I, J) += (n * n) * w * grad(k, l) * Bmoment(i + j);
                 }
             }

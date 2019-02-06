@@ -35,6 +35,15 @@ Element<LEL>::Element(const Element<LEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 1, arma::fill::none) {}
 
+template<>
+uint Element<LEL>::position(const std::vector<uint> &point, int n)
+{
+    if (point.size() >= 1)
+        return point[0];
+    else
+        throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
+}
+
 template <>
 const arma::mat &Element<LEL>::mapToElement(const arma::mat &coordinates, arma::mat &jacobian)
 {

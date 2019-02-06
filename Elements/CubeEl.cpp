@@ -43,6 +43,15 @@ Element<CEL>::Element(const Element<CEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 3, arma::fill::none) {}
 
+template <>
+uint Element<CEL>::position(const std::vector<uint> &point, int n)
+{
+    if (point.size() >= 3)
+        return point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2];
+    else
+        throw new std::logic_error("Cube Element 'position' method called with too few vector elements\n\t3 required");
+}
+
 // implemented using nodal shape function
 template <>
 const arma::mat &Element<CEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)

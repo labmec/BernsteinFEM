@@ -2,7 +2,7 @@
 #include "JacobiGaussNodes.h"
 
 // helps indexing quadrature points vectors
-int position_q(int i, int j, int q) { return i * q + j; }
+uint position_q(uint i, uint j, int q) { return i * q + j; }
 
 BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
     : BMoment2DQuad(q, n, n, element, nb_Array) {}
@@ -119,7 +119,7 @@ arma::mat &BMoment2DQuad::computeMoments()
         BMomentInter.zeros();
 
         // convert first index (l=2)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN(i, 1);
             double wgt = quadraWN(i, 0);
@@ -128,15 +128,15 @@ arma::mat &BMoment2DQuad::computeMoments()
             double r = xi / s;
 
             double B = wgt * pow(s, n);
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
-                for (int j = 0; j < q; j++)
+                for (uint j = 0; j < q; j++)
                 {
-                    int index_a1j = position_q(a1, j, max_nq);
+                    uint index_a1j = position_q(a1, j, max_nq);
 
-                    int index_ij = position_q(i, j, q);
+                    uint index_ij = position_q(i, j, q);
 
-                    for (int ell = 0; ell < nb_Array; ell++)
+                    for (uint ell = 0; ell < nb_Array; ell++)
                         BMomentInter(index_a1j, ell) += B * Cval(index_ij, ell);
                 }
                 B = B * r * (n - a1) / (1 + a1);
@@ -144,7 +144,7 @@ arma::mat &BMoment2DQuad::computeMoments()
         }
 
         // convert second index (l=1)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN(i, 1);
             double wgt = quadraWN(i, 0);
@@ -153,14 +153,14 @@ arma::mat &BMoment2DQuad::computeMoments()
             double r = xi / s;
 
             double B = wgt * pow(s, m);
-            for (int a2 = 0; a2 <= m; a2++)
+            for (uint a2 = 0; a2 <= m; a2++)
             {
-                for (int a1 = 0; a1 <= n; a1++)
+                for (uint a1 = 0; a1 <= n; a1++)
                 {
-                    int index_a1i = position_q(a1, i, max_nq);
-                    int index_a1a2 = position(a1, a2, max_nm);
+                    uint index_a1i = position_q(a1, i, max_nq);
+                    uint index_a1a2 = element.position({a1, a2}, max_nm);
 
-                    for (int ell = 0; ell < nb_Array; ell++)
+                    for (uint ell = 0; ell < nb_Array; ell++)
                         Bmoment(index_a1a2, ell) += B * BMomentInter(index_a1i, ell);
                 }
                 B = B * r * (m - a2) / (1 + a2);

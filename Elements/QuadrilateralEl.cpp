@@ -43,6 +43,15 @@ Element<QEL>::Element(const Element<QEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 2, arma::fill::none) {}
 
+template <>
+uint Element<QEL>::position(const std::vector<uint> &point, int n)
+{
+    if (point.size() >= 2)
+        return point[0] * (n + 1) + point[1];
+    else
+        throw new std::logic_error("Quadrilateral Element 'position' method called with too few vector elements\n\t2 required");
+}
+
 // implemented using nodal shape function
 template <>
 const arma::mat &Element<QEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)

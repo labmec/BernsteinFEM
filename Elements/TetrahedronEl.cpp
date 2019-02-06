@@ -35,6 +35,16 @@ Element<TEL>::Element(const arma::mat &v)
 }
 
 template <>
+uint Element<TEL>::position(const std::vector<uint> &point, int n)
+{
+    if (point.size() >= 3)
+        return point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2];
+    else
+        throw new std::logic_error("Tetrahedron Element 'position' method called with too few vector elements\n\t3 required");
+    ;
+}
+
+template <>
 Element<TEL>::Element(const Element<TEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 2, arma::fill::none) {}

@@ -96,14 +96,14 @@ void BMass2DTri::computeMatrix()
 
     double Const = 1.0 / BinomialMat(n, n);
 
-    for (int a1 = 0; a1 <= n; a1++) {
-        for (int b1 = 0; b1 <= n; b1++) {
+    for (uint a1 = 0; a1 <= n; a1++) {
+        for (uint b1 = 0; b1 <= n; b1++) {
             double w1 = Const * BinomialMat(a1, b1);
-            for (int a2 = 0; a2 <= n - a1; a2++){
-                for (int b2 = 0; b2 <= n - b1; b2++) {
+            for (uint a2 = 0; a2 <= n - a1; a2++){
+                for (uint b2 = 0; b2 <= n - b1; b2++) {
                     double w2 = w1 * BinomialMat(a2, b2);
-                    int i = BMoment2DTri::position(a1, a2, n);
-                    int j = BMoment2DTri::position(b1, b2, n);
+                    uint i = element.position({a1, a2}, n);
+                    uint j = element.position({b1, b2}, n);
                     Matrix(i, j) = w2 * getBMoment(a1 + b1, a2 + b2, 0);
                 } 
             }

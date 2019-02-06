@@ -12,6 +12,10 @@
 #pragma once
 #include <armadillo>
 
+#ifndef uint
+#define uint unsigned
+#endif
+
 enum class Element_t
 {
   LinearEl,
@@ -57,6 +61,11 @@ public:
 
   // get last jacobian matrix that was computed
   static const arma::mat &getLastJacobian() { return jac; }
+
+  // maps the specified point of the element 
+  // to the position in which it should be
+  // in the vectors and matrices throughout the computations
+  static unsigned position(const std::vector<unsigned> &point, int n);
 
   // Maps the element from the matrix element
   // Given the coordinates in the master element in [0,1],

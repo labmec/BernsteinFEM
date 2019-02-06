@@ -94,20 +94,20 @@ arma::mat &BMoment1D::computeMoments()
     else
     {
         Bmoment.zeros();
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 1);
             double omega = quadraWN.at(i, 0);
             double s = 1 - xi;
             double r = xi / s;
             double w = omega * pow(s, n);
-            for (int alpha = 0; alpha <= n; alpha++)
+            for (uint alpha = 0; alpha <= n; alpha++)
             {
                 // here w equals the Bernstein polynomial of order n,
                 // with index alpha, evaluated at the i-th integration node
                 // times the i-th integration weight.
-                int p = position(alpha, n);
-                for (int el = 0; el < nb_Array; el++)
+                uint p = element.position({alpha}, n);
+                for (uint el = 0; el < nb_Array; el++)
                     Bmoment.at(p, el) += w * Cval.at(i, el);
                 w *= r * ((n - alpha) / (1. + alpha)); // treats the recurrence relation
             }

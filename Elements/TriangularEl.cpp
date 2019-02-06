@@ -37,6 +37,15 @@ Element<TEL>::Element(const Element<TEL> &cp)
     : vertices(cp.vertices),
       coordinates(1, 2, arma::fill::none) {}
 
+template <>
+uint Element<TEL>::position(const std::vector<uint> &point, int n)
+{
+    if (point.size() >= 2)
+        return point[0] * (n + 1) + point[1];
+    else
+        throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
+}
+
 // Duffy Transform
 template <>
 const arma::mat &Element<TEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)

@@ -11,7 +11,8 @@
 #define LEN(n, q) (MAX(n + 1, q) * MAX(n + 1, q))
 
 // helps indexing quadrature points vectors
-int position_q(int i, int j, int q) { return i * q + j; }
+uint position_q(uint i, uint j, int q) { return i * q + j; }
+// jacobian determinant of Duffy transform is a multiple of the area of the triangle
 double Area2d(double v1[2], double v2[2], double v3[2]);
 double Area2d(const arma::mat &vertices);
 
@@ -136,7 +137,7 @@ arma::mat &BMoment2DTri::computeMoments()
         double scalingConst = 2 * Area2d(element.getVertices()); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
         
         // convert first index (l=2)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 1);
             double wgt = quadraWN.at(i, 0);
@@ -146,15 +147,15 @@ arma::mat &BMoment2DTri::computeMoments()
 
             double B = wgt * pow(s, n);
             
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
-                for (int j = 0; j < q; j++)
+                for (uint j = 0; j < q; j++)
                 {
-                    int index_a1j = position_q(a1, j, m);
+                    uint index_a1j = position_q(a1, j, m);
 
-                    int index_ij = position_q(i, j, q);
+                    uint index_ij = position_q(i, j, q);
 
-                    for (int ell = 0; ell < nb_Array; ell++)
+                    for (uint ell = 0; ell < nb_Array; ell++)
                     {
                         try{
                         BMomentInter(index_a1j, ell) += scalingConst * B * Cval(index_ij, ell);
@@ -172,7 +173,7 @@ arma::mat &BMoment2DTri::computeMoments()
         }
 
         // convert second index (l=1)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 3);
             double wgt = quadraWN.at(i, 2);
@@ -180,15 +181,15 @@ arma::mat &BMoment2DTri::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
 
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
                 double B = wgt * pow(s, n - a1);
-                for (int a2 = 0; a2 <= n - a1; a2++)
+                for (uint a2 = 0; a2 <= n - a1; a2++)
                 {
-                    int index_a1a2 = position(a1, a2, n);
-                    int index_a1i = position_q(a1, i, m);
+                    uint index_a1a2 = element.position({a1, a2}, n);
+                    uint index_a1i = position_q(a1, i, m);
 
-                    for (int ell = 0; ell < nb_Array; ell++)
+                    for (uint ell = 0; ell < nb_Array; ell++)
                     {
                         Bmoment(index_a1a2, ell) += B * BMomentInter(index_a1i, ell);
                     }

@@ -100,10 +100,6 @@ class BMoment
 
     void computeMoments(const arma::mat &Cval);
 
-    // virtual methods
-    // returns the position of a specified point in the matrix (the point is defined by the element and polynomial order)
-    virtual int position(int i, int n) = 0;
-
     // returns the vector with the integration points over the object's element, following the moments organization
     virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
 
@@ -133,9 +129,6 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
 
     // destructor
     ~BMoment1D();
-
-    // returns the index of the i-th index on the interval (unnecessary in this case, just made to be concise with the other versions)
-    int position(int i, int n) final { return i; };
 
     // returns the value of the i-th indexed B-moment
     double getBMoment(int i) { return Bmoment(i, 0); }
@@ -174,17 +167,12 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 
     ~BMoment2DTri();
 
-    int position(int i, int n) { return i; }
-
-    // return the index for the (i, j, n-i-j) triangle coordinate
-    static int position(int i, int j, int n) { return i * (n + 1) + j; }
-
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-    double getBMoment(int a1, int a2, int dim)
+    double getBMoment(uint a1, uint a2, int dim)
     {
         try
         {
-            return Bmoment(position(a1, a2, n), dim);
+            return Bmoment(element.position({a1, a2}, n), dim);
         }
         catch (std::logic_error &e)
         {
@@ -230,9 +218,6 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     // computes the function by the definition and stores it in Cval
     void loadFunctionDef() final;
 
-    // helps indexing quadrature points vectors
-    int position_q(int i, int j, int q) { return i * q + j; }
-
   public:
     // default constructor
     BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
@@ -245,16 +230,11 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     // copy assignment operator
     BMoment2DQuad &operator=(const BMoment2DQuad &cp);
 
-    // return the index for the (i, j) quadrilateral node
-    static int position(int i, int j, int n) { return i * (n + 1) + j; }
-
-    int position(int i, int n) { return i; }
-
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
     double getBMoment(int i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(int a1, int a2, int dim) { return Bmoment(position(a1, a2, n), dim); }
+    double getBMoment(uint a1, uint a2, int dim) { return Bmoment(element.position({a1, a2}, n), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
     double getBMoment(int i) { return Bmoment(i, 0); }
@@ -294,16 +274,11 @@ class BMoment3DCube : public BMoment<double(double, double, double), Element_t::
     // copy assignment operator
     BMoment3DCube &operator=(const BMoment3DCube &cp);
 
-    // return the index for the (i, j, k) cube node
-    static int position(int i, int j, int k, int n) { return i * (n + 1) * (n + 1) + j * (n + 1) + k; }
-
-    int position(int i, int n) { return i; }
-
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
     double getBMoment(int i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(int a1, int a2, int a3, int dim) { return Bmoment(position(a1, a2, a3, n), dim); }
+    double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment(element.position({a1, a2, a3}, n), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
     double getBMoment(int i) { return Bmoment(i, 0); }
@@ -339,17 +314,12 @@ class BMoment3DTetra : public BMoment<double(double, double, double), Element_t:
 
     ~BMoment3DTetra();
 
-    int position(int i, int n) { return i; }
-
-    // return the index for the (i, j, n-i-j) triangle coordinate
-    static int position(int i, int j, int k, int n) { return i * (n + 1) * (n + 1) + j * (n + 1) + k; }
-
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-    double getBMoment(int a1, int a2, int a3, int dim)
+    double getBMoment(uint a1, uint a2, uint a3, int dim)
     {
         try
         {
-            return Bmoment(position(a1, a2, a3, n), dim);
+            return Bmoment(element.position({a1, a2, a3}, n), dim);
         }
         catch (std::logic_error &e)
         {

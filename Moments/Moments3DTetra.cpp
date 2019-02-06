@@ -13,7 +13,7 @@ BMoment3DTetra::BMoment3DTetra(int q, int n, const Element<Element_t::Tetrahedro
     n++;
     lenMoments = n * n * n;  // FIXME: it's possible to do this with (n + 1) * (n + 2) * (n + 3) / 6
     lenCval = q * q * q;
-    Bmoment.set_size(lenMoments, nb_Array); // FIXME: initial size for this matrix should be MAX(n + 1, q)
+    Bmoment.set_size(lenMoments, nb_Array); // FIXME: initial size for this matrix might need to bigger
     BMomentInter.set_size(max * max * max, nb_Array);
     Cval.set_size(lenCval, nb_Array);
     assignQuadra();
@@ -115,9 +115,9 @@ arma::mat BMoment3DTetra::getIntegrationPoints()
             {
                 arma::mat v = element.mapToElement({quadraWN.at(i, 1), quadraWN.at(j, 3), quadraWN(k, 5)});
                 int index_ijk = position_q(i, j, k, q);
-                points[index_ijk, 0] = v[0];
-                points[index_ijk, 1] = v[1];
-                points[index_ijk, 2] = v[2];
+                points(index_ijk, 0) = v[0];
+                points(index_ijk, 1) = v[1];
+                points(index_ijk, 2) = v[2];
             }
         }
     }
@@ -142,7 +142,7 @@ arma::mat &BMoment3DTetra::computeMoments()
 
         int m = MAX(n, q - 1);
 
-        double scalingConst = 2 * Volume(element.getVertices()); // FIXME: check this value out
+        double scalingConst = 6 * Volume(element.getVertices()); // FIXME: check this value out
 
         // convert first index (l=3)
         for (int i = 0; i < q; i++)

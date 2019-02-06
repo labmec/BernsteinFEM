@@ -49,18 +49,18 @@ void BMass2DQuad::computeMatrix()
 
     // since it is a simple tensor product, this is just like in the 1D case
     // except for indexing
-    for (int a1 = 0; a1 <= n; a1++)
+    for (uint a1 = 0; a1 <= n; a1++)
     {
-        for (int a2 = 0; a2 <= n; a2++)
+        for (uint a2 = 0; a2 <= n; a2++)
         {
-            for (int b1 = 0; b1 <= n; b1++)
+            for (uint b1 = 0; b1 <= n; b1++)
             {
-                for (int b2 = 0; b2 <= n; b2++)
+                for (uint b2 = 0; b2 <= n; b2++)
                 {
                     double w = Const * BinomialMat.at(a1, b1) * BinomialMat.at(a2, b2);
                     w *= (BinomialMat.at(n - a1, n - b1) * BinomialMat.at(n - a2, n - b2));
-                    int i = position(a1, a2, n);
-                    int j = position(b1, b2, n);
+                    uint i = element.position({a1, a2}, n);
+                    uint j = element.position({b1, b2}, n);
                     Matrix.at(i, j) = w * getBMoment(a1 + b1, a2 + b2, 0);
                 }
             }

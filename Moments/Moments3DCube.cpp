@@ -1,7 +1,7 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-int position_q(int i, int j, int k, int q) { return i * q * q + j * q + k; }
+uint position_q(uint i, uint j, uint k, int q) { return i * q * q + j * q + k; }
 
 BMoment3DCube::BMoment3DCube(int q, int n, const Element<Element_t::CubeEl> &el, int nb_Array)
     : BMoment3DCube(q, n, n, n, el, nb_Array) {}
@@ -71,9 +71,9 @@ void BMoment3DCube::loadFunctionDef()
             for (int k = 0; k < q; k++)
             {
                 arma::mat jac(3, 3, arma::fill::none);
-                arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN[k, 1]}, jac);
+                arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)}, jac);
                 double dX = det(jac);
-                int index_ijk = position_q(i, j, k, q);
+                uint index_ijk = position_q(i, j, k, q);
                 for (int el = 0; el < nb_Array; el++)
                     Cval.at(index_ijk, el) = f(X[0], X[1], X[2]) * dX;
             }
@@ -92,8 +92,8 @@ arma::mat BMoment3DCube::getIntegrationPoints()
         {
             for (int k = 0; k < q; k++)
             {
-                arma::mat X = element.mapToElement({quadraWN[i, 1], quadraWN[j, 1], quadraWN[k, 1]});
-                int index_ijk = position_q(i, j, k, q);
+                arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)});
+                uint index_ijk = position_q(i, j, k, q);
                 points.at(index_ijk, 0) = X[0];
                 points.at(index_ijk, 1) = X[1];
                 points.at(index_ijk, 2) = X[2];
@@ -121,7 +121,7 @@ arma::mat &BMoment3DCube::computeMoments()
         BMomentInter.zeros();
 
         // convert first index (l=3)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 1);
             double wgt = quadraWN.at(i, 0);
@@ -129,16 +129,16 @@ arma::mat &BMoment3DCube::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
             double B = wgt * pow(s, n);
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
-                for (int j = 0; j < q; j++)
+                for (uint j = 0; j < q; j++)
                 {
-                    for (int k = 0; j < q; k++)
+                    for (uint k = 0; j < q; k++)
                     {
-                        int index_a1jk = position_q(a1, j, k, max_nq);
-                        int index_ijk = position_q(i, j, k, q);
+                        uint index_a1jk = position_q(a1, j, k, max_nq);
+                        uint index_ijk = position_q(i, j, k, q);
 
-                        for (int el = 0; el < nb_Array; el++)
+                        for (uint el = 0; el < nb_Array; el++)
                             Bmoment.at(index_a1jk, el) += B * Cval.at(index_ijk, el);
                     }
                 }
@@ -147,7 +147,7 @@ arma::mat &BMoment3DCube::computeMoments()
         }
 
         // convert second index (l=2)
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
             double xi = quadraWN.at(j, 1);
             double wgt = quadraWN.at(j, 0);
@@ -155,16 +155,16 @@ arma::mat &BMoment3DCube::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
             double B = wgt * pow(s, m);
-            for (int a2 = 0; a2 <= m; a2++)
+            for (uint a2 = 0; a2 <= m; a2++)
             {
-                for (int a1 = 0; a1 <= n; a1++)
+                for (uint a1 = 0; a1 <= n; a1++)
                 {
-                    for (int k = 0; k < q; k++)
+                    for (uint k = 0; k < q; k++)
                     {
-                        int index_a1a2k = position_q(a1, a2, k, q);
-                        int index_a1jk = position_q(a1, j, k, q);
+                        uint index_a1a2k = position_q(a1, a2, k, q);
+                        uint index_a1jk = position_q(a1, j, k, q);
 
-                        for (int ell = 0; ell < nb_Array; ell++)
+                        for (uint ell = 0; ell < nb_Array; ell++)
                             BMomentInter.at(index_a1a2k, ell) += B * Bmoment.at(index_a1jk, ell);
                     }
                 }
@@ -174,7 +174,7 @@ arma::mat &BMoment3DCube::computeMoments()
 
         Bmoment.zeros();
         // convert third index (l=1)
-        for (int k = 0; k < q; k++)
+        for (uint k = 0; k < q; k++)
         {
             double xi = quadraWN.at(k, 1);
             double wgt = quadraWN.at(k, 0);
@@ -182,16 +182,16 @@ arma::mat &BMoment3DCube::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
             double B = wgt * pow(s, p);
-            for (int a3 = 0; a3 <= p; a3++)
+            for (uint a3 = 0; a3 <= p; a3++)
             {
-                for (int a1 = 0; a1 <= n; a1++)
+                for (uint a1 = 0; a1 <= n; a1++)
                 {
-                    for (int a2 = 0; a2 <= m; a2++)
+                    for (uint a2 = 0; a2 <= m; a2++)
                     {
-                        int index_a1a2k = position_q(a1, a2, k, q);
-                        int index_a = position(a1, a2, a3, max_nm);
+                        uint index_a1a2k = position_q(a1, a2, k, q);
+                        uint index_a = element.position({a1, a2, a3}, max_nm);
 
-                        for (int ell = 0; ell < nb_Array; ell++)
+                        for (uint ell = 0; ell < nb_Array; ell++)
                             Bmoment.at(index_a, ell) += B * BMomentInter.at(index_a1a2k, ell);
                     }
                 }

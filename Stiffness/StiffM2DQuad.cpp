@@ -68,24 +68,24 @@ void BStiff2DQuad::compute_matrix()
     
     double Const = n * n * (1.0  / (BinomialMat(n - 1, n - 1) * BinomialMat(n - 1, n - 1)));
 
-    for (int a1 = 0; a1 < n; a1++)
+    for (uint a1 = 0; a1 < n; a1++)
     {
-        for (int b1 = 0; b1 < n; b1++)
+        for (uint b1 = 0; b1 < n; b1++)
         {
             double w1 = Const * BinomialMat(a1, b1) * BinomialMat(n - a1, n - b1);
-            for (int a2 = 0; a2 <= n; a2++)
+            for (uint a2 = 0; a2 <= n; a2++)
             {
-                for (int b2 = 0; b2 <= n; b2++)
+                for (uint b2 = 0; b2 <= n; b2++)
                 {
                     double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a2, n - b2);
-                    double mom1 = w2 * m1( BMoment2DQuad::position(a1 + b1, a2 + b2, n) );
-                    double mom2 = w2 * m2( BMoment2DQuad::position(a1 + b1, a2 + b2, n) );
+                    double mom1 = w2 * m1( element.position({a1 + b1, a2 + b2}, n) );
+                    double mom2 = w2 * m2( element.position({a1 + b1, a2 + b2}, n) );
                     double mom_tot = mom1 + mom2;
 
-                    int i = BMoment2DQuad::position(a1, a2, n);
-                    int j = BMoment2DQuad::position(b1, b2, n);
-                    int I = BMoment2DQuad::position(a1 + 1, a2, n);
-                    int J = BMoment2DQuad::position(b1 + 1, b2, n);
+                    uint i = element.position({a1, a2}, n);
+                    uint j = element.position({b1, b2}, n);
+                    uint I = element.position({a1 + 1, a2}, n);
+                    uint J = element.position({b1 + 1, b2}, n);
 
                     Matrix(i, j) += mom_tot;
 

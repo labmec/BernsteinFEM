@@ -7,6 +7,10 @@
 
 using namespace arma;
 
+// functions implemented in another file (Moments/Moments2DTri.cpp)
+extern double Area2d(double v1[2], double v2[2], double v3[2]);
+extern double Area2d(const arma::mat &vertices);
+
 BStiff2DTri::BStiff2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
     : BStiff(q, n), BMoment2DTri(q, 2 * (n - 1), el), normalMat(3, 2, arma::fill::none)
 {
@@ -73,26 +77,26 @@ void BStiff2DTri::computeMatrix()
 
     
     // com
-    for (int a1 = 0; a1 < n; a1++)
+    for (uint a1 = 0; a1 < n; a1++)
     {
-        for (int b1 = 0; b1 < n; b1++)
+        for (uint b1 = 0; b1 < n; b1++)
         {
             double w1 = Const * BinomialMat.at(a1, b1);
-            for (int a2 = 0; a2 < n - a1; a2++)
+            for (uint a2 = 0; a2 < n - a1; a2++)
             {
-                for (int b2 = 0; b2 < n - b1; b2++)
+                for (uint b2 = 0; b2 < n - b1; b2++)
                 {
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     w2 *= getBMoment(a1 + b1, a2 + b2, 0);
 
-                    int i = position(a1, b1, n);
-                    int j = position(a2, b2, n);
-                    int I = position(a1 + 1, b1 + 1, n);
-                    int J = position(a2 + 1, b2 + 1, n);
-                    int I_a = position(a1 + 1, b1, n);
-                    int J_a = position(a2 + 1, b2, n);
-                    int I_b = position(a1, b1 + 1, n);
-                    int J_b = position(a2, b2 + 1, n);
+                    uint i = element.position({a1, b1}, n);
+                    uint j = element.position({a2, b2}, n);
+                    uint I = element.position({a1 + 1, b1 + 1}, n);
+                    uint J = element.position({a2 + 1, b2 + 1}, n);
+                    uint I_a = element.position({a1 + 1, b1}, n);
+                    uint J_a = element.position({a2 + 1, b2}, n);
+                    uint I_b = element.position({a1, b1 + 1}, n);
+                    uint J_b = element.position({a2, b2 + 1}, n);
 
                     double n1n2 = w2 * N[1];
                     double n1n3 = w2 * N[2];
