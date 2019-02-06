@@ -145,7 +145,7 @@ arma::mat &BMoment3DTetra::computeMoments()
         double scalingConst = 6 * Volume(element.getVertices()); // FIXME: check this value out
 
         // convert first index (l=3)
-        for (int i = 0; i < q; i++)
+        for (uint i = 0; i < q; i++)
         {
             double xi = quadraWN.at(i, 1);
             double wgt = quadraWN.at(i, 0);
@@ -153,16 +153,16 @@ arma::mat &BMoment3DTetra::computeMoments()
             double s = 1 - xi;
             double r = xi / s;
             double B = wgt * pow(s, n);
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
-                for (int j = 0; j < q; j++)
+                for (uint j = 0; j < q; j++)
                 {
-                    for (int k = 0; k < q; k++)
+                    for (uint k = 0; k < q; k++)
                     {
-                        int index_a1jk = position_q(a1, j, k, m);
-                        int index_ijk = position_q(i, j, k, q);
+                        uint index_a1jk = position_q(a1, j, k, m);
+                        uint index_ijk = position_q(i, j, k, q);
 
-                        for (int ell = 0; ell < nb_Array; ell++)
+                        for (uint ell = 0; ell < nb_Array; ell++)
                             Bmoment(index_a1jk) += scalingConst * B * Cval(index_ijk);
                             // Bmoment(a1 * (n + 1) * (n + 1) + j * q + k) 
                             // += scalingConst * B *Cval(i * q * q + j * q + k, ell);
@@ -173,24 +173,24 @@ arma::mat &BMoment3DTetra::computeMoments()
         }
 
         // convert second index
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
             double xi = quadraWN.at(j, 3);
             double wgt = quadraWN.at(j, 2);
 
             double s = 1 - xi;
             double r = xi / s;
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
                 double B = wgt * pow(s, n - a1);
-                for (int a2 = 0; a2 <= n - a1; a2++)
+                for (uint a2 = 0; a2 <= n - a1; a2++)
                 {
-                    for (int k = 0; k < q; k++)
+                    for (uint k = 0; k < q; k++)
                     {
-                        int index_a1jk = position_q(a1, j, k, m);
-                        int index_a1a2k = position_q(a1, a2, k, m);
+                        uint index_a1jk = position_q(a1, j, k, m);
+                        uint index_a1a2k = position_q(a1, a2, k, m);
 
-                        for (int ell = 0; ell < nb_Array; ell++)
+                        for (uint ell = 0; ell < nb_Array; ell++)
                             BMomentInter.at(index_a1a2k, nb_Array) += B * Bmoment.at(index_a1jk, nb_Array);
                     }
                     B *= r * (n - a1 - a2) / (1 + a2);
@@ -200,24 +200,24 @@ arma::mat &BMoment3DTetra::computeMoments()
 
         Bmoment.zeros();
         // conver third index
-        for (int k = 0; k < q; k++)
+        for (uint k = 0; k < q; k++)
         {
             double xi = quadraWN.at(k, 5);
             double wgt = quadraWN.at(k, 4);
 
             double s = 1 - xi;
             double r = xi / s;
-            for (int a1 = 0; a1 <= n; a1++)
+            for (uint a1 = 0; a1 <= n; a1++)
             {
-                for (int a2 = 0; a2 <= n - a1; a2++)
+                for (uint a2 = 0; a2 <= n - a1; a2++)
                 {
                     double B = wgt * pow(s, n - a1 - a2);
-                    for (int a3 = 0; a3 <= n - a1 - a2; a3++)
+                    for (uint a3 = 0; a3 <= n - a1 - a2; a3++)
                     {
-                        int index_a1a2k = position_q(a1, a2, k, m);
-                        int index = position(a1, a2, a3, n);
+                        uint index_a1a2k = position_q(a1, a2, k, m);
+                        uint index = element.position({a1, a2, a3}, n);
 
-                        for (int ell = 0; ell < nb_Array; ell++)
+                        for (uint ell = 0; ell < nb_Array; ell++)
                             Bmoment.at(index, nb_Array) += B * BMomentInter.at(index_a1a2k, nb_Array);
 
                         B *= r * (n - a1 - a2 - a3) / (1 + a3);
