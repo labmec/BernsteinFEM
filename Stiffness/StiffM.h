@@ -7,11 +7,11 @@
 class BStiff
 {
   protected:
-    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
-    int n;                          // polynomial order
-    int lenStiff;                   // length of the stiffness matrix
+    uint q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    uint n;                          // polynomial order
+    uint lenStiff;                   // length of the stiffness matrix
     arma::mat Matrix;               // stiffness matrix
-    int lenBinomialMat;             // length of the binomial Pascal matrix
+    uint lenBinomialMat;             // length of the binomial Pascal matrix
     arma::Mat<int64_t> BinomialMat; // Pascal Matrix
 
     // computes a Pascal Matrix with size lenBinomialMat
@@ -19,7 +19,7 @@ class BStiff
 
   public:
     // default constructor
-    BStiff(int q, int n);
+    BStiff(uint q, uint n);
 
     // copy constructor
     BStiff(const BStiff &cp);
@@ -30,13 +30,13 @@ class BStiff
   // getters
 
     // returns the length of the matrix
-    int length();
+    uint length();
 
     // returns the polynomial order of the basis
-    int getPOrder();
+    uint getPOrder();
 
     // returns the value of Matrix[i][j]
-    double getMatrixValue(int i, int j);
+    double getMatrixValue(uint i, uint j);
 
     // returns the matrix
     const arma::mat &getMatrix();
@@ -68,7 +68,7 @@ class BStiff1D : public BStiff, public BMoment1D
     }
   public:
     // default constructor
-    BStiff1D(int q, int n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
+    BStiff1D(uint q, uint n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
 
     // copy constructor
     BStiff1D(const BStiff1D &cp);
@@ -106,7 +106,7 @@ class BStiff2DTri : public BStiff, public BMoment2DTri
 
   public:
     // default constructor
-    BStiff2DTri(int q, int n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
+    BStiff2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
 
     // copy constructor
     BStiff2DTri(const BStiff2DTri &cp);
@@ -137,7 +137,7 @@ class BStiff2DQuad
 {
   public:
     // default constructor
-    BStiff2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
+    BStiff2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
     // copy constructor
     BStiff2DQuad(const BStiff2DQuad &cp);

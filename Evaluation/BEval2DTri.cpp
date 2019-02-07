@@ -1,14 +1,14 @@
 #include "Evaluation.h"
 #include "JacobiGaussNodes.h"
 
-BEval2DTri::BEval2DTri(int q, int n, Element<Element_t::TriangularEl> const &el)
+BEval2DTri::BEval2DTri(uint q, uint n, Element<Element_t::TriangularEl> const &el)
     : BEval(q, n, el), eval_inter(q * q)
 {
     bbvec_len = (n + 1) * (n + 1);
     eval.set_size(q * q);
 }
 
-BEval2DTri::BEval2DTri(int q, int n, arma::vec const &cVec, Element<Element_t::TriangularEl> const &el)
+BEval2DTri::BEval2DTri(uint q, uint n, arma::vec const &cVec, Element<Element_t::TriangularEl> const &el)
     : BEval(q, n, cVec, el), eval_inter(q * q)
 {
     bbvec_len = (n + 1) * (n + 1);
@@ -23,7 +23,7 @@ arma::vec &BEval2DTri::computeEvaluation()
     // convert first index
     for (uint i2 = 0; i2 < q; i2++)
     {
-        double xi = (1.0 + legendre_xi(q, i)) * 0.5;
+        double xi = (1.0 + legendre_xi(q, i2)) * 0.5;
         double s = 1 - xi;
         double r = xi / s;
 
@@ -41,7 +41,7 @@ arma::vec &BEval2DTri::computeEvaluation()
     // convert second index
     for (uint i1 = 0; i1 < q; i1++)
     {
-        double xi = (1.0 + legendre_xi(q, i)) * 0.5;
+        double xi = (1.0 + legendre_xi(q, i1)) * 0.5;
         double s = 1 - xi;
         double r = xi / s;
 

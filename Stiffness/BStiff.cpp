@@ -1,7 +1,7 @@
 #include "StiffM.h"
 
 // default constructor
-BStiff::BStiff(int q, int n)
+BStiff::BStiff(uint q, uint n)
     : Matrix(), BinomialMat(n + 1, n + 1, arma::fill::ones)
 {
     this->q = q;
@@ -38,9 +38,9 @@ BStiff &BStiff::operator=(const BStiff &cp)
 
 void BStiff::computeBinomials()
 {
-    for (int k = 1; k < lenBinomialMat; k++)
+    for (uint k = 1; k < lenBinomialMat; k++)
     {
-        for (int l = 1; l < lenBinomialMat; l++)
+        for (uint l = 1; l < lenBinomialMat; l++)
         {
             BinomialMat.at(k, l) = BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
         }
@@ -48,13 +48,13 @@ void BStiff::computeBinomials()
 }
 
 // returns the length of the matrix
-int BStiff::length()
+uint BStiff::length()
 {
     return lenStiff;
 }
 
 // returns the value of Matrix[i][j]
-double BStiff::getMatrixValue(int i, int j)
+double BStiff::getMatrixValue(uint i, uint j)
 {
     return Matrix(i, j);
 }

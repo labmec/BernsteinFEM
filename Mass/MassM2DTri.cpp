@@ -10,7 +10,7 @@
 #endif
 #define LENB(n) (2 * n + 2)
 
-BMass2DTri::BMass2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
+BMass2DTri::BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
     : BMass(q, n), BMoment2DTri(q, 2 * n, el)
 {
     lenMass = ((n + 1) * (n + 1));
@@ -91,7 +91,7 @@ BMass2DTri::~BMass2DTri()
 
 void BMass2DTri::computeMatrix()
 {
-    int n = BMass::n;
+    uint n = BMass::n;
     computeMoments();
 
     double Const = 1.0 / BinomialMat(n, n);

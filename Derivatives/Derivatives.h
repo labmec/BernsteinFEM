@@ -9,29 +9,29 @@ namespace QuadD
 // abstract class -- do not instantiate
 class QuadDerivative
 {
-  void compute_binomials(arma::Mat<int64_t> &BinomialMat, int lenBinom);
+  void compute_binomials(arma::Mat<int64_t> &BinomialMat, uint lenBinom);
 
 protected:
-  int q;                          // number of quadrature nodes
-  int n;                          // polynomial order
-  int len;                        // length of the matrix
+  uint q;                          // number of quadrature nodes
+  uint n;                          // polynomial order
+  uint len;                        // length of the matrix
   arma::mat Matrix;               // matrix containing coefficients
-  int lenBinom;                   // length of the binomial (Pascal) matrix
+  uint lenBinom;                   // length of the binomial (Pascal) matrix
   arma::Mat<int64_t> BinomialMat; // Pascal matrix
   arma::vec Fval;                 // function values at quadrature nodes
 
 public:
   // constructor
-  QuadDerivative(int q, int n);
+  QuadDerivative(uint q, uint n);
 
   // returns the length of the square Matrix
-  int Len() { return len; }
+  uint Len() { return len; }
 
   // returns a reference to the Matrix
   const arma::mat &getMatrix() { return Matrix; }
 
   // returns the Matrix[i][j] value
-  double getMatrixValue(int i, int j) { return Matrix(i, j); }
+  double getMatrixValue(uint i, uint j) { return Matrix(i, j); }
 
   // zeroes the Matrix
   void Zero() { Matrix.zeros(); }
@@ -61,7 +61,7 @@ public:
 class dXi_dXi : private BMoment2DQuad, public QuadDerivative // does not inherit moment
 {
 public:
-  dXi_dXi(int q, int n);
+  dXi_dXi(uint q, uint n);
 
   void setFunction(const arma::vec &Fval)
   {
@@ -75,7 +75,7 @@ public:
 class dEta_dEta : private BMoment2DQuad, public QuadDerivative // does not inherit moment
 {
 public:
-  dEta_dEta(int q, int n);
+  dEta_dEta(uint q, uint n);
 
   void setFunction(const arma::vec &Fval)
   {
@@ -89,7 +89,7 @@ public:
 class dXi_dEta : private BMoment2DQuad, public QuadDerivative
 {
 public:
-  dXi_dEta(int q, int n);
+  dXi_dEta(uint q, uint n);
 
   void setFunction(const arma::vec &Fval)
   {
@@ -109,7 +109,7 @@ class StiffnessMatrix : public QuadDerivative
   Element<Element_t::QuadrilateralEl> element;
 
 public:
-  StiffnessMatrix(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
+  StiffnessMatrix(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
   void Zero()
   {

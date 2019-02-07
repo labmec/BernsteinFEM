@@ -3,7 +3,7 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-BMoment1D::BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element, int nb_Array)
+BMoment1D::BMoment1D(uint q, uint n, const Element<Element_t::LinearEl> &element, uint nb_Array)
     : BMoment(q, n, element, nb_Array)
 {
     lenMoments = n + 1;
@@ -46,7 +46,7 @@ void BMoment1D::assignQuadra()
     double *x = quadraWN.colptr(1);
     double *w = quadraWN.colptr(0);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -57,9 +57,9 @@ inline
 void BMoment1D::loadFunctionDef()
 {
     arma::mat points = getIntegrationPoints();
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int el = 0; el < nb_Array; el++)
+        for (uint el = 0; el < nb_Array; el++)
             Cval.at(i, el) = f(points(i));
     }
 
@@ -74,7 +74,7 @@ arma::mat BMoment1D::getIntegrationPoints()
     double a = element.getVertices()(0);
     double b = element.getVertices()(1);
 
-    for(int i = 0; i < q; i++)
+    for(uint i = 0; i < q; i++)
     {
         points.at(i) = (legendre_xi(q, i) + (a + 1)) * ((b - a) / 2.);
     }

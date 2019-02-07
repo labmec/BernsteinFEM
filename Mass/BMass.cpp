@@ -1,6 +1,6 @@
 #include "MassM.h"
 
-BMass::BMass(int q, int n)
+BMass::BMass(uint q, uint n)
     : Matrix(), BinomialMat(n + 1, n + 1, arma::fill::ones)
 {
     this->q = q;
@@ -36,9 +36,9 @@ BMass &BMass::operator=(const BMass &cp)
 inline
 void BMass::computeBinomials()
 {
-    for (int k = 1; k < lenBinomialMat; k++)
+    for (uint k = 1; k < lenBinomialMat; k++)
     {
-        for (int l = 1; l < lenBinomialMat; l++)
+        for (uint l = 1; l < lenBinomialMat; l++)
         {
             BinomialMat.at(k, l) = BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
         }
@@ -48,14 +48,14 @@ void BMass::computeBinomials()
 // getters
 
 inline
-int BMass::length()
+uint BMass::length()
 {
     return lenMass;
 }
 
 // returns the polynomial order of the basis
 inline
-int BMass::getPOrder()
+uint BMass::getPOrder()
 {
     return n;
 }
@@ -68,7 +68,7 @@ const arma::mat &BMass::getMatrix()
 }
 
 // returns the value of Matrix[i][j]
-double BMass::getMatrixValue(int i, int j)
+double BMass::getMatrixValue(uint i, uint j)
 {
     try
     {

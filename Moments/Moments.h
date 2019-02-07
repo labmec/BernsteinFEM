@@ -9,16 +9,16 @@ template <typename _signature, Element_t EL>
 class BMoment
 {
   protected:
-    int q;                // number of quadrature points in one dimension
-    int n;                // Bernstein polynomial order
-    int lenMoments;       // length of the Bmoment vector
-    int lenCval;          // length of the Cval array
+    uint q;                // number of quadrature points in one dimension
+    uint n;                // Bernstein polynomial order
+    uint lenMoments;       // length of the Bmoment vector
+    uint lenCval;          // length of the Cval array
     arma::mat Bmoment;    // vector where the b-moments are stored
     arma::mat Cval;       // vector where the function values are stored
     bool fValSet = false; // is true if the function value is set
     bool fDefSet = false; // is true if the function definition is set
     bool functVal = true; // determines if will use function value or function definition (use function value by default)
-    int nb_Array;         // dimension of function Image (function is scalar valued by default)
+    uint nb_Array;         // dimension of function Image (function is scalar valued by default)
     Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
     arma::mat quadraWN;   // quadrature points and weights
 
@@ -34,7 +34,7 @@ class BMoment
 
   public:
     // constructors
-    BMoment(int q, int n, const Element<EL> &element = Element<EL>(), int nb_Array = 1);
+    BMoment(uint q, uint n, const Element<EL> &element = Element<EL>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment(const BMoment<_signature, EL> &cp);
@@ -47,38 +47,38 @@ class BMoment
 
     // getters
     // returns number of integration points
-    int getNumIntegrationPoints();
+    uint getNumIntegrationPoints();
 
     // returns polynomial order
-    int getPOrder();
+    uint getPOrder();
 
     // returns moments array length
-    int getLenMoments();
+    uint getLenMoments();
 
     // returns number
-    int getLenCval();
+    uint getLenCval();
 
     // return the dimension of function Image (function is scalar valued by default)
-    int getNbArray();
+    uint getNbArray();
 
     // returns wether you will be using function values or function definition (true for function values)
     bool getFunctVal();
 
     // returns the element used for computing
-    Element<EL> getElement();
+    Element<EL> &getElement();
 
     // returns the whole Bmoment matrix
     const arma::mat &getMoments();
 
     // setters
     // sets number of integration points
-    void setNumIntegrationPoints(int q);
+    void setNumIntegrationPoints(uint q);
 
     // sets polynomial order
-    void setPOder(int n);
+    void setPOder(uint n);
 
     // sets the dimension of function Image (function is scalar valued by default)
-    void setNbArray(int nb_Array);
+    void setNbArray(uint nb_Array);
 
     void setFunctionValues(const arma::vec &Cval);
 
@@ -119,7 +119,7 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
 
   public:
     // constructors
-    BMoment1D(int q, int n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>(), int nb_Array = 1);
+    BMoment1D(uint q, uint n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment1D(const BMoment1D &cp);
@@ -131,10 +131,10 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
     ~BMoment1D();
 
     // returns the value of the i-th indexed B-moment
-    double getBMoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment(i, 0); }
 
     // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
-    double getBMoment(int i, int dim) { return Bmoment(i, dim - 1); }
+    double getBMoment(uint i, int dim) { return Bmoment(i, dim - 1); }
 
     arma::mat getIntegrationPoints();
 
@@ -157,7 +157,7 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 
   public:
     // default constructor
-    BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>(), int nb_Array = 1);
+    BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment2DTri(const BMoment2DTri &cp);
@@ -185,10 +185,10 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
     }
 
     // get the i-th bmoment in the array, only use if you really know what you're doing
-    double getBMoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment(i, 0); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
     // Assuming: points = getIntegrationPoints(); then
@@ -208,7 +208,7 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 // add the second order of polynomial degree to computation
 class BMoment2DQuad : public BMoment<double(double, double), Element_t::QuadrilateralEl>
 {
-    int m;                  // second polynomial order
+    uint m;                  // second polynomial order
     arma::mat BMomentInter; // auxiliary matrix to compute moments
 
   protected:
@@ -220,9 +220,9 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
 
   public:
     // default constructor
-    BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+    BMoment2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), uint nb_Array = 1);
 
-    BMoment2DQuad(int q, int n, int m, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), int nb_Array = 1);
+    BMoment2DQuad(uint q, uint n, uint m, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment2DQuad(const BMoment2DQuad &cp);
@@ -231,13 +231,13 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     BMoment2DQuad &operator=(const BMoment2DQuad &cp);
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
     double getBMoment(uint a1, uint a2, int dim) { return Bmoment(element.position({a1, a2}, n), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-    double getBMoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment(i, 0); }
 
     // returns the vector with the integration points (x, y) over the object's element, following the moments organization
     // points(i, 0) == x i-th coordinate
@@ -251,8 +251,8 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
 // Future class definition
 class BMoment3DCube : public BMoment<double(double, double, double), Element_t::CubeEl>
 {
-    int m;                  // second polynomial order
-    int p;                  // third polynomial order
+    uint m;                  // second polynomial order
+    uint p;                  // third polynomial order
     arma::mat BMomentInter; // auxiliary matrix to compute moments
 
   protected:
@@ -264,9 +264,9 @@ class BMoment3DCube : public BMoment<double(double, double, double), Element_t::
 
   public:
     // default constructor
-    BMoment3DCube(int q, int n, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), int nb_Array = 1);
+    BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), uint nb_Array = 1);
 
-    BMoment3DCube(int q, int n, int m, int p, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), int nb_Array = 1);
+    BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment3DCube(const BMoment3DCube &cp);
@@ -275,13 +275,13 @@ class BMoment3DCube : public BMoment<double(double, double, double), Element_t::
     BMoment3DCube &operator=(const BMoment3DCube &cp);
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
     double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment(element.position({a1, a2, a3}, n), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-    double getBMoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment(i, 0); }
 
     // returns the vector with the integration points (x, y) over the object's element, following the moments organization
     // points(i, 0) == x i-th coordinate
@@ -304,7 +304,7 @@ class BMoment3DTetra : public BMoment<double(double, double, double), Element_t:
 
   public:
     // default constructor
-    BMoment3DTetra(int q, int n, const Element<Element_t::TetrahedronEl> &element = Element<Element_t::TetrahedronEl>(), int nb_Array = 1);
+    BMoment3DTetra(uint q, uint n, const Element<Element_t::TetrahedronEl> &element = Element<Element_t::TetrahedronEl>(), uint nb_Array = 1);
 
     // copy constructor
     BMoment3DTetra(const BMoment3DTetra &cp);
@@ -332,10 +332,10 @@ class BMoment3DTetra : public BMoment<double(double, double, double), Element_t:
     }
 
     // get the i-th bmoment in the array, only use if you really know what you're doing
-    double getBMoment(int i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment(i, 0); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-    double getBMoment(int i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
     // Assuming: points = getIntegrationPoints(); then

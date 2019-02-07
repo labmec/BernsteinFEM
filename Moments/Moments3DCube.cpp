@@ -1,16 +1,16 @@
 #include "Moments.h"
 #include "JacobiGaussNodes.h"
 
-uint position_q(uint i, uint j, uint k, int q) { return i * q * q + j * q + k; }
+uint position_q(uint i, uint j, uint k, uint q) { return i * q * q + j * q + k; }
 
-BMoment3DCube::BMoment3DCube(int q, int n, const Element<Element_t::CubeEl> &el, int nb_Array)
+BMoment3DCube::BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &el, uint nb_Array)
     : BMoment3DCube(q, n, n, n, el, nb_Array) {}
 
-BMoment3DCube::BMoment3DCube(int q, int n, int m, int p, const Element<Element_t::CubeEl> &el, int nb_Array)
+BMoment3DCube::BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &el, uint nb_Array)
     : BMoment(q, n, el, nb_Array), 
     BMomentInter()
 {
-    int max = MAX(MAX(n, m), p);
+    uint max = MAX(MAX(n, m), p);
     max++;
     lenMoments = max * max * max; // (max + 1) ^ 3
     lenCval = q * q * q;
@@ -54,7 +54,7 @@ void BMoment3DCube::assignQuadra()
     double *x = quadraWN.colptr(1);
     double *w = quadraWN.colptr(0);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -64,17 +64,17 @@ void BMoment3DCube::assignQuadra()
 inline
 void BMoment3DCube::loadFunctionDef()
 {
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; i++)
+        for (uint j = 0; j < q; i++)
         {
-            for (int k = 0; k < q; k++)
+            for (uint k = 0; k < q; k++)
             {
                 arma::mat jac(3, 3, arma::fill::none);
                 arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)}, jac);
                 double dX = det(jac);
                 uint index_ijk = position_q(i, j, k, q);
-                for (int el = 0; el < nb_Array; el++)
+                for (uint el = 0; el < nb_Array; el++)
                     Cval.at(index_ijk, el) = f(X[0], X[1], X[2]) * dX;
             }
         }
@@ -86,11 +86,11 @@ arma::mat BMoment3DCube::getIntegrationPoints()
 {
     arma::mat points(lenCval, 3, arma::fill::none);
 
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
-            for (int k = 0; k < q; k++)
+            for (uint k = 0; k < q; k++)
             {
                 arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)});
                 uint index_ijk = position_q(i, j, k, q);
@@ -115,8 +115,8 @@ arma::mat &BMoment3DCube::computeMoments()
         if (!functVal)
             loadFunctionDef();
 
-        int max_nm = MAX(MAX(n, m), p);
-        int max_nq = MAX(max_nm, q);
+        uint max_nm = MAX(MAX(n, m), p);
+        uint max_nq = MAX(max_nm, q);
         Bmoment.zeros();
         BMomentInter.zeros();
 

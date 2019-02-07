@@ -4,10 +4,10 @@
 // helps indexing quadrature points vectors
 uint position_q(uint i, uint j, int q) { return i * q + j; }
 
-BMoment2DQuad::BMoment2DQuad(int q, int n, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
+BMoment2DQuad::BMoment2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element, uint nb_Array)
     : BMoment2DQuad(q, n, n, element, nb_Array) {}
 
-BMoment2DQuad::BMoment2DQuad(int q, int n, int m, const Element<Element_t::QuadrilateralEl> &element, int nb_Array)
+BMoment2DQuad::BMoment2DQuad(uint q, uint n, uint m, const Element<Element_t::QuadrilateralEl> &element, uint nb_Array)
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
 {
@@ -56,7 +56,7 @@ void BMoment2DQuad::assignQuadra()
     double *x = quadraWN.colptr(1);
     double *w = quadraWN.colptr(0);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -67,15 +67,15 @@ inline
 void BMoment2DQuad::loadFunctionDef()
 {
 
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
             arma::mat jac(2, 2, arma::fill::none);
             arma::mat X = element.mapToElement({quadraWN.at(i, 1), quadraWN.at(j, 1)}, jac);
             double dX = det(jac);
-            int index_ij = position_q(i, j, q);
-            for (int el = 0; el < nb_Array; el++)
+            uint index_ij = position_q(i, j, q);
+            for (uint el = 0; el < nb_Array; el++)
                 Cval.at(index_ij, 0) = f(X[0], X[1]) * dX;
         }
     }
@@ -88,12 +88,12 @@ arma::mat BMoment2DQuad::getIntegrationPoints()
 {
     arma::mat points(lenCval, 2, arma::fill::none);
 
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
             arma::mat X = element.mapToElement({quadraWN.at(i, 1), quadraWN.at(j, 1)});
-            int index_ij = position_q(i, j, q);
+            uint index_ij = position_q(i, j, q);
             points.at(index_ij, 0) = X[0];
             points.at(index_ij, 1) = X[1];
         }
@@ -113,8 +113,8 @@ arma::mat &BMoment2DQuad::computeMoments()
         if (!functVal)
             loadFunctionDef();
 
-        int max_nm = MAX(n, m);
-        int max_nq = MAX(max_nm, q - 1);
+        uint max_nm = MAX(n, m);
+        uint max_nq = MAX(max_nm, q - 1);
         Bmoment.zeros();
         BMomentInter.zeros();
 

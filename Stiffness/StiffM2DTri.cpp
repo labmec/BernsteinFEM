@@ -11,7 +11,7 @@ using namespace arma;
 extern double Area2d(double v1[2], double v2[2], double v3[2]);
 extern double Area2d(const arma::mat &vertices);
 
-BStiff2DTri::BStiff2DTri(int q, int n, const Element<Element_t::TriangularEl> &el)
+BStiff2DTri::BStiff2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
     : BStiff(q, n), BMoment2DTri(q, 2 * (n - 1), el), normalMat(3, 2, arma::fill::none)
 {
     lenStiff = (n + 1) * (n + 1);
@@ -71,7 +71,7 @@ void BStiff2DTri::computeMatrix()
     // transform_BmomentC_Stiff2d(Moments, normalMat);
 
     Matrix.zeros();
-    int n = BStiff::n;
+    uint n = BStiff::n;
     double area = Area2d(element.getVertices());
     double Const = n * n / 4. / area / area / BinomialMat(n - 1, n - 1); // taking account of scaling between normals and gradients
 

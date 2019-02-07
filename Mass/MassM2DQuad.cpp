@@ -2,7 +2,7 @@
 
 #define LEN(n) ((n + 1) * (n + 1))
 
-BMass2DQuad::BMass2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> el)
+BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> el)
     : BMass(q, n), BMoment2DQuad(q, 2 * n, el)
 {
     lenMass = LEN(n);
@@ -42,7 +42,7 @@ BMass2DQuad::~BMass2DQuad()
 
 void BMass2DQuad::computeMatrix()
 {
-    int n = BMass::n;
+    uint n = BMass::n;
     computeMoments();
 
     double Const = 1.0 / (BinomialMat.at(n, n) * BinomialMat.at(n, n)); // constant due to integration

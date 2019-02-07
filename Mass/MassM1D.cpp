@@ -6,7 +6,7 @@ using std::endl;
 #include "MassM.h"
 
 // maybe trade q to 2*q in the base class constructor
-BMass1D::BMass1D(int q, int n, const Element<Element_t::LinearEl> &el)
+BMass1D::BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
     : BMass(q, n), BMoment1D(q, 2 * n, el)
 {
     lenMass = n + 1;
@@ -46,7 +46,7 @@ BMass1D::~BMass1D()
 
 void BMass1D::computeMatrix()
 {
-    int n = BMass::n;
+    uint n = BMass::n;
     computeMoments();
 
     double Const = 1.0 / BinomialMat.at(n, n);

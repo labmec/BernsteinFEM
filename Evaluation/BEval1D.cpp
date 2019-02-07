@@ -1,14 +1,14 @@
 #include "Evaluation.h"
 #include "JacobiGaussNodes.h"
 
-BEval1D::BEval1D(int q, int n, Element<Element_t::LinearEl> const &el)
+BEval1D::BEval1D(uint q, uint n, Element<Element_t::LinearEl> const &el)
     : BEval(q, n, el) 
 {
     bbvec_len = (n + 1);
     eval.set_size(q);
 }
 
-BEval1D::BEval1D(int q, int n, arma::vec const &cVec, Element<Element_t::LinearEl> const &el)
+BEval1D::BEval1D(uint q, uint n, arma::vec const &cVec, Element<Element_t::LinearEl> const &el)
     : BEval(q, n, cVec, el)
 {
     bbvec_len = (n + 1);

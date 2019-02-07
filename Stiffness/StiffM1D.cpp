@@ -1,6 +1,6 @@
 #include "StiffM.h"
 
-BStiff1D::BStiff1D(int q, int n, const Element<Element_t::LinearEl> &el)
+BStiff1D::BStiff1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
     : BStiff(q, n), BMoment1D(q, 2 * (n - 1), el)
 {
     lenStiff = n + 1;
@@ -16,8 +16,8 @@ void BStiff1D::computeMatrix()
     computeMoments();
     computeBinomials();
 
-    int n = BStiff::n;
-    int a = element.getVertices()(0), b = element.getVertices()(1);
+    uint n = BStiff::n;
+    double a = element.getVertices()(0), b = element.getVertices()(1);
 
     double Const = 1. / BinomialMat.at(n - 1, n - 1) / pow(b - a, n);
     

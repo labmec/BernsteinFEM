@@ -3,7 +3,7 @@
 
 // constructors
 template <typename _s, Element_t EL>
-BMoment<_s, EL>::BMoment(int q, int n, const Element<EL> &element, int nb_Array)
+BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element, uint nb_Array)
     : Bmoment(), Cval(), element(element), quadraWN(), f()
 {
     this->q = q;
@@ -41,23 +41,23 @@ BMoment<_s, EL>::~BMoment() {}
 // getters
 // returns number of integration points
 template <typename _s, Element_t EL>
-int BMoment<_s, EL>::getNumIntegrationPoints() { return q; }
+uint BMoment<_s, EL>::getNumIntegrationPoints() { return q; }
 
 // returns polynomial order
 template <typename _s, Element_t EL>
-int BMoment<_s, EL>::getPOrder() { return n; }
+uint BMoment<_s, EL>::getPOrder() { return n; }
 
 // returns moments array length
 template <typename _s, Element_t EL>
-int BMoment<_s, EL>::getLenMoments() { return lenMoments; }
+uint BMoment<_s, EL>::getLenMoments() { return lenMoments; }
 
 // returns number
 template <typename _s, Element_t EL>
-int BMoment<_s, EL>::getLenCval() { return lenCval; }
+uint BMoment<_s, EL>::getLenCval() { return lenCval; }
 
 // return the dimension of function Image (function is scalar valued by default)
 template <typename _s, Element_t EL>
-int BMoment<_s, EL>::getNbArray() { return nb_Array; }
+uint BMoment<_s, EL>::getNbArray() { return nb_Array; }
 
 // returns wether you will be using function values or function definition (true for function values)
 template <typename _s, Element_t EL>
@@ -65,7 +65,7 @@ bool BMoment<_s, EL>::getFunctVal() { return functVal; }
 
 // returns the element used for computing
 template <typename _s, Element_t EL>
-Element<EL> BMoment<_s, EL>::getElement() { return element; }
+Element<EL> &BMoment<_s, EL>::getElement() { return element; }
 
 // returns the whole Bmoment matrix
 template <typename _s, Element_t EL>
@@ -74,15 +74,15 @@ const arma::mat &BMoment<_s, EL>::getMoments() { return Bmoment; }
 // setters
 // sets number of integration points
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setNumIntegrationPoints(int q) { this->q = q; }
+void BMoment<_s, EL>::setNumIntegrationPoints(uint q) { this->q = q; }
 
 // sets polynomial order
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setPOder(int n) { this->n = n; }
+void BMoment<_s, EL>::setPOder(uint n) { this->n = n; }
 
 // sets the dimension of function Image (function is scalar valued by default)
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setNbArray(int nb_Array)
+void BMoment<_s, EL>::setNbArray(uint nb_Array)
 {
     this->nb_Array = nb_Array;
     Bmoment.resize(lenMoments, nb_Array);

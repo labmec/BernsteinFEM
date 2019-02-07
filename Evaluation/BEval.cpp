@@ -1,21 +1,21 @@
 #include "Evaluation.h"
 
 template <Element_t EL>
-BEval<EL>::BEval(int q, int n, const Element<EL> &el)
+BEval<EL>::BEval(uint q, uint n, const Element<EL> &el)
     : BBVec(), eval(), element(el) { }
 
 template <Element_t EL>
-BEval<EL>::BEval(int q, int n, const arma::vec &coeffVec, const Element<EL> &element = Element<EL>())
+BEval<EL>::BEval(uint q, uint n, const arma::vec &coeffVec, const Element<EL> &el)
     : BBVec(coeffVec), eval(), element(el) { }
 
 template <Element_t EL>
-int BEval<EL>::getNumIntegrationPoints()
+uint BEval<EL>::getNumIntegrationPoints()
 {
     return q;
 }
 
 template <Element_t EL>
-int BEval<EL>::getPOrder()
+uint BEval<EL>::getPOrder()
 {
     return n;
 }

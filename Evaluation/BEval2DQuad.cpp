@@ -1,14 +1,14 @@
 #include "Evaluation.h"
 #include "JacobiGaussNodes.h"
 
-BEval2DQuad::BEval2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> const &el)
+BEval2DQuad::BEval2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> const &el)
     : BEval(q, n, el), eval_inter(q * q, arma::fill::none)
 {
     bbvec_len = (n + 1) * (n + 1);
     eval.set_size(q * q);
 }
 
-BEval2DQuad::BEval2DQuad(int q, int n, arma::vec const &cVec, Element<Element_t::QuadrilateralEl> const &el)
+BEval2DQuad::BEval2DQuad(uint q, uint n, arma::vec const &cVec, Element<Element_t::QuadrilateralEl> const &el)
     : BEval(q, n, cVec, el), eval_inter(q * q, arma::fill::none)
 {
     bbvec_len = (n + 1) * (n + 1);

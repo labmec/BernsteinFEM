@@ -11,12 +11,12 @@
 #define LEN(n, q) (MAX(n + 1, q) * MAX(n + 1, q))
 
 // helps indexing quadrature points vectors
-uint position_q(uint i, uint j, int q) { return i * q + j; }
+uint position_q(uint i, uint j, uint q) { return i * q + j; }
 // jacobian determinant of Duffy transform is a multiple of the area of the triangle
 double Area2d(double v1[2], double v2[2], double v3[2]);
 double Area2d(const arma::mat &vertices);
 
-BMoment2DTri::BMoment2DTri(int q, int n, const Element<Element_t::TriangularEl> &element, int nb_Array)
+BMoment2DTri::BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element, uint nb_Array)
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n, q - 1) + 1) * (MAX(n, q - 1) + 1), nb_Array, arma::fill::zeros)
 {
@@ -61,7 +61,7 @@ void BMoment2DTri::assignQuadra()
     double *x = quadraWN.colptr(1); // x is pointer which points to the address l_x, thus the effective MODIFICATION of l_x entries
     double *w = quadraWN.colptr(0);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + jacobi_xi(q, k)) * 0.5;
         w[k] = jacobi_w(q, k) * 0.25;
@@ -70,7 +70,7 @@ void BMoment2DTri::assignQuadra()
     x = quadraWN.colptr(3);
     w = quadraWN.colptr(2);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -82,11 +82,11 @@ void BMoment2DTri::loadFunctionDef()
 {
     arma::mat points(getIntegrationPoints());
     Cval.set_size(lenCval, nb_Array);
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
-            int index_ij = position_q(i, j, q);
+            uint index_ij = position_q(i, j, q);
             Cval(index_ij, 0) = f(points(i, 0), points(j, 1));
         }
     }
@@ -102,14 +102,14 @@ arma::mat BMoment2DTri::getIntegrationPoints()
 {
     arma::mat points(q * q * nb_Array, 2); // vector with q * q * nb_Array elements
 
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
         double xi = quadraWN(i, 1);
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
             arma::mat coord = {xi, quadraWN(j, 3)};
             arma::mat v = element.mapToElement(coord);
-            int index_ij = position_q(i, j, q);
+            uint index_ij = position_q(i, j, q);
             points(index_ij, 0) = v[0];
             points(index_ij, 1) = v[1];
         }
@@ -127,7 +127,7 @@ arma::mat &BMoment2DTri::computeMoments()
         std::cerr << "missing function definition for computation of the moments in \'computeMoments()\'\n";
     else
     {
-        int m = MAX(n, q - 1); // m will be used for indexing
+        uint m = MAX(n, q - 1); // m will be used for indexing
         Bmoment.zeros();
 
         // compute the function definition into the function values vector

@@ -2,11 +2,11 @@
 #include "JacobiGaussNodes.h"
 
 // helps indexing quadrature points vectors
-int position_q(int i, int j, int k, int q) { return i * q * q + j * q + k; }
+int position_q(uint i, uint j, uint k, uint q) { return i * q * q + j * q + k; }
 
 double Volume(arma::mat const &v);
 
-BMoment3DTetra::BMoment3DTetra(int q, int n, const Element<Element_t::TetrahedronEl> &element, int nb_Array)
+BMoment3DTetra::BMoment3DTetra(uint q, uint n, const Element<Element_t::TetrahedronEl> &element, uint nb_Array)
     : BMoment(q, n, element, nb_Array), BMomentInter()
 {
     int max = MAX(n + 1, q);
@@ -53,7 +53,7 @@ void BMoment3DTetra::assignQuadra()
     double *x = quadraWN.colptr(1);
     double *w = quadraWN.colptr(0);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + jacobi2_xi(q, k)) * 0.5;
         w[k] = jacobi2_w(q, k) * 0.25;
@@ -62,7 +62,7 @@ void BMoment3DTetra::assignQuadra()
     x = quadraWN.colptr(3);
     w = quadraWN.colptr(2);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
         w[k] = legendre_w(q, k) * 0.5;
@@ -71,7 +71,7 @@ void BMoment3DTetra::assignQuadra()
     x = quadraWN.colptr(5);
     w = quadraWN.colptr(4);
 
-    for (int k = 0; k < q; k++)
+    for (uint k = 0; k < q; k++)
     {
         x[k] = (1.0 + jacobi_xi(q, k)) * 0.5;
         w[k] = jacobi_w(q, k) * 0.25;
@@ -83,13 +83,13 @@ void BMoment3DTetra::loadFunctionDef()
 {
     arma::mat points(getIntegrationPoints());
     Cval.set_size(lenCval, nb_Array);
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
-            for (int k = 0; k < q; k++)
+            for (uint k = 0; k < q; k++)
             {
-                int index_ijk = position_q(i, j, k, q);
+                uint index_ijk = position_q(i, j, k, q);
                 Cval.at(index_ijk, 0) = f(points.at(i, 0), points.at(j, 1), points.at(k, 2));
             }
         }
@@ -107,14 +107,14 @@ arma::mat BMoment3DTetra::getIntegrationPoints()
 {
     arma::mat points(q * q * q * nb_Array, 3); // vector with q * q * nb_Array elements
 
-    for (int i = 0; i < q; i++)
+    for (uint i = 0; i < q; i++)
     {
-        for (int j = 0; j < q; j++)
+        for (uint j = 0; j < q; j++)
         {
-            for (int k = 0; k < q; k++)
+            for (uint k = 0; k < q; k++)
             {
                 arma::mat v = element.mapToElement({quadraWN.at(i, 1), quadraWN.at(j, 3), quadraWN(k, 5)});
-                int index_ijk = position_q(i, j, k, q);
+                uint index_ijk = position_q(i, j, k, q);
                 points(index_ijk, 0) = v[0];
                 points(index_ijk, 1) = v[1];
                 points(index_ijk, 2) = v[2];
@@ -140,7 +140,7 @@ arma::mat &BMoment3DTetra::computeMoments()
         Bmoment.zeros();
         BMomentInter.zeros();
 
-        int m = MAX(n, q - 1);
+        uint m = MAX(n, q - 1);
 
         double scalingConst = 6 * Volume(element.getVertices()); // FIXME: check this value out
 

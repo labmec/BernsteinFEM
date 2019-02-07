@@ -9,12 +9,12 @@ class PascalMat;
 class BMass
 {
   protected:
-    int q;                          // number of quadrature points ( recommended: 2*(n+1) )
-    int n;                          // polynomial order
-    int lenMass;                    // length of the mass matrix
+    uint q;                          // number of quadrature points ( recommended: 2*(n+1) )
+    uint n;                          // polynomial order
+    uint lenMass;                    // length of the mass matrix
     arma::mat Matrix;               // mass matrix
-    int lenBinomialMat;             // length of the binomial matrix
-    arma::Mat<int64_t> BinomialMat; // Pascal Matrix
+    uint lenBinomialMat;             // length of the binomial matrix
+    arma::Mat<uint64_t> BinomialMat; // Pascal Matrix
 
     std::shared_ptr<PascalMat> pascalMat; // Pascal matrix auxiliary obj
 
@@ -22,7 +22,7 @@ class BMass
 
   public:
     // default constructor
-    BMass(int q, int n);
+    BMass(uint q, uint n);
 
     // copy constructor
     BMass(const BMass &cp);
@@ -33,16 +33,16 @@ class BMass
     // getters
 
     // returns the length of one dimension of the Mass matrix
-    int length();
+    uint length();
 
     // returns the polynomial order of the basis
-    int getPOrder();
+    uint getPOrder();
 
     // returns a reference to the Mass Matrix
     const arma::mat &getMatrix();
 
     // returns the value of Matrix[i][j]
-    double getMatrixValue(int i, int j);
+    double getMatrixValue(uint i, uint j);
 
   // virtual methods
 
@@ -56,7 +56,7 @@ class BMass1D : public BMass, public BMoment1D
 {
   public:
     // default constructor
-    BMass1D(int q, int n, const Element<Element_t::LinearEl> &el = Element<Element_t::LinearEl>());
+    BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el = Element<Element_t::LinearEl>());
 
     // copy constructor
     BMass1D(const BMass1D &cp);
@@ -77,7 +77,7 @@ class BMass2DTri : public BMass, public BMoment2DTri
 {
   public:
     // default constructor
-    BMass2DTri(int q, int n, const Element<Element_t::TriangularEl> &el = Element<Element_t::TriangularEl>());
+    BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el = Element<Element_t::TriangularEl>());
 
     // copy constructor
     BMass2DTri(const BMass2DTri &cp);
@@ -98,7 +98,7 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
 {
   public:
     // defualt constructor
-    BMass2DQuad(int q, int n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>());
+    BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>());
 
     // copy constructor
     BMass2DQuad(const BMass2DQuad &cp);
