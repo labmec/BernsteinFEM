@@ -8,7 +8,8 @@ arma::mat Element<TEL>::jac(2, 2, arma::fill::zeros);
 template <>
 Element<TEL>::Element()
     : vertices(3, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none)
+      coordinates(1, 2, arma::fill::none),
+      perm()
 {
     vertices(0, 0) = 0.0; vertices(0, 1) = 0.0; // v1 = (0,0)
     vertices(1, 0) = 1.0; vertices(1, 1) = 0.0; // v2 = (1,0)
@@ -18,7 +19,8 @@ Element<TEL>::Element()
 template <>
 Element<TEL>::Element(const arma::mat &v)
     : vertices(3, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none)
+      coordinates(1, 2, arma::fill::none),
+      perm()
 {
     if (v.n_rows < 3 || v.n_cols < 2)
     {
@@ -35,13 +37,15 @@ Element<TEL>::Element(const arma::mat &v)
 template <>
 Element<TEL>::Element(const Element<TEL> &cp)
     : vertices(cp.vertices),
-      coordinates(1, 2, arma::fill::none) {}
+      coordinates(1, 2, arma::fill::none),
+      perm(cp.perm) {}
 
 template <>
-uint Element<TEL>::position(const std::vector<uint> &point, int n)
+uint Element<TEL>::position(const std::vector<uint> &point)
 {
+    int n = perm.getPOrder();
     if (point.size() >= 2)
-        return point[0] * (n + 1) + point[1];
+        return perm.getPermutationVector()[ point[0] * (n + 1) + point[1] ];
     else
         throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
 }

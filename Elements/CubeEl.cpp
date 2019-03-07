@@ -44,10 +44,11 @@ Element<CEL>::Element(const Element<CEL> &cp)
       coordinates(1, 3, arma::fill::none) {}
 
 template <>
-uint Element<CEL>::position(const std::vector<uint> &point, int n)
+uint Element<CEL>::position(const std::vector<uint> &point)
 {
+    uint n = perm.getPOrder();
     if (point.size() >= 3)
-        return point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2];
+        return perm.getPermutationVector()[ point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2] ];
     else
         throw new std::logic_error("Cube Element 'position' method called with too few vector elements\n\t3 required");
 }

@@ -8,7 +8,8 @@ arma::mat Element<LEL>::jac(1, 1, arma::fill::zeros);
 template <>
 Element<LEL>::Element()
     : vertices(2, 1, arma::fill::none),
-      coordinates(1, 1, arma::fill::none)
+      coordinates(1, 1, arma::fill::none),
+      perm()
 {
     vertices(0) = 0.0;
     vertices(1) = 1.0;
@@ -17,7 +18,8 @@ Element<LEL>::Element()
 template <>
 Element<LEL>::Element(const arma::mat &v)
     : vertices(2, 1, arma::fill::none),
-      coordinates(1, 1, arma::fill::none)
+      coordinates(1, 1, arma::fill::none),
+      perm()
 {
     if (vertices.n_rows < 2)
     {
@@ -33,13 +35,14 @@ Element<LEL>::Element(const arma::mat &v)
 template <>
 Element<LEL>::Element(const Element<LEL> &cp)
     : vertices(cp.vertices),
-      coordinates(1, 1, arma::fill::none) {}
+      coordinates(1, 1, arma::fill::none),
+      perm(cp.perm) {}
 
 template<>
-uint Element<LEL>::position(const std::vector<uint> &point, int n)
+uint Element<LEL>::position(const std::vector<uint> &point)
 {
     if (point.size() >= 1)
-        return point[0];
+        return perm.getPermutationVector()[point[0]];
     else
         throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
 }
