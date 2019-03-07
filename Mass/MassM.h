@@ -98,7 +98,7 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
 {
   public:
     // defualt constructor
-    BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> element = Element<Element_t::QuadrilateralEl>());
+    BMass2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
     // copy constructor
     BMass2DQuad(const BMass2DQuad &cp);
@@ -112,6 +112,37 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
     void computeMatrix();
 };
 
-class BMass3DCube : public BMoment3DCube
+class BMass3DCube : public BMass, public BMoment3DCube
 {
+  public:
+    // default constructor
+    BMass3DCube(uint NIntPoints, uint PolOrder, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>());
+
+    // copy constructor
+    BMass3DCube(const BMass3DCube &cp);
+
+    // copy assignment operator
+    BMass3DCube &operator=(const BMass3DCube &cp);
+
+    ~BMass3DCube();
+
+    // compute the mass matrix
+    void computeMatrix();
+};
+
+class BMass3DTetra : public BMass, public BMoment3DTetra
+{
+  public:
+    // default constructor
+    BMass3DTetra(uint NIntPoints, uint PolOrder, Element<Element_t::TetrahedronEl> const &element = Element<Element_t::TetrahedronEl>());
+
+    // copy constructor
+    BMass3DTetra(const BMass3DTetra &cp);
+
+    // copy assignment operator
+    BMass3DTetra &operator=(const BMass3DTetra &cp);
+
+    ~BMass3DTetra();
+
+    void computeMatrix();
 };
