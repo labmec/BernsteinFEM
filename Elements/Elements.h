@@ -10,21 +10,15 @@
  ***************************************************************/
 
 #pragma once
+
 #include <armadillo>
+#include "Permutations.h"
+#include "Element_t.h"
 
 #ifndef uint
 #define uint unsigned
 #endif
 
-enum class Element_t
-{
-  LinearEl,
-  QuadrilateralEl,
-  TriangularEl,
-  CubeEl,
-  TetrahedronEl
-  // Add whatever kind of element here, then specialize the template parameter at its own cpp file
-};
 
 // simplicial elements (e.g. triangle, tetrahedron) are mapped
 // using the Duffy Transform, from the equivalent quadrilateral/cube master element
@@ -34,16 +28,25 @@ template <Element_t EL>
 class Element
 {
   arma::mat vertices;    // vertices of the element
+  arma::ivec idxVec;      // stores index for each vertex
   arma::mat coordinates; // coordinates object to return from 'mapElement'
   static arma::mat jac;  // matrix to store the values of the jacobian when no arguments are passed
+  Permutation<EL> perm;  // permutation vector for positioning
 
 public:
   // constructors
   // default constructor, makes a element equivalent to the Master Element
   Element();
 
-  // constructor by the vertices of the element, the first coord
+  // constructor by the vertices of the element
   Element(const arma::mat &vertices);
+
+  // constructor by the vertices and indices of the vertices of the element
+  Element(const arma::mat &vertices, arma::ivec &indexVector) : Element(vertices)
+  {
+    idxVec = indexVector;
+    perm.setIndexVector(indexVector);
+  }
 
   // copy constructor
   Element(const Element<EL> &cp);
@@ -52,8 +55,16 @@ public:
   Element<EL> &operator=(const Element<EL>& cp)
   {
     if (this != &cp)
-    vertices = cp.vertices;
+      vertices = cp.vertices;
     return *this;
+  }
+
+  void setPermutationPOrder(uint n) { perm.setPOrder(n); }
+
+  void setIndexVector(arma::ivec &idxVec)
+  {
+    this->idxVec = idxVec;
+    perm.setIndexVector(idxVec);
   }
 
   // returns the vertices of the element object
@@ -62,10 +73,10 @@ public:
   // get last jacobian matrix that was computed
   static const arma::mat &getLastJacobian() { return jac; }
 
-  // maps the specified point of the element 
+  // maps the specified point of the element
   // to the position in which it should be
   // in the vectors and matrices throughout the computations
-  static unsigned position(const std::vector<unsigned> &point, int n);
+  unsigned position(const std::vector<unsigned> &point);
 
   // Maps the element from the matrix element
   // Given the coordinates in the master element in [0,1],
