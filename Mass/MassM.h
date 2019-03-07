@@ -56,7 +56,7 @@ class BMass1D : public BMass, public BMoment1D
 {
   public:
     // default constructor
-    BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el = Element<Element_t::LinearEl>());
+    BMass1D(uint NIntPoint, uint PolOrder, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
 
     // copy constructor
     BMass1D(const BMass1D &cp);
@@ -77,7 +77,7 @@ class BMass2DTri : public BMass, public BMoment2DTri
 {
   public:
     // default constructor
-    BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el = Element<Element_t::TriangularEl>());
+    BMass2DTri(uint NIntPoint, uint PolOrder, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
 
     // copy constructor
     BMass2DTri(const BMass2DTri &cp);
@@ -98,7 +98,7 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
 {
   public:
     // defualt constructor
-    BMass2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
+    BMass2DQuad(uint NIntPoint, uint PolOrder, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
     // copy constructor
     BMass2DQuad(const BMass2DQuad &cp);
