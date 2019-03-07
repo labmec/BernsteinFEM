@@ -53,12 +53,12 @@ void BMass1D::computeMatrix()
 
     for (uint i = 0; i < lenMass; i++)
     {
-        uint I = element.position({i}, n);
+        uint I = element.position({i});
         for (uint j = 0; j < lenMass; j++)
         {
             double binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
-            uint J = element.position({j}, n);
-            Matrix.at(I, J) = binom * Bmoment(element.position({i + j}, n));
+            uint J = element.position({j});
+            Matrix.at(I, J) = binom * Bmoment(element.position({i + j}));
         }
     }
 }

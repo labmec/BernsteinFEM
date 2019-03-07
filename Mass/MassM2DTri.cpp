@@ -102,8 +102,8 @@ void BMass2DTri::computeMatrix()
             for (uint a2 = 0; a2 <= n - a1; a2++){
                 for (uint b2 = 0; b2 <= n - b1; b2++) {
                     double w2 = w1 * BinomialMat(a2, b2);
-                    uint i = element.position({a1, a2}, n);
-                    uint j = element.position({b1, b2}, n);
+                    uint i = element.position({a1, a2});
+                    uint j = element.position({b1, b2});
                     Matrix(i, j) = w2 * getBMoment(a1 + b1, a2 + b2, 0);
                 } 
             }

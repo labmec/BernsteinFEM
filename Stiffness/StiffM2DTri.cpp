@@ -89,14 +89,14 @@ void BStiff2DTri::computeMatrix()
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     w2 *= getBMoment(a1 + b1, a2 + b2, 0);
 
-                    uint i = element.position({a1, b1}, n);
-                    uint j = element.position({a2, b2}, n);
-                    uint I = element.position({a1 + 1, b1 + 1}, n);
-                    uint J = element.position({a2 + 1, b2 + 1}, n);
-                    uint I_a = element.position({a1 + 1, b1}, n);
-                    uint J_a = element.position({a2 + 1, b2}, n);
-                    uint I_b = element.position({a1, b1 + 1}, n);
-                    uint J_b = element.position({a2, b2 + 1}, n);
+                    uint i = element.position({a1, b1});
+                    uint j = element.position({a2, b2});
+                    uint I = element.position({a1 + 1, b1 + 1});
+                    uint J = element.position({a2 + 1, b2 + 1});
+                    uint I_a = element.position({a1 + 1, b1});
+                    uint J_a = element.position({a2 + 1, b2});
+                    uint I_b = element.position({a1, b1 + 1});
+                    uint J_b = element.position({a2, b2 + 1});
 
                     double n1n2 = w2 * N[1];
                     double n1n3 = w2 * N[2];

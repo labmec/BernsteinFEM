@@ -32,8 +32,8 @@ void BStiff1D::computeMatrix()
             {
                 for (uint l = 1; l <= 2; l++)
                 {
-                    uint I = element.position({i + 2 - k}, n);
-                    uint J = element.position({j + 2 - l}, n);
+                    uint I = element.position({i + 2 - k});
+                    uint J = element.position({j + 2 - l});
                     Matrix.at(I, J) += (n * n) * w * grad(k, l) * Bmoment(i + j);
                 }
             }

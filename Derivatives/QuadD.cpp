@@ -130,10 +130,10 @@ void dXi_dXi::compute_matrix()
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2, n - b2);
                     double mom = w2 * getBMoment(a1 + b1, a2 + b2, 0);
 
-                    uint i = element.position({a1, a2}, n);
-                    uint j = element.position({b1, b2}, n);
-                    uint I = element.position({a1 + 1, a2}, n);
-                    uint J = element.position({b1 + 1, b2}, n);
+                    uint i = element.position({a1, a2});
+                    uint j = element.position({b1, b2});
+                    uint I = element.position({a1 + 1, a2});
+                    uint J = element.position({b1 + 1, b2});
 
                     Matrix.at(i, j) += mom;
 
@@ -186,10 +186,10 @@ void dEta_dEta::compute_matrix()
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2 - 1, n - b2 - 1);
                     double mom = w2 * getBMoment(a1 + b1, a2 + b2, 0);
 
-                    uint i = element.position({a1, a2}, n);
-                    uint j = element.position({b1, b2}, n);
-                    uint I = element.position({a1, a2 + 1}, n);
-                    uint J = element.position({b1, b2 + 1}, n);
+                    uint i = element.position({a1, a2});
+                    uint j = element.position({b1, b2});
+                    uint I = element.position({a1, a2 + 1});
+                    uint J = element.position({b1, b2 + 1});
 
                     Matrix.at(i, j) += mom;
 
@@ -239,10 +239,10 @@ void dXi_dEta::compute_matrix()
                     double w2 = w1 * BinomialMat.at(a2, b2) * BinomialMat.at(n - a2, n - b2 - 1);
                     double mom = w2 * getBMoment((a1 + b1) * (n + n) + a2 + b2);
 
-                    int i = element.position({a1, a2}, n);
-                    int j = element.position({b1, b2}, n);
-                    int I = element.position({a1 + 1, a2}, n); // a1 + 1
-                    int J = element.position({b1, b2 + 1}, n); // b2 + 1
+                    int i = element.position({a1, a2});
+                    int j = element.position({b1, b2});
+                    int I = element.position({a1 + 1, a2}); // a1 + 1
+                    int J = element.position({b1, b2 + 1}); // b2 + 1
 
                     Matrix.at(i, j) += mom;
                     Matrix.at(I, J) += mom;

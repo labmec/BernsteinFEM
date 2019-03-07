@@ -78,14 +78,14 @@ void BStiff2DQuad::compute_matrix()
                 for (uint b2 = 0; b2 <= n; b2++)
                 {
                     double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a2, n - b2);
-                    double mom1 = w2 * m1( element.position({a1 + b1, a2 + b2}, n) );
-                    double mom2 = w2 * m2( element.position({a1 + b1, a2 + b2}, n) );
+                    double mom1 = w2 * m1( element.position({a1 + b1, a2 + b2}) );
+                    double mom2 = w2 * m2( element.position({a1 + b1, a2 + b2}) );
                     double mom_tot = mom1 + mom2;
 
-                    uint i = element.position({a1, a2}, n);
-                    uint j = element.position({b1, b2}, n);
-                    uint I = element.position({a1 + 1, a2}, n);
-                    uint J = element.position({b1 + 1, b2}, n);
+                    uint i = element.position({a1, a2});
+                    uint j = element.position({b1, b2});
+                    uint I = element.position({a1 + 1, a2});
+                    uint J = element.position({b1 + 1, b2});
 
                     Matrix(i, j) += mom_tot;
 

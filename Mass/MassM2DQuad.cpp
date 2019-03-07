@@ -59,8 +59,8 @@ void BMass2DQuad::computeMatrix()
                 {
                     double w = Const * BinomialMat.at(a1, b1) * BinomialMat.at(a2, b2);
                     w *= (BinomialMat.at(n - a1, n - b1) * BinomialMat.at(n - a2, n - b2));
-                    uint i = element.position({a1, a2}, n);
-                    uint j = element.position({b1, b2}, n);
+                    uint i = element.position({a1, a2});
+                    uint j = element.position({b1, b2});
                     Matrix.at(i, j) = w * getBMoment(a1 + b1, a2 + b2, 0);
                 }
             }
