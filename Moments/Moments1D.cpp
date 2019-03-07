@@ -106,7 +106,7 @@ arma::mat &BMoment1D::computeMoments()
                 // here w equals the Bernstein polynomial of order n,
                 // with index alpha, evaluated at the i-th integration node
                 // times the i-th integration weight.
-                uint p = element.position({alpha}, n);
+                uint p = element.position({alpha});
                 for (uint el = 0; el < nb_Array; el++)
                     Bmoment.at(p, el) += w * Cval.at(i, el);
                 w *= r * ((n - alpha) / (1. + alpha)); // treats the recurrence relation

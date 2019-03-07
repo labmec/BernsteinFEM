@@ -189,7 +189,7 @@ arma::mat &BMoment3DCube::computeMoments()
                     for (uint a2 = 0; a2 <= m; a2++)
                     {
                         uint index_a1a2k = position_q(a1, a2, k, q);
-                        uint index_a = element.position({a1, a2, a3}, max_nm);
+                        uint index_a = element.position({a1, a2, a3});
 
                         for (uint ell = 0; ell < nb_Array; ell++)
                             Bmoment.at(index_a, ell) += B * BMomentInter.at(index_a1a2k, ell);

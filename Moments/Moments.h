@@ -172,7 +172,7 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
     {
         try
         {
-            return Bmoment(element.position({a1, a2}, n), dim);
+            return Bmoment(element.position({a1, a2}), dim);
         }
         catch (std::logic_error &e)
         {
@@ -234,7 +234,7 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(uint a1, uint a2, int dim) { return Bmoment(element.position({a1, a2}, n), dim); }
+    double getBMoment(uint a1, uint a2, int dim) { return Bmoment(element.position({a1, a2}), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
     double getBMoment(uint i) { return Bmoment(i, 0); }
@@ -278,7 +278,7 @@ class BMoment3DCube : public BMoment<double(double, double, double), Element_t::
     double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment(element.position({a1, a2, a3}, n), dim); }
+    double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment(element.position({a1, a2, a3}), dim); }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
     double getBMoment(uint i) { return Bmoment(i, 0); }
@@ -319,7 +319,7 @@ class BMoment3DTetra : public BMoment<double(double, double, double), Element_t:
     {
         try
         {
-            return Bmoment(element.position({a1, a2, a3}, n), dim);
+            return Bmoment(element.position({a1, a2, a3}), dim);
         }
         catch (std::logic_error &e)
         {

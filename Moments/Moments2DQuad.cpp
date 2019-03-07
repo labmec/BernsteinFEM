@@ -158,7 +158,7 @@ arma::mat &BMoment2DQuad::computeMoments()
                 for (uint a1 = 0; a1 <= n; a1++)
                 {
                     uint index_a1i = position_q(a1, i, max_nq);
-                    uint index_a1a2 = element.position({a1, a2}, max_nm);
+                    uint index_a1a2 = element.position({a1, a2});
 
                     for (uint ell = 0; ell < nb_Array; ell++)
                         Bmoment(index_a1a2, ell) += B * BMomentInter(index_a1i, ell);

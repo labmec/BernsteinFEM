@@ -215,7 +215,7 @@ arma::mat &BMoment3DTetra::computeMoments()
                     for (uint a3 = 0; a3 <= n - a1 - a2; a3++)
                     {
                         uint index_a1a2k = position_q(a1, a2, k, m);
-                        uint index = element.position({a1, a2, a3}, n);
+                        uint index = element.position({a1, a2, a3});
 
                         for (uint ell = 0; ell < nb_Array; ell++)
                             Bmoment.at(index, nb_Array) += B * BMomentInter.at(index_a1a2k, nb_Array);

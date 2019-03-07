@@ -20,7 +20,7 @@ BMoment2DTri::BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl
     : BMoment(q, n, element, nb_Array),
       BMomentInter((MAX(n, q - 1) + 1) * (MAX(n, q - 1) + 1), nb_Array, arma::fill::zeros)
 {
-    lenMoments = (n + 1) * (n + 1); // FIXME: it's possible to do this with (n + 1)*(n + 2) / 2, just fix positioning problem
+    lenMoments = (n + 1) * (n + 2) * 0.5;
     lenCval = q * q;
     Bmoment.set_size(lenMoments, nb_Array);
     assignQuadra();
@@ -186,7 +186,7 @@ arma::mat &BMoment2DTri::computeMoments()
                 double B = wgt * pow(s, n - a1);
                 for (uint a2 = 0; a2 <= n - a1; a2++)
                 {
-                    uint index_a1a2 = element.position({a1, a2}, n);
+                    uint index_a1a2 = element.position({a1, a2});
                     uint index_a1i = position_q(a1, i, m);
 
                     for (uint ell = 0; ell < nb_Array; ell++)

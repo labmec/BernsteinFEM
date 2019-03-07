@@ -9,6 +9,7 @@ BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element, uint nb_Arr
     this->q = q;
     this->n = n;
     this->nb_Array = nb_Array;
+    this->element.setPermutationPOrder(n);
 }
 
 // copy constructor
@@ -19,6 +20,7 @@ BMoment<_s, EL>::BMoment(const BMoment<_s, EL> &cp)
     this->q = cp.q;
     this->n = cp.n;
     this->nb_Array = cp.nb_Array;
+    this->element.setPermutationPOrder(n);
 }
 
 // copy asignment operator
