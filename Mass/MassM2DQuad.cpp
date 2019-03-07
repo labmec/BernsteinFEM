@@ -2,7 +2,7 @@
 
 #define LEN(n) ((n + 1) * (n + 1))
 
-BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> el)
+BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> const &el)
     : BMass(q, n), BMoment2DQuad(q, 2 * n, el)
 {
     lenMass = LEN(n);
