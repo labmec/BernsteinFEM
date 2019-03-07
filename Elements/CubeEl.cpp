@@ -80,50 +80,50 @@ const arma::mat &Element<CEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
     }
 
     // TODO: implement jacobian
-    jacobian[0, 0] = (1.0 - eta_) * (1.0 - z_) * (vertices[1, 0] - vertices[0, 0]);
-    jacobian[0, 0] += eta_ * (1.0 - z_) * (vertices[2, 0] - vertices[3, 0]);
-    jacobian[0, 0] += (1.0 - eta_) * z_ * (vertices[5, 0] - vertices[4, 0]);
-    jacobian[0, 0] += eta_ * z_ * (vertices[6, 0] - vertices[7, 0]);
+    jacobian(0, 0) = (1.0 - eta_) * (1.0 - z_) * (vertices(1, 0) - vertices(0, 0));
+    jacobian(0, 0) += eta_ * (1.0 - z_) * (vertices(2, 0) - vertices(3, 0));
+    jacobian(0, 0) += (1.0 - eta_) * z_ * (vertices(5, 0) - vertices(4, 0));
+    jacobian(0, 0) += eta_ * z_ * (vertices(6, 0) - vertices(7, 0));
 
-    jacobian[0, 1] = (1.0 - xi_) * (1.0 - z_) * (vertices[3, 0] - vertices[0, 0]);
-    jacobian[0, 1] += xi_ * (1.0 - z_) * (vertices[2, 0] - vertices[1, 0]);
-    jacobian[0, 1] += (1.0 - xi_) * z_ * (vertices[7, 0] - vertices[4, 0]);
-    jacobian[0, 1] += xi_ * z_ * (vertices[6, 0] - vertices[5, 0]);
+    jacobian(0, 1) = (1.0 - xi_) * (1.0 - z_) * (vertices(3, 0) - vertices(0, 0));
+    jacobian(0, 1) += xi_ * (1.0 - z_) * (vertices(2, 0) - vertices(1, 0));
+    jacobian(0, 1) += (1.0 - xi_) * z_ * (vertices(7, 0) - vertices(4, 0));
+    jacobian(0, 1) += xi_ * z_ * (vertices(6, 0) - vertices(5, 0));
 
-    jacobian[0, 2] = (1.0 - xi_) * (1.0 - eta_) * (vertices[4, 0] - vertices[0, 0]);
-    jacobian[0, 2] += xi_ * (1.0 - eta_) * (vertices[5, 0] - vertices[1, 0]);
-    jacobian[0, 2] += (1.0 - xi_) * eta_ * (vertices[6, 0] - vertices[2, 0]);
-    jacobian[0, 2] += xi_ * eta_ * (vertices[7, 0] - vertices[3, 0]);
+    jacobian(0, 2) = (1.0 - xi_) * (1.0 - eta_) * (vertices(4, 0) - vertices(0, 0));
+    jacobian(0, 2) += xi_ * (1.0 - eta_) * (vertices(5, 0) - vertices(1, 0));
+    jacobian(0, 2) += (1.0 - xi_) * eta_ * (vertices(6, 0) - vertices(2, 0));
+    jacobian(0, 2) += xi_ * eta_ * (vertices(7, 0) - vertices(3, 0));
 
-    jacobian[1, 0] = (1.0 - eta_) * (1.0 - z_) * (vertices[1, 1] - vertices[0, 1]);
-    jacobian[1, 0] += eta_ * (1.0 - z_) * (vertices[2, 1] - vertices[3, 1]);
-    jacobian[1, 0] += (1.0 - eta_) * z_ * (vertices[5, 1] - vertices[4, 1]);
-    jacobian[1, 0] += eta_ * z_ * (vertices[6, 1] - vertices[7, 1]);
+    jacobian(1, 0) = (1.0 - eta_) * (1.0 - z_) * (vertices(1, 1) - vertices(0, 1));
+    jacobian(1, 0) += eta_ * (1.0 - z_) * (vertices(2, 1) - vertices(3, 1));
+    jacobian(1, 0) += (1.0 - eta_) * z_ * (vertices(5, 1) - vertices(4, 1));
+    jacobian(1, 0) += eta_ * z_ * (vertices(6, 1) - vertices(7, 1));
 
-    jacobian[1, 1] = (1.0 - xi_) * (1.0 - z_) * (vertices[3, 1] - vertices[0, 1]);
-    jacobian[1, 1] += xi_ * (1.0 - z_) * (vertices[2, 1] - vertices[1, 1]);
-    jacobian[1, 1] += (1.0 - xi_) * z_ * (vertices[7, 1] - vertices[4, 1]);
-    jacobian[1, 1] += xi_ * z_ * (vertices[6, 1] - vertices[5, 1]);
+    jacobian(1, 1) = (1.0 - xi_) * (1.0 - z_) * (vertices(3, 1) - vertices(0, 1));
+    jacobian(1, 1) += xi_ * (1.0 - z_) * (vertices(2, 1) - vertices(1, 1));
+    jacobian(1, 1) += (1.0 - xi_) * z_ * (vertices(7, 1) - vertices(4, 1));
+    jacobian(1, 1) += xi_ * z_ * (vertices(6, 1) - vertices(5, 1));
 
-    jacobian[1, 2] = (1.0 - xi_) * (1.0 - eta_) * (vertices[4, 1] - vertices[0, 1]);
-    jacobian[1, 2] += xi_ * (1.0 - eta_) * (vertices[5, 1] - vertices[1, 1]);
-    jacobian[1, 2] += (1.0 - xi_) * eta_ * (vertices[6, 1] - vertices[2, 1]);
-    jacobian[1, 2] += xi_ * eta_ * (vertices[7, 1] - vertices[3, 1]);
+    jacobian(1, 2) = (1.0 - xi_) * (1.0 - eta_) * (vertices(4, 1) - vertices(0, 1));
+    jacobian(1, 2) += xi_ * (1.0 - eta_) * (vertices(5, 1) - vertices(1, 1));
+    jacobian(1, 2) += (1.0 - xi_) * eta_ * (vertices(6, 1) - vertices(2, 1));
+    jacobian(1, 2) += xi_ * eta_ * (vertices(7, 1) - vertices(3, 1));
 
-    jacobian[2, 0] = (1.0 - eta_) * (1.0 - z_) * (vertices[1, 2] - vertices[0, 2]);
-    jacobian[2, 0] += eta_ * (1.0 - z_) * (vertices[2, 2] - vertices[3, 2]);
-    jacobian[2, 0] += (1.0 - eta_) * z_ * (vertices[5, 2] - vertices[4, 2]);
-    jacobian[2, 0] += eta_ * z_ * (vertices[6, 2] - vertices[7, 2]);
+    jacobian(2, 0) = (1.0 - eta_) * (1.0 - z_) * (vertices(1, 2) - vertices(0, 2));
+    jacobian(2, 0) += eta_ * (1.0 - z_) * (vertices(2, 2) - vertices(3, 2));
+    jacobian(2, 0) += (1.0 - eta_) * z_ * (vertices(5, 2) - vertices(4, 2));
+    jacobian(2, 0) += eta_ * z_ * (vertices(6, 2) - vertices(7, 2));
 
-    jacobian[2, 1] = (1.0 - xi_) * (1.0 - z_) * (vertices[3, 2] - vertices[0, 2]);
-    jacobian[2, 1] += xi_ * (1.0 - z_) * (vertices[2, 2] - vertices[1, 2]);
-    jacobian[2, 1] += (1.0 - xi_) * z_ * (vertices[7, 2] - vertices[4, 2]);
-    jacobian[2, 1] += xi_ * z_ * (vertices[6, 2] - vertices[5, 2]);
+    jacobian(2, 1) = (1.0 - xi_) * (1.0 - z_) * (vertices(3, 2) - vertices(0, 2));
+    jacobian(2, 1) += xi_ * (1.0 - z_) * (vertices(2, 2) - vertices(1, 2));
+    jacobian(2, 1) += (1.0 - xi_) * z_ * (vertices(7, 2) - vertices(4, 2));
+    jacobian(2, 1) += xi_ * z_ * (vertices(6, 2) - vertices(5, 2));
 
-    jacobian[2, 2] = (1.0 - xi_) * (1.0 - eta_) * (vertices[4, 2] - vertices[0, 2]);
-    jacobian[2, 2] += xi_ * (1.0 - eta_) * (vertices[5, 2] - vertices[1, 2]);
-    jacobian[2, 2] += (1.0 - xi_) * eta_ * (vertices[6, 2] - vertices[2, 2]);
-    jacobian[2, 2] += xi_ * eta_ * (vertices[7, 2] - vertices[3, 2]);
+    jacobian(2, 2) = (1.0 - xi_) * (1.0 - eta_) * (vertices(4, 2) - vertices(0, 2));
+    jacobian(2, 2) += xi_ * (1.0 - eta_) * (vertices(5, 2) - vertices(1, 2));
+    jacobian(2, 2) += (1.0 - xi_) * eta_ * (vertices(6, 2) - vertices(2, 2));
+    jacobian(2, 2) += xi_ * eta_ * (vertices(7, 2) - vertices(3, 2));
 
     return coordinates;
 }
