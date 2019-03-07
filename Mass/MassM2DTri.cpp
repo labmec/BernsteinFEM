@@ -48,47 +48,6 @@ BMass2DTri::~BMass2DTri()
 {
 }
 
-// this method was based on the code by M. Ainsworth
-// G. Andriamro and O. Davydov
-// void BMass2DTri::compute_matrix()
-// {
-//     compute_moments();
-//     compute_binomials();
-
-//     double Const = 1.0 / BinomialMat.at(n, n);
-
-//     int M = MAX(2 * n, q - 1);
-
-//     int iMu = 0;
-//     for (int mu0 = n; mu0 >= 0; mu0--)
-//     {
-//         int iEta = 0;
-//         for (int eta0 = n; eta0 >= 0; eta0--)
-//         {
-//             int iMuEta0 = BMoment2DTri::position(mu0, eta0, M); // the Bmoments are indexed w.r.t position2d2(. , MAX(2n,q-1) )
-//             double w1 = Const * BinomialMat.at(mu0, eta0);
-
-//             int mu2 = 0;
-//             for (int mu1 = n - mu0; mu1 >= 0; mu1--, mu2++, iMu++)
-//             {
-//                 int eta2 = 0;
-//                 for (int eta1 = n - eta0; eta1 >= 0; eta1--, eta2++, iEta++)
-//                 {
-//                     double w2 = w1 * BinomialMat.at(mu1, eta1) * BinomialMat.at(mu2, eta2);
-
-//                     int iMuEta = iMuEta0 + mu1 + eta1;
-
-//                     Matrix.at(iMu, iEta) = w2 * get_bmoment(iMuEta);
-//                 }
-//                 if (mu1 > 0)
-//                     iEta -= eta2;
-//             }
-//             if (eta0 > 0)
-//                 iMu -= mu2;
-//         }
-//     }
-// }
-
 void BMass2DTri::computeMatrix()
 {
     uint n = BMass::n;
