@@ -47,21 +47,18 @@ void BMass::computeBinomials()
 
 // getters
 
-inline
 uint BMass::length()
 {
     return lenMass;
 }
 
 // returns the polynomial order of the basis
-inline
 uint BMass::getPOrder()
 {
     return n;
 }
 
 // returns a reference to the Mass Matrix
-inline
 const arma::mat &BMass::getMatrix()
 {
     return Matrix;
