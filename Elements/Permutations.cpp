@@ -88,6 +88,8 @@ void Permutation<Element_t::LinearEl>::computePermVec()
     permutationVec.resize(n + 1);
 
     std::iota(permutationVec.begin(), permutationVec.end(), 0);
+
+	pVecComputed = true;
 }
 
 template <>
@@ -96,6 +98,8 @@ void Permutation<Element_t::LinearEl>::computeInvPermVec()
     inversePermVec.resize(n + 1);
 
     std::iota(inversePermVec.begin(), inversePermVec.end(), 0);
+
+	i_pVecComputed = true;
 }
 
 // TriangularEl
@@ -174,6 +178,8 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
     }
+
+	pVecComputed = true;
 
     // std::cout << "Number of elements that were not computed for permutation: " << ((n + 1) * (n + 2) * 0.5) - elAdded << std::endl;
 
@@ -287,6 +293,8 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
     }
+
+	pVecComputed = true;
 
     // std::cout << "Number of elements that were not computed for permutation: " << permutationVec.size() - elAdded << std::endl;
 
