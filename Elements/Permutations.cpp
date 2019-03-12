@@ -85,7 +85,7 @@ template class PermutationPool<Element_t::CubeEl>;
 template <>
 void Permutation<Element_t::LinearEl>::computePermVec()
 {
-    permutationVec.resize(n);
+    permutationVec.resize(n + 1);
 
     std::iota(permutationVec.begin(), permutationVec.end(), 0);
 }
@@ -93,7 +93,7 @@ void Permutation<Element_t::LinearEl>::computePermVec()
 template <>
 void Permutation<Element_t::LinearEl>::computeInvPermVec()
 {
-    inversePermVec.resize(n);
+    inversePermVec.resize(n + 1);
 
     std::iota(inversePermVec.begin(), inversePermVec.end(), 0);
 }
