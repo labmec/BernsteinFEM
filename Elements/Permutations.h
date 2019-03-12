@@ -55,3 +55,31 @@ public:
   // sets the index vector of the object, according to the indices of the vertices of an element
   void setIndexVector(arma::ivec &idxVector);
 };
+
+template <Element_t El>
+class PermutationPool
+{
+  private:
+    static std::vector<Permutation<El> *> pool;
+
+  public:
+    static Permutation<El> &GetPermutation(uint n)
+    {
+      if (n <= 1)
+      {
+        throw std::logic_error("GetPermutation(n) only accepts n > 1");
+      }
+      if (pool.size() > n - 1)
+      {
+        if (pool[n - 2] == nullptr)
+        {
+          return *(pool[n - 2] = new Permutation<El>(n));
+        } else {
+          return *(pool[n - 2]);
+        }
+      } else {
+        pool.resize(pool.size() * 2);
+        return *(pool[n - 2] = new Permutation<El>(n));
+      }
+    }
+};

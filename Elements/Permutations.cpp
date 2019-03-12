@@ -60,6 +60,10 @@ void Permutation<El>::setIndexVector(arma::ivec &idxVec)
     this->idxVec = &idxVec;
 }
 
+// Permutation pool instatiation
+template <Element_t El>
+std::vector<Permutation<El> *> PermutationPool<El>::pool = std::vector<Permutation<El> *>(4);
+
 // template class instantiations
 
 template class Permutation<Element_t::LinearEl>;
@@ -67,6 +71,12 @@ template class Permutation<Element_t::TriangularEl>;
 template class Permutation<Element_t::QuadrilateralEl>;
 template class Permutation<Element_t::TetrahedronEl>;
 template class Permutation<Element_t::CubeEl>;
+template class PermutationPool<Element_t::LinearEl>;
+template class PermutationPool<Element_t::TriangularEl>;
+template class PermutationPool<Element_t::QuadrilateralEl>;
+template class PermutationPool<Element_t::TetrahedronEl>;
+template class PermutationPool<Element_t::CubeEl>;
+
 
 // specializations
 
