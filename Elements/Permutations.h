@@ -16,6 +16,10 @@
 #include <vector>
 #include "Element_t.h"
 
+#ifndef uint
+#define uint unsigned
+#endif
+
 template <Element_t El>
 class Permutation
 {
@@ -32,6 +36,8 @@ private:
 
 public:
   Permutation();
+
+  Permutation(const uint &n);
 
   Permutation(arma::ivec &idxVec);
 
