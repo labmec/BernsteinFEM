@@ -3,14 +3,14 @@
 #define LEN(n) ((n + 1) * (n + 1))
 
 BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> const &el)
-    : BMass(q, n), BMoment2DQuad(q, 2 * n, el)
+    : BMass(q, n), BMoment2DQuad(q, 2 * n, el), perm(PermutationPool<Element_t::QuadrilateralEl>::GetPermutation(n))
 {
     lenMass = LEN(n);
     Matrix.set_size(lenMass, lenMass);
 }
 
 BMass2DQuad::BMass2DQuad(const BMass2DQuad &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array), perm(PermutationPool<Element_t::QuadrilateralEl>::GetPermutation(cp.BMass::n))
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;
@@ -53,14 +53,14 @@ void BMass2DQuad::computeMatrix()
     {
         for (uint a2 = 0; a2 <= n; a2++)
         {
+            uint i = perm.getPermutationVector()[a1 * n + a2];
             for (uint b1 = 0; b1 <= n; b1++)
             {
                 for (uint b2 = 0; b2 <= n; b2++)
                 {
                     double w = Const * BinomialMat.at(a1, b1) * BinomialMat.at(a2, b2);
                     w *= (BinomialMat.at(n - a1, n - b1) * BinomialMat.at(n - a2, n - b2));
-                    uint i = element.position({a1, a2});
-                    uint j = element.position({b1, b2});
+                    uint j = perm.getPermutationVector()[b1 * n + b2];
                     Matrix.at(i, j) = w * getBMoment(a1 + b1, a2 + b2, 0);
                 }
             }

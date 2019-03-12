@@ -2,6 +2,7 @@
 
 #include <armadillo>
 #include "Moments.h"
+#include "Permutations.h"
 #include <memory>
 
 class PascalMat;
@@ -12,7 +13,7 @@ class BMass
     uint q;                          // number of quadrature points ( recommended: 2*(n+1) )
     uint n;                          // polynomial order
     uint lenMass;                    // length of the mass matrix
-    arma::mat Matrix;               // mass matrix
+    arma::mat Matrix;                // mass matrix
     uint lenBinomialMat;             // length of the binomial matrix
     arma::Mat<uint64_t> BinomialMat; // Pascal Matrix
 
@@ -54,6 +55,8 @@ class BMass
  *****************************************************************************/
 class BMass1D : public BMass, public BMoment1D
 {
+    Permutation<Element_t::LinearEl> &perm;
+
   public:
     // default constructor
     BMass1D(uint NIntPoint, uint PolOrder, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
@@ -75,6 +78,8 @@ class BMass1D : public BMass, public BMoment1D
  *****************************************************************************/
 class BMass2DTri : public BMass, public BMoment2DTri
 {
+    Permutation<Element_t::TriangularEl> &perm;
+
   public:
     // default constructor
     BMass2DTri(uint NIntPoint, uint PolOrder, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
@@ -96,6 +101,8 @@ class BMass2DTri : public BMass, public BMoment2DTri
  *****************************************************************************/
 class BMass2DQuad : public BMass, public BMoment2DQuad
 {
+    Permutation<Element_t::QuadrilateralEl> &perm;
+
   public:
     // defualt constructor
     BMass2DQuad(uint NIntPoint, uint PolOrder, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
@@ -114,6 +121,8 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
 
 class BMass3DCube : public BMass, public BMoment3DCube
 {
+    Permutation<Element_t::CubeEl> &perm;
+
   public:
     // default constructor
     BMass3DCube(uint NIntPoints, uint PolOrder, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>());
@@ -132,6 +141,8 @@ class BMass3DCube : public BMass, public BMoment3DCube
 
 class BMass3DTetra : public BMass, public BMoment3DTetra
 {
+    Permutation<Element_t::TetrahedronEl> &perm;
+
   public:
     // default constructor
     BMass3DTetra(uint NIntPoints, uint PolOrder, Element<Element_t::TetrahedronEl> const &element = Element<Element_t::TetrahedronEl>());

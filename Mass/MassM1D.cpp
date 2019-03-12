@@ -7,14 +7,14 @@ using std::endl;
 
 // maybe trade q to 2*q in the base class constructor
 BMass1D::BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
-    : BMass(q, n), BMoment1D(q, 2 * n, el)
+    : BMass(q, n), BMoment1D(q, 2 * n, el), perm(PermutationPool<Element_t::LinearEl>::GetPermutation(n))
 {
     lenMass = n + 1;
     Matrix.set_size(lenMass, lenMass);
 }
 
 BMass1D::BMass1D(const BMass1D &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array), perm(PermutationPool<Element_t::LinearEl>::GetPermutation(cp.BMass::n))
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;
@@ -53,11 +53,11 @@ void BMass1D::computeMatrix()
 
     for (uint i = 0; i < lenMass; i++)
     {
-        uint I = element.position({i});
+        uint I = perm.getPermutationVector()[i];
         for (uint j = 0; j < lenMass; j++)
         {
             double binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
-            uint J = element.position({j});
+            uint J = perm.getPermutationVector()[j];
             Matrix.at(I, J) = binom * Bmoment(element.position({i + j}));
         }
     }
