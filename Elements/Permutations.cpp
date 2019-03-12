@@ -4,7 +4,10 @@
 // generic implementations
 
 template <Element_t El> 
-Permutation<El>::Permutation() { }
+Permutation<El>::Permutation() { this->idxVec = new arma::ivec({ 0,1,2,3 }); }
+
+template <Element_t El>
+Permutation<El>::Permutation(const uint &n) : n(n) { this->idxVec = new arma::ivec({ 0,1,2,3 }); }
 
 template <Element_t El>
 Permutation<El>::Permutation(arma::ivec &idxVec) : idxVec(&idxVec) { }
@@ -13,6 +16,7 @@ template <Element_t El>
 Permutation<El>::Permutation(Permutation const &cp)
 {
     this->n = cp.n;
+	this->idxVec = cp.idxVec;
 }
 
 template <Element_t El>
