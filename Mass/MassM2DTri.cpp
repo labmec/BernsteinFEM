@@ -13,7 +13,7 @@
 BMass2DTri::BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
     : BMass(q, n), BMoment2DTri(q, 2 * n, el), perm(PermutationPool<Element_t::TriangularEl>::GetPermutation(n))
 {
-    lenMass = ((n + 1) * (n + 1));
+    lenMass = ((n + 1) * (n + 2) / 2);
     Matrix.set_size(lenMass, lenMass);
 }
 
@@ -58,9 +58,9 @@ void BMass2DTri::computeMatrix()
     for (uint a1 = 0; a1 <= n; a1++) {
         for (uint b1 = 0; b1 <= n; b1++) {
             double w1 = Const * BinomialMat(a1, b1);
-            for (uint a2 = 0; a2 <= n - a1; a2++) {
+            for (uint a2 = 0; a2 <= n; a2++) {
                 uint i = perm.getPermutationVector()[a1 * n + a2];
-                for (uint b2 = 0; b2 <= n - b1; b2++) {
+                for (uint b2 = 0; b2 <= n; b2++) {
                     double w2 = w1 * BinomialMat(a2, b2);
                     uint j = perm.getPermutationVector()[b1 * n + b2];
                     Matrix(i, j) = w2 * getBMoment(a1 + b1, a2 + b2, 0);
