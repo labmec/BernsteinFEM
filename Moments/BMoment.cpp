@@ -69,7 +69,7 @@ bool BMoment<_s, EL>::getFunctVal() { return functVal; }
 template <typename _s, Element_t EL>
 Element<EL> &BMoment<_s, EL>::getElement() { return element; }
 
-// returns the whole Bmoment matrix
+// returns a copy of the Bmoment matrix
 template <typename _s, Element_t EL>
 const arma::mat &BMoment<_s, EL>::getMoments() { return Bmoment; }
 
