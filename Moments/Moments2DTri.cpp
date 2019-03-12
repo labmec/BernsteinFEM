@@ -127,14 +127,14 @@ arma::mat &BMoment2DTri::computeMoments()
         std::cerr << "missing function definition for computation of the moments in \'computeMoments()\'\n";
     else
     {
-        uint m = MAX(n, q - 1); // m will be used for indexing
+        uint m = MAX(n + 1, q); // m will be used for indexing
         Bmoment.zeros();
 
         // compute the function definition into the function values vector
         if (!functVal)
             loadFunctionDef();
 
-        double scalingConst = 2 * Area2d(element.getVertices()); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
+        const double scalingConst = Area2d(element.getVertices()); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
         
         // convert first index (l=2)
         for (uint i = 0; i < q; i++)
@@ -157,15 +157,7 @@ arma::mat &BMoment2DTri::computeMoments()
 
                     for (uint ell = 0; ell < nb_Array; ell++)
                     {
-                        try{
-                        BMomentInter(index_a1j, ell) += scalingConst * B * Cval(index_ij, ell);
-                        }
-                        catch(std::logic_error &e)
-                        {
-                            std::cerr << "erro no BMomentInter" << std::endl;
-                            std::cerr << "indexa1j = " << index_a1j << "max: " << BMomentInter.size();
-                            
-                        }
+                        BMomentInter.at(index_a1j, ell) += scalingConst * B * Cval.at(index_ij, ell);
                     }
                 }
                 B = B * r * (n - a1) / (1 + a1);
