@@ -1,4 +1,5 @@
 #include "Permutations.h"
+#include <numeric>
 
 // generic implementations
 
