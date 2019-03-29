@@ -17,8 +17,8 @@
 #include "Element_t.h"
 
 #ifndef uint
-#define uint unsigned
-#endif
+using uint = unsigned;
+#endif // !uint
 
 template <Element_t El>
 class Permutation
@@ -31,13 +31,11 @@ private:
   bool pVecComputed = false;        // indicates whether the permutation vector is computed or not
   bool i_pVecComputed = false;      // indicates whether the inverse permutation vector is computed or not
 
-  void computePermVec();
-  void computeInvPermVec();
-
 public:
+
   Permutation();
 
-  Permutation(const uint &n);
+  Permutation(const uint &pOrder, arma::ivec &idxVec);
 
   Permutation(arma::ivec &idxVec);
 
@@ -55,32 +53,10 @@ public:
 
   // sets the index vector of the object, according to the indices of the vertices of an element
   void setIndexVector(arma::ivec &idxVector);
-};
 
-template <Element_t El>
-class PermutationPool
-{
-  private:
-    static std::vector<Permutation<El> *> pool;
-
-  public:
-    static Permutation<El> &GetPermutation(uint n)
-    {
-      if (n <= 1)
-      {
-        throw std::logic_error("GetPermutation(n) only accepts n > 1");
-      }
-      if (pool.size() > n - 1)
-      {
-        if (pool[n - 2] == nullptr)
-        {
-          return *(pool[n - 2] = new Permutation<El>(n));
-        } else {
-          return *(pool[n - 2]);
-        }
-      } else {
-        pool.resize(pool.size() * 2);
-        return *(pool[n - 2] = new Permutation<El>(n));
-      }
-    }
+  // computes the permutation vector
+  void computePermVec();
+  
+  // computes the inverse permutation vector
+  void computeInvPermVec();
 };

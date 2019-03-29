@@ -7,17 +7,16 @@ template <Element_t El>
 Permutation<El>::Permutation() { this->idxVec = new arma::ivec({ 0,1,2,3 }); }
 
 template <Element_t El>
-Permutation<El>::Permutation(const uint &n) : n(n) { this->idxVec = new arma::ivec({ 0,1,2,3 }); }
+Permutation<El>::Permutation(const uint &n, arma::ivec &idxVec) : n(n), idxVec(new arma::ivec(idxVec)) 
+{
+    computePermVec();
+}
 
 template <Element_t El>
 Permutation<El>::Permutation(arma::ivec &idxVec) : idxVec(&idxVec) { }
 
 template <Element_t El>
-Permutation<El>::Permutation(Permutation const &cp)
-{
-    this->n = cp.n;
-	this->idxVec = cp.idxVec;
-}
+Permutation<El>::Permutation(Permutation const &cp) : n(cp.n), idxVec(cp.idxVec) { }
 
 template <Element_t El>
 uint Permutation<El>::getPOrder()
@@ -34,9 +33,6 @@ arma::ivec &Permutation<El>::getIndexVector()
 template <Element_t El>
 std::vector<uint> &Permutation<El>::getPermutationVector()
 {
-    if (!pVecComputed)
-        computePermVec();
-
     return permutationVec;
 }
 
@@ -55,7 +51,7 @@ void Permutation<El>::setPOrder(uint n)
     if (this->n != n)
     {
         this->n = n;
-        pVecComputed = false;
+		computePermVec();
         i_pVecComputed = false;
     }
 }
@@ -66,10 +62,6 @@ void Permutation<El>::setIndexVector(arma::ivec &idxVec)
     this->idxVec = &idxVec;
 }
 
-// Permutation pool instatiation
-template <Element_t El>
-std::vector<Permutation<El> *> PermutationPool<El>::pool = std::vector<Permutation<El> *>(4);
-
 // template class instantiations
 
 template class Permutation<Element_t::LinearEl>;
@@ -77,11 +69,6 @@ template class Permutation<Element_t::TriangularEl>;
 template class Permutation<Element_t::QuadrilateralEl>;
 template class Permutation<Element_t::TetrahedronEl>;
 template class Permutation<Element_t::CubeEl>;
-template class PermutationPool<Element_t::LinearEl>;
-template class PermutationPool<Element_t::TriangularEl>;
-template class PermutationPool<Element_t::QuadrilateralEl>;
-template class PermutationPool<Element_t::TetrahedronEl>;
-template class PermutationPool<Element_t::CubeEl>;
 
 
 // specializations
@@ -133,6 +120,7 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
         }
     } else
     {
+	#pragma ivdep
         for (uint a1 = n - 1; a1 > 0; a1--)
         {
             permutationVec[a1 * (n + 1)] = elAdded++;
@@ -151,6 +139,7 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
         }
     } else
     {
+	#pragma ivdep
         for (uint a1 = n - 1; a1 > 0; a1--)
         {
             uint a2 = n - a1;
@@ -169,6 +158,7 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
         }
     } else
     {
+	#pragma ivdep
         for (uint a2 = n - 1; a2 > 0; a2--)
         {
             permutationVec[a2] = elAdded++;
@@ -249,6 +239,7 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
         }
     } else
     {
+	#pragma ivdep
         for (uint i = n; i > 2; i--)
         {
             permutationVec[i * (n + 1) - 1] = elAdded++;
@@ -284,6 +275,7 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
         }
     } else
     {
+	#pragma ivdep
         for (uint i = n - 1; i > 0; i--)
         {
             permutationVec[i * (n + 1)] = elAdded++;
