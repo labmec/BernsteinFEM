@@ -16,7 +16,7 @@
 #include "Element_t.h"
 
 #ifndef uint
-#define uint unsigned
+using uint = unsigned;
 #endif
 
 
@@ -28,8 +28,8 @@ template <Element_t EL>
 class Element
 {
   arma::mat vertices;    // vertices of the element
-  arma::ivec idxVec;      // stores index for each vertex
   arma::mat coordinates; // coordinates object to return from 'mapElement'
+  arma::ivec idxVec;     // stores index for each vertex
   static arma::mat jac;  // matrix to store the values of the jacobian when no arguments are passed
   Permutation<EL> perm;  // permutation vector for positioning
 
@@ -42,11 +42,8 @@ public:
   Element(const arma::mat &vertices);
 
   // constructor by the vertices and indices of the vertices of the element
-  Element(const arma::mat &vertices, arma::ivec &indexVector) : Element(vertices)
-  {
-    idxVec = indexVector;
-    perm.setIndexVector(indexVector);
-  }
+  Element(const arma::mat &vertices, arma::ivec &indexVector) : vertices(vertices), idxVec(indexVector), perm(indexVector)
+  { }
 
   // copy constructor
   Element(const Element<EL> &cp);
@@ -59,7 +56,9 @@ public:
     return *this;
   }
 
-  void setPermutationPOrder(uint n) { perm.setPOrder(n); }
+  arma::ivec &getIndexVector() { return idxVec; }
+
+  void setPermutationPOrder(uint n) { perm.setPOrder(n); perm.computePermVec(); }
 
   void setIndexVector(arma::ivec &idxVec)
   {
