@@ -8,8 +8,9 @@ arma::mat Element<QEL>::jac(2, 2, arma::fill::zeros);
 template <>
 Element<QEL>::Element()
     : vertices(4, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none),
-      perm()
+    coordinates(1, 2, arma::fill::none),
+	idxVec({ 0, 1, 2, 3 }),
+    perm(idxVec)
 {
     vertices(0, 0) = 0.0; vertices(0, 1) = 0.0; // v1 = (0,0)
     vertices(1, 0) = 1.0; vertices(1, 1) = 0.0; // v2 = (1,0)
@@ -20,8 +21,9 @@ Element<QEL>::Element()
 template <>
 Element<QEL>::Element(const arma::mat &v)
     : vertices(4, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none),
-      perm()
+    coordinates(1, 2, arma::fill::none),
+	idxVec({ 0, 1, 2, 3 }),
+    perm(idxVec)
 {
     if (v.n_rows < 4 || v.n_cols < 2)
     {
@@ -42,9 +44,11 @@ Element<QEL>::Element(const arma::mat &v)
 
 template <>
 Element<QEL>::Element(const Element<QEL> &cp)
-    : vertices(cp.vertices),
-      coordinates(1, 2, arma::fill::none),
-      perm(cp.perm) {}
+	: vertices(cp.vertices),
+	coordinates(1, 2, arma::fill::none),
+	idxVec(cp.idxVec),
+	perm(cp.perm)
+{}
 
 template <>
 uint Element<QEL>::position(const std::vector<uint> &point)

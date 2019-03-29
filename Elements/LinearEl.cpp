@@ -7,9 +7,10 @@ arma::mat Element<LEL>::jac(1, 1, arma::fill::zeros);
 
 template <>
 Element<LEL>::Element()
-    : vertices(2, 1, arma::fill::none),
-      coordinates(1, 1, arma::fill::none),
-      perm()
+	: vertices(2, 1, arma::fill::none),
+	coordinates(1, 1, arma::fill::none),
+	idxVec({ 0,1 }),
+	perm(idxVec)
 {
     vertices(0) = 0.0;
     vertices(1) = 1.0;
@@ -17,9 +18,10 @@ Element<LEL>::Element()
 
 template <>
 Element<LEL>::Element(const arma::mat &v)
-    : vertices(2, 1, arma::fill::none),
-      coordinates(1, 1, arma::fill::none),
-      perm()
+	: vertices(2, 1, arma::fill::none),
+	coordinates(1, 1, arma::fill::none),
+	idxVec({ 0,1 }),
+	perm(idxVec)
 {
     if (vertices.n_rows < 2)
     {
@@ -34,9 +36,11 @@ Element<LEL>::Element(const arma::mat &v)
 
 template <>
 Element<LEL>::Element(const Element<LEL> &cp)
-    : vertices(cp.vertices),
-      coordinates(1, 1, arma::fill::none),
-      perm(cp.perm) {}
+	: vertices(cp.vertices),
+	coordinates(1, 1, arma::fill::none),
+	idxVec(cp.idxVec),
+	perm(cp.perm)
+{}
 
 template<>
 uint Element<LEL>::position(const std::vector<uint> &point)

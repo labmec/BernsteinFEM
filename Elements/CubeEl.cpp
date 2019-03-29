@@ -10,8 +10,10 @@ arma::mat Element<CEL>::jac(3, 3, arma::fill::zeros);
 
 template <>
 Element<CEL>::Element()
-    : vertices(8, 3, arma::fill::none),
-      coordinates(1, 3, arma::fill::none)
+	: vertices(8, 3, arma::fill::none),
+	coordinates(1, 3, arma::fill::none),
+	idxVec({ 0,1,2,3,4,5 }),
+	perm(idxVec)
 {
     vertices(0, 0) = 0.0; vertices(0, 1) = 0.0; vertices(0, 2) = 0.0;
     vertices(1, 0) = 1.0; vertices(1, 1) = 0.0; vertices(1, 2) = 0.0;
@@ -25,8 +27,10 @@ Element<CEL>::Element()
 
 template <>
 Element<CEL>::Element(const arma::mat &v)
-    : vertices(8, 3, arma::fill::none),
-      coordinates(1, 3, arma::fill::none)
+	: vertices(8, 3, arma::fill::none),
+	coordinates(1, 3, arma::fill::none),
+	idxVec({ 0,1,2,3,4,5 }),
+	perm(idxVec)
 {
     if (v.n_rows < 8 || v.n_cols < 3)
     {
@@ -40,8 +44,11 @@ Element<CEL>::Element(const arma::mat &v)
 
 template <>
 Element<CEL>::Element(const Element<CEL> &cp)
-    : vertices(cp.vertices),
-      coordinates(1, 3, arma::fill::none) {}
+	: vertices(cp.vertices),
+	coordinates(1, 3, arma::fill::none),
+	idxVec(cp.idxVec),
+	perm(cp.perm)
+{}
 
 template <>
 uint Element<CEL>::position(const std::vector<uint> &point)

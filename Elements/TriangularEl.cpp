@@ -7,9 +7,10 @@ arma::mat Element<TEL>::jac(2, 2, arma::fill::zeros);
 
 template <>
 Element<TEL>::Element()
-    : vertices(3, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none),
-      perm()
+	: vertices(3, 2, arma::fill::none),
+	coordinates(1, 2, arma::fill::none),
+	idxVec({ 0,1,2 }),
+	perm(idxVec)
 {
     vertices(0, 0) = 0.0; vertices(0, 1) = 0.0; // v1 = (0,0)
     vertices(1, 0) = 1.0; vertices(1, 1) = 0.0; // v2 = (1,0)
@@ -18,9 +19,10 @@ Element<TEL>::Element()
 
 template <>
 Element<TEL>::Element(const arma::mat &v)
-    : vertices(3, 2, arma::fill::none),
-      coordinates(1, 2, arma::fill::none),
-      perm()
+	: vertices(3, 2, arma::fill::none),
+	coordinates(1, 2, arma::fill::none),
+	idxVec({ 0,1,2 }),
+	perm(idxVec)
 {
     if (v.n_rows < 3 || v.n_cols < 2)
     {
@@ -36,9 +38,11 @@ Element<TEL>::Element(const arma::mat &v)
 
 template <>
 Element<TEL>::Element(const Element<TEL> &cp)
-    : vertices(cp.vertices),
-      coordinates(1, 2, arma::fill::none),
-      perm(cp.perm) {}
+	: vertices(cp.vertices),
+	coordinates(1, 2, arma::fill::none),
+	idxVec(cp.idxVec),
+	perm(cp.perm) 
+{}
 
 template <>
 uint Element<TEL>::position(const std::vector<uint> &point)
