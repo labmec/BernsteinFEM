@@ -3,6 +3,8 @@ An object-oriented approach to the computation of integrals for use in Finite El
 
 Based on the works and code by M. Ainsworth, G. Andriamaro and O. Davydov
 
+There is a overview of the library's functionality [here](docs/Overview.md)
+
 ## Requirements
 
 Armadillo library, found at http://arma.sourceforge.net
