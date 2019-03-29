@@ -48,7 +48,7 @@ Defines classes for objects that compute the Mass Matrix using the Bernstein Pol
 template<Element_t El>
 class BMass
 ```
-Base (abstract) class for all Mass classes. Holds most of the data and methods just to not repeat code through all of the classes that compute the Mass Matrix. Defined in [Mass.h](../Mass/MassM.h).
+Base (abstract) class for all Mass classes. Holds most of the data and methods just to not repeat code through all of the classes that compute the Mass Matrix. Defined in [MassM.h](../Mass/MassM.h).
 
 Just as in the Moments folder, every other class in this folder are in the same header file and implemented in its own `.cpp` file, they represent the computation of the Mass Matrix for each of its element types.
 
@@ -59,7 +59,7 @@ Defines classes for objects that compute the Stiffness Matrix using the Bernstei
 template<Element_t El>
 class BStiff
 ```
-Base (abstract) class for all Stiffness classes. Holds most of the data and methods just to not repeat code through all of the classes that compute the Stiffness Matrix. Defined in [Stiffness.h](../Stiffness/StiffM.h).
+Base (abstract) class for all Stiffness classes. Holds most of the data and methods just to not repeat code through all of the classes that compute the Stiffness Matrix. Defined in [StiffM.h](../Stiffness/StiffM.h).
 
 Just as in the Moments folder, every other class in this folder are in the same header file and implemented in its own `.cpp` file, they represent the computation of the Stiffness Matrix for each of its element types.
 
