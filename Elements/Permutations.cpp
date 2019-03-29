@@ -26,6 +26,12 @@ uint Permutation<El>::getPOrder()
 }
 
 template <Element_t El>
+arma::ivec &Permutation<El>::getIndexVector()
+{
+    return *idxVec;
+}
+
+template <Element_t El>
 std::vector<uint> &Permutation<El>::getPermutationVector()
 {
     if (!pVecComputed)

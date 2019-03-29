@@ -46,6 +46,7 @@ public:
   // getters
 
   uint getPOrder();
+  arma::ivec &getIndexVector();
   std::vector<uint> &getPermutationVector();
   std::vector<uint> &getInvPermutationVec();
 
