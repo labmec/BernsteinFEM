@@ -18,7 +18,7 @@ Defines copmutational element types that can be used by the library. Defined in 
 template <Element_t El>
 class Element
 ```
-Defines elements of the types specified by the template parameter. Defined in [Elements.h](../Elements/Element.h)
+Defines elements of the types specified by the template parameter. Defined in [Elements.h](../Elements/Elements.h)
 ```C++
 template <Element_t El>
 class Permutation
