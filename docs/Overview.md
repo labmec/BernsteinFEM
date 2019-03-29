@@ -52,7 +52,7 @@ Base (abstract) class for all Mass classes. Holds most of the data and methods j
 
 Just as in the Moments folder, every other class in this folder are in the same header file and implemented in its own `.cpp` file, they represent the computation of the Mass Matrix for each of its element types.
 
-##### 2.1.4 Stiffness Folder
+##### 2.1.5 Stiffness Folder
 Defines classes for objects that compute the Stiffness Matrix using the Bernstein Polynomial.
 ##### Classes
 ```C++
@@ -63,8 +63,8 @@ Base (abstract) class for all Stiffness classes. Holds most of the data and meth
 
 Just as in the Moments folder, every other class in this folder are in the same header file and implemented in its own `.cpp` file, they represent the computation of the Stiffness Matrix for each of its element types.
 
-##### 2.1.5 Derivatives Folder
+##### 2.1.6 Derivatives Folder
 Defines an auxiliary class for the computation of the computation of the Quadrilateral element Stiffness Matrix (and probably of the Cube element in the future too).
 
-##### 2.1.6 Tests Folder
+##### 2.1.7 Tests Folder
 Contains `.cpp` files with each with a `main()` function to either test the funcionality of the library or to demonstrate its usage
