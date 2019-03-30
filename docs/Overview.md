@@ -9,7 +9,7 @@
 ## 1. Introduction
 BernsteinFEM is a C++ library that has tools to make fast Finite Elements computations, such as computing Stiffness and Mass Matrices and Load Vectors, through the use of a new polynomial basis, the Bernstein-Bézier polynomials.
 
-To learn how the Finite Element computations were formulated, read the other PDF docs in this folder (in portguese only).
+To learn how the Finite Element computations were formulated, read the other PDF docs in this folder (in portuguese only).
 
 ## 2. Folders
 You'll see ahead an overview of how the project's files are organized in each folder.
