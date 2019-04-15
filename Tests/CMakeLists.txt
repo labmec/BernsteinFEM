@@ -1,48 +1,22 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-#some tests
+# this file specifies projects to test and run the routines defined by this library
 
-add_executable(MASS_TEST mas.cpp)
-add_dependencies(MASS_TEST BernsteinFEM)
-target_link_libraries(MASS_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(MASS_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} MASS_TEST)
+# Sample that shows how to compute an element's Load Vector
+add_executable(LoadVecSample LoadVecSample.cpp)
+add_dependencies(LoadVecSample BernsteinFEM)
+target_link_libraries(LoadVecSample BernsteinFEM ${ARMADILLO_LIBRARIES})
+target_include_directories(LoadVecSample INTERFACE ${ARMADILLO_INCLUDE_DIRS})
 
-add_executable(MOMENTS_TEST mom.cpp)
-add_dependencies(MOMENTS_TEST BernsteinFEM)
-target_link_libraries(MOMENTS_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(MOMENTS_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} MOMENTS_TEST)
+# Sample that shows how to compute an element's Mass Matrix
+add_executable(MassMatrixSample MassMatrixSample.cpp)
+add_dependencies(MassMatrixSample BernsteinFEM)
+target_link_libraries(MassMatrixSample BernsteinFEM ${ARMADILLO_LIBRARIES})
+target_include_directories(MassMatrixSample INTERFACE  ${ARMADILLO_INCLUDE_DIRS})
 
-add_executable(STIFF_TEST stif.cpp)
-add_dependencies(STIFF_TEST BernsteinFEM)
-target_link_libraries(STIFF_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(STIFF_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} STIFF_TEST)
+# Sample that shows how to compute an element's Stiffness Matrix
+add_executable(StiffnessMatrixSample StiffnessMatrixSample.cpp)
+add_dependencies(StiffnessMatrixSample BernsteinFEM)
+target_link_libraries(StiffnessMatrixSample BernsteinFEM ${ARMADILLO_LIBRARIES})
+target_include_directories(StiffnessMatrixSample INTERFACE  ${ARMADILLO_INCLUDE_DIRS})
 
-add_executable(MOMENTS_QUAD_TEST mom-quad.cpp)
-add_dependencies(MOMENTS_QUAD_TEST BernsteinFEM)
-target_link_libraries(MOMENTS_QUAD_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(MOMENTS_QUAD_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} MOMENTS_QUAD_TEST)
-
-add_executable(MOMENTS_TRI_TEST mom-tri.cpp)
-add_dependencies(MOMENTS_TRI_TEST BernsteinFEM)
-target_link_libraries(MOMENTS_TRI_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(MOMENTS_TRI_TEST INTERFACE  ${ARMADILLO_INCLUDE_DIRS}  "../Armadillo/include")
-set(allTests ${allTests} MOMENTS_TRI_TEST)
-
-add_executable(QUAD_STIF_CPU_TEST cpu_test.cpp)
-add_dependencies(QUAD_STIF_CPU_TEST BernsteinFEM)
-target_link_libraries(QUAD_STIF_CPU_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(QUAD_STIF_CPU_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
-
-add_executable(QUAD_CONVERGENCE_TEST convergence_test.cpp)
-add_dependencies(QUAD_CONVERGENCE_TEST BernsteinFEM)
-target_link_libraries(QUAD_CONVERGENCE_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(QUAD_CONVERGENCE_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
-
-add_executable(TRI_STIF_CPU_TEST cpu_test_tri.cpp)
-add_dependencies(TRI_STIF_CPU_TEST BernsteinFEM)
-target_link_libraries(TRI_STIF_CPU_TEST BernsteinFEM ${ARMADILLO_LIBRARIES})
-target_include_directories(TRI_STIF_CPU_TEST INTERFACE ${ARMADILLO_INCLUDE_DIRS} "../Armadillo/include")
