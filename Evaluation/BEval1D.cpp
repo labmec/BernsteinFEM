@@ -32,6 +32,20 @@ arma::vec &BEval1D::computeEvaluation()
             w *= r * (n - a1) / (1 + a1);
         }
     }
-
+    evaluated = true;
     return eval;
+}
+
+double BEval1D::L2Norm()
+{
+    if (!evaluated)
+        computeEvaluation();
+
+    double norm = 0;
+    for (uint i = 0; i < q; i++)
+    {
+        norm += eval.at(i) * eval.at(i) * legendre_w(q, i) * 0.5;
+    }
+
+    return sqrt(norm);
 }

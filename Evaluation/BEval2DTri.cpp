@@ -32,7 +32,7 @@ arma::vec &BEval2DTri::computeEvaluation()
             double w = pow(s, n - a1);
             for (uint a2 = 0; a2 <= n - a1; a2++)
             {
-                eval_inter.at(i2 * q + a1) += w * BBVec.at(element.position({a1, a2}, n));
+                eval_inter.at(i2 * q + a1) += w * BBVec.at(element.position({a1, a2}));
                 w *= r * (n - a1 - a2) / (1 + a2);
             }
         }
@@ -41,7 +41,7 @@ arma::vec &BEval2DTri::computeEvaluation()
     // convert second index
     for (uint i1 = 0; i1 < q; i1++)
     {
-        double xi = (1.0 + legendre_xi(q, i1)) * 0.5;
+        double xi = (1.0 + jacobi_xi(q, i1)) * 0.5;
         double s = 1 - xi;
         double r = xi / s;
 
@@ -55,6 +55,27 @@ arma::vec &BEval2DTri::computeEvaluation()
             w *= r * (n - a1) / (1 + a1);
         }
     }
-    
+    evaluated = true;
     return eval;
+}
+
+double BEval2DTri::L2Norm()
+{
+    if (!evaluated)
+        computeEvaluation();
+
+    double norm = 0;
+
+    for (uint i = 0; i < q; i++)
+    {
+        double w1 = legendre_w(q, i) * 0.5;
+        for (uint j = 0; j < q; j++)
+        {
+            double w2 = w1 * (jacobi_w(q, j) * 0.5);
+            double f = eval.at(i * q + j);
+            norm += w2 * f * f;
+        }
+    }
+
+    return sqrt(norm);
 }

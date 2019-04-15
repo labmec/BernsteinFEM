@@ -2,11 +2,19 @@
 
 template <Element_t EL>
 BEval<EL>::BEval(uint q, uint n, const Element<EL> &el)
-    : BBVec(), eval(), element(el) { }
+    : BBVec(), eval(), element(el) 
+{
+    this->q = q;
+    this->n = n;
+}
 
 template <Element_t EL>
 BEval<EL>::BEval(uint q, uint n, const arma::vec &coeffVec, const Element<EL> &el)
-    : BBVec(coeffVec), eval(), element(el) { }
+    : BBVec(coeffVec), eval(), element(el)
+{
+    this->q = q;
+    this->n = n;
+}
 
 template <Element_t EL>
 uint BEval<EL>::getNumIntegrationPoints()
@@ -41,15 +49,23 @@ Element<EL> &BEval<EL>::getElement()
 template <Element_t EL>
 void BEval<EL>::setCoefficientsVec(const arma::vec &vec)
 {
-    if (vec.size() >= bbvec_len)
+    if (vec.n_rows >= bbvec_len)
         BBVec = vec;
     else
     {
         std::stringstream str;
         str << "Coefficient vector passed for 'BEval' object should have " 
             << bbvec_len << " elements, has: " << vec.size() << "\n";
-        throw new std::logic_error(str.str().c_str());
+        throw std::logic_error(str.str());
     }
+}
+
+template <Element_t EL>
+void BEval<EL>::Zero()
+{
+    BBVec.zeros();
+    eval.zeros();
+    evaluated = false;
 }
 
 // instantiate the types that will be used throughout the library
