@@ -13,6 +13,7 @@ set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LI
 
 #adds directories
 include_directories(
+    "${PROJECT_SOURCE_DIR}"
     "${PROJECT_SOURCE_DIR}/Moments"
     "${PROJECT_SOURCE_DIR}/Mass"
     "${PROJECT_SOURCE_DIR}/Stiffness"
@@ -20,6 +21,7 @@ include_directories(
     "${PROJECT_SOURCE_DIR}/Tests"
     "${PROJECT_SOURCE_DIR}/Quadra"
     "${PROJECT_SOURCE_DIR}/Derivatives"
+    "${PROJECT_SOURCE_DIR}/Evaluation"
     ${ARMADILLO_INCLUDE_DIRS}
     "${PROJECT_SOURCE_DIR}/Armadillo/include"
 )
@@ -40,6 +42,8 @@ option(OLD_TESTS "Add the old test projects to the output build")
 if (OLD_TESTS)
 add_subdirectory(Tests/old)
 endif()
+
+set(lib_headers ${lib_headers} "BernsteinFEM.h")
 
 add_library(BernsteinFEM STATIC ${lib_sources} ${lib_headers})
 
