@@ -1,41 +1,47 @@
 /*************** BernstienFEM.h ***************
- * This header file defines namespaces to be
- * able to work under the same identifiers
- * for classes work for different types
- * of elements
- * 
- * type the following before your code:
- * using namespace BernsteinFEM_1D;
- *
+ * This header wraps all of the include files
+ * needed to work with this library
  *********************************************/
 
 #include <armadillo>
 
-#include "Moments.h"
-#include "MassM.h"
-#include "StiffM.h"
-#include "Elem.h"
-#include "Derivatives.h"
+namespace BernsteinFEM
+{
+    #include "Moments.h"
+    #include "MassM.h"
+    #include "StiffM.h"
+    #include "Evaluation.h"
+    #include "Derivatives.h"
 
-namespace BernsteinFEM_1D {
+    // Typedefs to simplify using Load Vectors
+    using BLoad1D = BMoment1D;
+    using BLoad2DQuad = BMoment2DQuad;
+    using BLoad2DTri = BMoment2DTri;
+    using BLoad3DCube = BMoment3DCube;
+    using BLoad3DTetra = BMoment3DTetra;
+
+    namespace BernsteinFEM_1D
+    {
     typedef BMoment1D BMoment;
     typedef BMass1D Mass;
     typedef BStiff1D Stiffness;
-    typedef BElement1D Element;
-}
+    } // namespace BernsteinFEM_1D
 
-namespace BernsteinFEM_2D_Quad {
+    namespace BernsteinFEM_2D_Quad
+    {
     typedef BMoment2DQuad BMoment;
     typedef BMass2DQuad Mass;
     typedef BStiff2DQuad Stiffness;
-    typedef BElement2DQuad Element;
     using namespace QuadD;
-}
+    } // namespace BernsteinFEM_2D_Quad
 
-namespace BernsteinFEM_2D_Tri {
+    namespace BernsteinFEM_2D_Tri
+    {
     typedef BMoment2DTri BMoment;
     typedef BMass2DTri Mass;
     typedef BStiff2DTri Stiffness;
-    typedef BElement2DTri Element;
-    using namespace TriD;
-}
+    } // namespace BernsteinFEM_2D_Tri
+} // BernsteinFEM
+
+
+
