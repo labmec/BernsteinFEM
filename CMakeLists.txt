@@ -6,15 +6,16 @@ find_package(Armadillo REQUIRED)
 
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
-set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+
 #append blas and lapack libraries into armadillo
+set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
 
 
 #adds directories
 include_directories(
     "${PROJECT_SOURCE_DIR}/Moments"
     "${PROJECT_SOURCE_DIR}/Mass"
-    "${PROJECT_SOURCE_DIR}/Stiffness" # deprecated
+    "${PROJECT_SOURCE_DIR}/Stiffness"
     "${PROJECT_SOURCE_DIR}/Elements"
     "${PROJECT_SOURCE_DIR}/Tests"
     "${PROJECT_SOURCE_DIR}/Quadra"
@@ -26,7 +27,7 @@ include_directories(
 #adds dependencies directories
 add_subdirectory(Moments)
 add_subdirectory(Mass)
-add_subdirectory(Stiffness) #deprecated
+add_subdirectory(Stiffness)
 add_subdirectory(Elements)
 add_subdirectory(Quadra)
 add_subdirectory(Derivatives)
@@ -34,6 +35,10 @@ add_subdirectory(Derivatives)
 option(BUILD_TESTS "Whether or not to build project tests" ON)
 if (BUILD_TESTS)
     add_subdirectory(Tests)
+endif()
+option(OLD_TESTS "Add the old test projects to the output build")
+if (OLD_TESTS)
+add_subdirectory(Tests/old)
 endif()
 
 add_library(BernsteinFEM STATIC ${lib_sources} ${lib_headers})
