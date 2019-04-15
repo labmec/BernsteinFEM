@@ -33,7 +33,6 @@ BMass &BMass::operator=(const BMass &cp)
     return *this;
 }
 
-inline
 void BMass::computeBinomials()
 {
     for (uint k = 1; k < lenBinomialMat; k++)

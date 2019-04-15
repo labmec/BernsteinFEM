@@ -3,14 +3,16 @@
 #define LEN(n) ((n + 1) * (n + 1))
 
 BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> const &el)
-    : BMass(q, n), BMoment2DQuad(q, 2 * n, el), perm(PermutationPool<Element_t::QuadrilateralEl>::GetPermutation(n))
+    : BMass(q, n), BMoment2DQuad(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = LEN(n);
     Matrix.set_size(lenMass, lenMass);
 }
 
 BMass2DQuad::BMass2DQuad(const BMass2DQuad &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array), perm(PermutationPool<Element_t::QuadrilateralEl>::GetPermutation(cp.BMass::n))
+    : BMass(cp.BMass::q, cp.BMass::n),
+    BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array),
+    perm(cp.BMass::n, element.getIndexVector())
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;

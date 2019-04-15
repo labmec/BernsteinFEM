@@ -11,14 +11,16 @@
 #define LENB(n) (2 * n + 2)
 
 BMass2DTri::BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
-    : BMass(q, n), BMoment2DTri(q, 2 * n, el), perm(PermutationPool<Element_t::TriangularEl>::GetPermutation(n))
+    : BMass(q, n), BMoment2DTri(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = ((n + 1) * (n + 2) / 2);
     Matrix.set_size(lenMass, lenMass);
 }
 
 BMass2DTri::BMass2DTri(const BMass2DTri &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment2DTri(cp.BMoment2DTri::q, cp.BMoment2DTri::n, cp.element), perm(PermutationPool<Element_t::TriangularEl>::GetPermutation(cp.BMass::n))
+    : BMass(cp.BMass::q, cp.BMass::n),
+    BMoment2DTri(cp.BMoment2DTri::q, cp.BMoment2DTri::n, cp.element),
+    perm(cp.BMass::n, element.getIndexVector())
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;

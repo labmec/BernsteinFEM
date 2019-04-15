@@ -55,7 +55,7 @@ class BMass
  *****************************************************************************/
 class BMass1D : public BMass, public BMoment1D
 {
-    Permutation<Element_t::LinearEl> &perm;
+    Permutation<Element_t::LinearEl> perm;
 
   public:
     // default constructor
@@ -78,9 +78,7 @@ class BMass1D : public BMass, public BMoment1D
  *****************************************************************************/
 class BMass2DTri : public BMass, public BMoment2DTri
 {
-    Permutation<Element_t::TriangularEl> &perm;
-
-  public:
+    Permutation<Element_t::TriangularEl> perm;
     // default constructor
     BMass2DTri(uint NIntPoint, uint PolOrder, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
 
@@ -101,7 +99,7 @@ class BMass2DTri : public BMass, public BMoment2DTri
  *****************************************************************************/
 class BMass2DQuad : public BMass, public BMoment2DQuad
 {
-    Permutation<Element_t::QuadrilateralEl> &perm;
+    Permutation<Element_t::QuadrilateralEl> perm;
 
   public:
     // defualt constructor
@@ -121,7 +119,7 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
 
 class BMass3DCube : public BMass, public BMoment3DCube
 {
-    Permutation<Element_t::CubeEl> &perm;
+    Permutation<Element_t::CubeEl> perm;
 
   public:
     // default constructor
@@ -141,7 +139,7 @@ class BMass3DCube : public BMass, public BMoment3DCube
 
 class BMass3DTetra : public BMass, public BMoment3DTetra
 {
-    Permutation<Element_t::TetrahedronEl> &perm;
+    Permutation<Element_t::TetrahedronEl> perm;
 
   public:
     // default constructor

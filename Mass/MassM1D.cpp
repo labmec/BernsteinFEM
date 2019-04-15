@@ -5,16 +5,18 @@ using std::endl;
 
 #include "MassM.h"
 
+#define EL Element_t::LinearEl
+
 // maybe trade q to 2*q in the base class constructor
 BMass1D::BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
-    : BMass(q, n), BMoment1D(q, 2 * n, el), perm(PermutationPool<Element_t::LinearEl>::GetPermutation(n))
+    : BMass(q, n), BMoment1D(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = n + 1;
     Matrix.set_size(lenMass, lenMass);
 }
 
 BMass1D::BMass1D(const BMass1D &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array), perm(PermutationPool<Element_t::LinearEl>::GetPermutation(cp.BMass::n))
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array), perm(cp.perm)
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;
