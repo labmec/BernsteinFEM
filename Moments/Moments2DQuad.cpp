@@ -8,10 +8,10 @@ BMoment2DQuad::BMoment2DQuad(uint q, uint n, const Element<Element_t::Quadrilate
     : BMoment2DQuad(q, n, n, element, nb_Array) {}
 
 BMoment2DQuad::BMoment2DQuad(uint q, uint n, uint m, const Element<Element_t::QuadrilateralEl> &element, uint nb_Array)
-    : BMoment(q, n, element, nb_Array),
-      BMomentInter((MAX(n + 1, q)) * (MAX(n + 1, q)), nb_Array, arma::fill::zeros)
+	: BMoment(q, MAX(n, m), element, nb_Array),
+	BMomentInter((MAX(MAX(n, m) + 1, q)) * (MAX(MAX(n, m) + 1, q)), nb_Array, arma::fill::zeros)
 {
-    this->m = m;
+    this->m = m < n ? m : n;
     int max = MAX(n, m);
     lenMoments = (max + 1) * (max + 1);
     lenCval = q * q;
@@ -113,8 +113,8 @@ arma::mat &BMoment2DQuad::computeMoments()
         if (!functVal)
             loadFunctionDef();
 
-        uint max_nm = MAX(n, m);
-        uint max_nq = MAX(max_nm, q - 1);
+        uint max_nm = MAX(n + 1, m + 1);
+        uint max_nq = MAX(max_nm, q);
         Bmoment.zeros();
         BMomentInter.zeros();
 
