@@ -5,14 +5,13 @@
 
 #include <armadillo>
 
-namespace BernsteinFEM
-{
-    #include "Moments.h"
-    #include "MassM.h"
-    #include "StiffM.h"
-    #include "Evaluation.h"
-    #include "Derivatives.h"
+#include "Moments.h"
+#include "MassM.h"
+#include "StiffM.h"
+#include "Evaluation.h"
+#include "Derivatives.h"
 
+namespace BernsteinFEM {
     // Typedefs to simplify using Load Vectors
     using BLoad1D = BMoment1D;
     using BLoad2DQuad = BMoment2DQuad;
