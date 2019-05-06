@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+// uncomment the next line to increase performance a little by disabling bounds check on array's element access
+//#define ARMA_NO_DEBUG
 #include "BernsteinFEM.h"
 
 using namespace BernsteinFEM;
@@ -44,6 +46,8 @@ int main ()
 
     // compute the Load Vector
     auto loadVector = LoadVecComputer.computeMoments();
+
+	// from this point on you can delete the BLoad1D object if managing memory dinamically
 
     // prints the vector using the built-in armadillo output
     loadVector.print("Load Vector");
