@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-file(GLOB sources *.cpp)
+file(GLOB sources ./*.cpp)
 
 file(GLOB headers *.h)
 

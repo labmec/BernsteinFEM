@@ -7,9 +7,13 @@ find_package(Armadillo REQUIRED)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
-#append blas and lapack libraries into armadillo
-set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+#find_package(PZ REQUIRED)
 
+# set a global libraries variable
+set (LIBRARIES ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} ${PZ_LIBRARIES})
+
+# set a global include_dirs variable
+set (INCLUDE_DIRES ${ARMADILLO_INCLUDE_DIRS} ${PZ_INCLUDE_DIRS})
 
 #adds directories
 include_directories(
@@ -22,6 +26,8 @@ include_directories(
     "${PROJECT_SOURCE_DIR}/Quadra"
     "${PROJECT_SOURCE_DIR}/Derivatives"
     "${PROJECT_SOURCE_DIR}/Evaluation"
+    ${NEOPZ_INCLUDE}
+    ${PZ_INCLUDE_DIRS}
     ${ARMADILLO_INCLUDE_DIRS}
     "${PROJECT_SOURCE_DIR}/Armadillo/include"
 )
@@ -33,6 +39,7 @@ add_subdirectory(Stiffness)
 add_subdirectory(Elements)
 add_subdirectory(Quadra)
 add_subdirectory(Derivatives)
+add_subdirectory(Evaluation)
 
 option(BUILD_TESTS "Whether or not to build project tests" ON)
 if (BUILD_TESTS)
