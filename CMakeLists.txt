@@ -2,14 +2,10 @@ cmake_minimum_required(VERSION 3.0.0)
 
 project(BernsteinFEM CXX)
 
-find_package(Armadillo REQUIRED)
-
-find_package(BLAS REQUIRED)
-find_package(LAPACK REQUIRED)
+find_package(PZ REQUIRED)
 
 #append blas and lapack libraries into armadillo
-set (${ARMADILLO_LIBRARIES} ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
-
+set (LIBRARIES ${PZ_LIBRARIES})
 
 #adds directories
 include_directories(
@@ -22,8 +18,7 @@ include_directories(
     "${PROJECT_SOURCE_DIR}/Quadra"
     "${PROJECT_SOURCE_DIR}/Derivatives"
     "${PROJECT_SOURCE_DIR}/Evaluation"
-    ${ARMADILLO_INCLUDE_DIRS}
-    "${PROJECT_SOURCE_DIR}/Armadillo/include"
+    "${PZ_INCLUDE_DIRS}"
 )
 
 #adds dependencies directories
@@ -38,14 +33,12 @@ option(BUILD_TESTS "Whether or not to build project tests" ON)
 if (BUILD_TESTS)
     add_subdirectory(Tests)
 endif()
-option(OLD_TESTS "Add the old test projects to the output build")
+
+option(OLD_TESTS "Add the old test projects to the build")
 if (OLD_TESTS)
-add_subdirectory(Tests/old)
+    add_subdirectory(Tests/old)
 endif()
 
 set(lib_headers ${lib_headers} "BernsteinFEM.h")
 
 add_library(BernsteinFEM STATIC ${lib_sources} ${lib_headers})
-
-#find_package(pz)
-#target_link_libraries(MAIN Moments_lib Mass_lib Stiff_lib Elem_lib)
