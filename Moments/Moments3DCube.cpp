@@ -3,33 +3,41 @@
 
 uint position_q(uint i, uint j, uint k, uint q) { return i * q * q + j * q + k; }
 
-BMoment3DCube::BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &el, uint nb_Array)
-    : BMoment3DCube(q, n, n, n, el, nb_Array) {}
+REAL det3(TPZFMatrix<REAL> const& mat)
+{
+	// compute determinant by Laplace formula
+	REAL det = 0;
+	det += mat(0, 0) * (mat(1, 2) * mat(2, 1) - mat(1, 1) * mat(2, 2));
+	det += mat(0, 1) * (mat(1, 0) * mat(2, 2) - mat(1, 2) * mat(2, 0));
+	det += mat(0, 2) * (mat(1, 1) * mat(2, 0) - mat(1, 0) * mat(2, 1));
+	return det;
+}
 
-BMoment3DCube::BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &el, uint nb_Array)
-    : BMoment(q, n, el, nb_Array), 
+BMoment3DCube::BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &el)
+    : BMoment3DCube(q, n, n, n, el) {}
+
+BMoment3DCube::BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &el)
+    : BMoment(q, n, el), 
     BMomentInter()
 {
     uint max = MAX(MAX(n, m), p);
     max++;
     lenMoments = max * max * max; // (max + 1) ^ 3
     lenCval = q * q * q;
-    Bmoment.set_size(lenMoments, nb_Array);
-    BMomentInter.set_size(lenMoments, nb_Array);
-    quadraWN.set_size(q, 2);
-    Cval.set_size(lenCval, nb_Array);
+    Bmoment.resize(lenMoments);
+    BMomentInter.resize(lenMoments);
+    Cval.resize(lenCval);
     assignQuadra();
 }
 
 // copy constructor
 BMoment3DCube::BMoment3DCube(const BMoment3DCube &cp)
-    : BMoment(cp.q, cp.n, cp.element, cp.nb_Array), BMomentInter(cp.BMomentInter)
+    : BMoment(cp.q, cp.n, cp.element), BMomentInter(cp.BMomentInter)
 {
     lenMoments = cp.lenMoments;
     lenCval = cp.lenCval;
     Bmoment = cp.Bmoment;
     Cval = cp.Cval;
-    quadraWN = cp.quadraWN;
 }
 
 BMoment3DCube &BMoment3DCube::operator=(const BMoment3DCube &cp)
@@ -38,12 +46,10 @@ BMoment3DCube &BMoment3DCube::operator=(const BMoment3DCube &cp)
     {
         q = cp.q;
         n = cp.n;
-        nb_Array = cp.nb_Array;
         lenMoments = cp.lenMoments;
         lenCval = cp.lenCval;
         Bmoment = cp.Bmoment;
         Cval = cp.Cval;
-        quadraWN = cp.quadraWN;
     }
     return *this;
 }
@@ -51,13 +57,10 @@ BMoment3DCube &BMoment3DCube::operator=(const BMoment3DCube &cp)
 inline
 void BMoment3DCube::assignQuadra()
 {
-    double *x = quadraWN.colptr(1);
-    double *w = quadraWN.colptr(0);
-
     for (uint k = 0; k < q; k++)
     {
-        x[k] = (1.0 + legendre_xi(q, k)) * 0.5;
-        w[k] = legendre_w(q, k) * 0.5;
+        intPoints[k] = (1.0 + legendre_xi(q, k)) * 0.5;
+        intWeights[k] = legendre_w(q, k) * 0.5;
     }
 }
 
@@ -70,21 +73,20 @@ void BMoment3DCube::loadFunctionDef()
         {
             for (uint k = 0; k < q; k++)
             {
-                arma::mat jac(3, 3, arma::fill::none);
-                arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)}, jac);
-                double dX = det(jac);
+                TPZFMatrix<REAL> jac(3, 3);
+                TPZFMatrix<REAL> X = element.mapToElement({intPoints[i], intPoints[j], intPoints[k]}, jac);
+                REAL dX = det3(jac);
                 uint index_ijk = position_q(i, j, k, q);
-                for (uint el = 0; el < nb_Array; el++)
-                    Cval.at(index_ijk, el) = f(X[0], X[1], X[2]) * dX;
+                Cval[index_ijk] = f(X[0], X[1], X[2]) * dX;
             }
         }
     }
 }
 
 inline
-arma::mat BMoment3DCube::getIntegrationPoints()
+TPZFMatrix<REAL> BMoment3DCube::getIntegrationPoints()
 {
-    arma::mat points(lenCval, 3, arma::fill::none);
+    TPZFMatrix<REAL> points(lenCval, 3);
 
     for (uint i = 0; i < q; i++)
     {
@@ -92,11 +94,11 @@ arma::mat BMoment3DCube::getIntegrationPoints()
         {
             for (uint k = 0; k < q; k++)
             {
-                arma::mat X = element.mapToElement({quadraWN(i, 1), quadraWN(j, 1), quadraWN(k, 1)});
+                TPZFMatrix<REAL> X = element.mapToElement({intPoints[i], intPoints[j], intPoints[k]});
                 uint index_ijk = position_q(i, j, k, q);
-                points.at(index_ijk, 0) = X[0];
-                points.at(index_ijk, 1) = X[1];
-                points.at(index_ijk, 2) = X[2];
+                points(index_ijk, 0) = X[0];
+                points(index_ijk, 1) = X[1];
+                points(index_ijk, 2) = X[2];
             }
         }
     }
@@ -104,7 +106,7 @@ arma::mat BMoment3DCube::getIntegrationPoints()
     return points;
 }
 
-arma::mat &BMoment3DCube::computeMoments()
+TPZVec<REAL> &BMoment3DCube::computeMoments()
 {
     if (functVal && !fValSet)
         std::cerr << "missing function values for computation of the moments in \'compute_moments()\'\n";
@@ -117,14 +119,14 @@ arma::mat &BMoment3DCube::computeMoments()
 
         uint max_nm = MAX(MAX(n, m), p);
         uint max_nq = MAX(max_nm, q);
-        Bmoment.zeros();
-        BMomentInter.zeros();
+		Bmoment.Fill(0.0);
+        BMomentInter.Fill(0.0);
 
         // convert first index (l=3)
         for (uint i = 0; i < q; i++)
         {
-            double xi = quadraWN.at(i, 1);
-            double wgt = quadraWN.at(i, 0);
+			double xi = intPoints[i];
+			double wgt = intWeights[i];
 
             double s = 1 - xi;
             double r = xi / s;
@@ -138,8 +140,7 @@ arma::mat &BMoment3DCube::computeMoments()
                         uint index_a1jk = position_q(a1, j, k, max_nq);
                         uint index_ijk = position_q(i, j, k, q);
 
-                        for (uint el = 0; el < nb_Array; el++)
-                            Bmoment.at(index_a1jk, el) += B * Cval.at(index_ijk, el);
+						Bmoment[index_a1jk] += B * Cval[index_ijk];
                     }
                 }
                 B *= r * (n - a1) / (1 + a1);
@@ -149,8 +150,8 @@ arma::mat &BMoment3DCube::computeMoments()
         // convert second index (l=2)
         for (uint j = 0; j < q; j++)
         {
-            double xi = quadraWN.at(j, 1);
-            double wgt = quadraWN.at(j, 0);
+			double xi = intPoints[j];
+			double wgt = intWeights[j];
 
             double s = 1 - xi;
             double r = xi / s;
@@ -164,20 +165,19 @@ arma::mat &BMoment3DCube::computeMoments()
                         uint index_a1a2k = position_q(a1, a2, k, q);
                         uint index_a1jk = position_q(a1, j, k, q);
 
-                        for (uint ell = 0; ell < nb_Array; ell++)
-                            BMomentInter.at(index_a1a2k, ell) += B * Bmoment.at(index_a1jk, ell);
+						BMomentInter[index_a1a2k] += B * Bmoment[index_a1jk];
                     }
                 }
                 B *= r * (m - a2) / (1 + a2);
             }
         }
 
-        Bmoment.zeros();
+		Bmoment.Fill(0.0);
         // convert third index (l=1)
         for (uint k = 0; k < q; k++)
         {
-            double xi = quadraWN.at(k, 1);
-            double wgt = quadraWN.at(k, 0);
+			double xi = intPoints[k];
+			double wgt = intWeights[k];
 
             double s = 1 - xi;
             double r = xi / s;
@@ -191,8 +191,7 @@ arma::mat &BMoment3DCube::computeMoments()
                         uint index_a1a2k = position_q(a1, a2, k, q);
                         uint index_a = element.position({a1, a2, a3});
 
-                        for (uint ell = 0; ell < nb_Array; ell++)
-                            Bmoment.at(index_a, ell) += B * BMomentInter.at(index_a1a2k, ell);
+						Bmoment[index_a] += B * BMomentInter[index_a1a2k];
                     }
                 }
                 B *= r * (p - a3) / (1 + a3);

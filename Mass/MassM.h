@@ -1,6 +1,5 @@
 #pragma once
 
-#include <armadillo>
 #include "Moments.h"
 #include "Permutations.h"
 #include <memory>
@@ -13,9 +12,9 @@ class BMass
     uint q;                          // number of quadrature points ( recommended: 2*(n+1) )
     uint n;                          // polynomial order
     uint lenMass;                    // length of the mass matrix
-    arma::mat Matrix;                // mass matrix
+    TPZFMatrix<REAL> Matrix;                // mass matrix
     uint lenBinomialMat;             // length of the binomial matrix
-    arma::Mat<uint64_t> BinomialMat; // Pascal Matrix
+    TPZFMatrix<uint64_t> BinomialMat; // Pascal Matrix
 
     std::shared_ptr<PascalMat> pascalMat; // Pascal matrix auxiliary obj
 
@@ -40,7 +39,7 @@ class BMass
     uint getPOrder();
 
     // returns a reference to the Mass Matrix
-    const arma::mat &getMatrix();
+    const TPZFMatrix<REAL> &getMatrix();
 
     // returns the value of Matrix[i][j]
     double getMatrixValue(uint i, uint j);

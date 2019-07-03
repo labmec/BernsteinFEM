@@ -12,7 +12,8 @@
 
 #pragma once
 
-#include <armadillo>
+#define REALdouble
+#include "Common/pzreal.h"
 #include <vector>
 #include "Element_t.h"
 
@@ -27,24 +28,26 @@ private:
   uint n;                           // polynomial order, in order to compute the vectors
   std::vector<uint> permutationVec; // permutation vector to organize elements of the matrices
   std::vector<uint> inversePermVec; // inverse permutation vector
-  arma::ivec *idxVec;                // index vector for each vertex (the same as in the element which holds this object)
+  std::vector<uint> *idxVec;        // index vector for each vertex (the same as in the element which holds this object)
+  bool idxVecInstantiated;          // indicates whether we instantiated a new idxVec or just referenced an object
   bool pVecComputed = false;        // indicates whether the permutation vector is computed or not
   bool i_pVecComputed = false;      // indicates whether the inverse permutation vector is computed or not
 
 public:
-
   Permutation();
 
-  Permutation(const uint &pOrder, arma::ivec &idxVec);
+  Permutation(const uint &pOrder, std::vector<uint> &idxVec);
 
-  Permutation(arma::ivec &idxVec);
+  Permutation(std::vector<uint> &idxVec);
 
   Permutation(Permutation const &cp);
+
+  ~Permutation();
 
   // getters
 
   uint getPOrder();
-  arma::ivec &getIndexVector();
+  std::vector<uint> &getIndexVector();
   std::vector<uint> &getPermutationVector();
   std::vector<uint> &getInvPermutationVec();
 
@@ -52,11 +55,11 @@ public:
   void setPOrder(uint n);
 
   // sets the index vector of the object, according to the indices of the vertices of an element
-  void setIndexVector(arma::ivec &idxVector);
+  void setIndexVector(std::vector<uint> &idxVector);
 
   // computes the permutation vector
   void computePermVec();
-  
+
   // computes the inverse permutation vector
   void computeInvPermVec();
 };

@@ -14,7 +14,7 @@ BMass2DTri::BMass2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &e
     : BMass(q, n), BMoment2DTri(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = ((n + 1) * (n + 2) / 2);
-    Matrix.set_size(lenMass, lenMass);
+    Matrix.Resize(lenMass, lenMass);
 }
 
 BMass2DTri::BMass2DTri(const BMass2DTri &cp)
@@ -65,7 +65,7 @@ void BMass2DTri::computeMatrix()
                 for (uint b2 = 0; b2 <= n; b2++) {
                     double w2 = w1 * BinomialMat(a2, b2);
                     uint j = perm.getPermutationVector()[b1 * n + b2];
-                    Matrix(i, j) = w2 * getBMoment(a1 + b1, a2 + b2, 0);
+					Matrix(i, j) = w2 * Bmoment[element.position({ a1,a2 })];
                 } 
             }
         }

@@ -3,8 +3,8 @@
 
 // constructors
 template <typename _s, Element_t EL>
-BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element, uint nb_Array)
-    : Bmoment(), Cval(), element(element), quadraWN(), f()
+BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element)
+    : Bmoment(), Cval(), element(element), f()
 {
     this->q = q;
     this->n = n;
@@ -15,7 +15,7 @@ BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element, uint nb_Arr
 // copy constructor
 template <typename _s, Element_t EL>
 BMoment<_s, EL>::BMoment(const BMoment<_s, EL> &cp)
-    : Bmoment(cp.Bmoment), Cval(cp.Cval), element(cp.element), quadraWN(cp.quadraWN), f(cp.f)
+    : Bmoment(cp.Bmoment), Cval(cp.Cval), element(cp.element), f(cp.f)
 {
     this->q = cp.q;
     this->n = cp.n;
@@ -71,7 +71,7 @@ Element<EL> &BMoment<_s, EL>::getElement() { return element; }
 
 // returns a copy of the Bmoment matrix
 template <typename _s, Element_t EL>
-const arma::mat &BMoment<_s, EL>::getMoments() { return Bmoment; }
+const TPZVec<REAL> &BMoment<_s, EL>::getMoments() { return Bmoment; }
 
 // setters
 // sets number of integration points
@@ -92,14 +92,7 @@ void BMoment<_s, EL>::setNbArray(uint nb_Array)
 }
 
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setFunctionValues(const arma::vec &Cval)
-{
-    this->Cval = Cval;
-    fValSet = true;
-}
-
-template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setFunctionValues(const arma::mat &Cval)
+void BMoment<_s, EL>::setFunctionValues(const TPZVec<REAL> &Cval)
 {
     this->Cval = Cval;
     fValSet = true;
@@ -128,7 +121,7 @@ void BMoment<_s, EL>::computeMoments(std::function<_s> f)
 }
 
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::computeMoments(const arma::mat &Cval)
+void BMoment<_s, EL>::computeMoments(const TPZVec<REAL> &Cval)
 {
     setFunctionValues(Cval);
     computeMoments();
