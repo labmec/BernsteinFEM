@@ -21,9 +21,9 @@ int main()
 	int polynomialOrder = 2;	// basis polynomial order
 	int numIntegrationPoints = 2 * polynomialOrder;	// number of integration points
 
-	arma::vec vertices({ 0.0, 1.0 }); // vertices of the element (default: {0.0, 1.0})
+	TPZFMAtrix<REAL> vertices({ 0.0, 1.0 }); // vertices of the element (default: {0.0, 1.0})
 
-	arma::ivec indexVector({ 0, 1 }); // vector with the indices of the element's vertices (default {0, 1})
+	TPZVec<uint32_t> indexVector({ 0, 1 }); // vector with the indices of the element's vertices (default {0, 1})
 
 	Element<Element_t::LinearEl> element(vertices, indexVector); // element in question
 
@@ -31,7 +31,7 @@ int main()
 
 	auto integrationPoints = MassMatrixComputer.getIntegrationPoints(); // gets the vector with integration points
 
-	arma::vec functionValues(integrationPoints.n_rows);
+	TPZVec<REAL> functionValues(integrationPoints.n_rows);
 	
 	// evaluate the function in integration points and store it in 'functionValues'
 	for (unsigned i = 0; i < functionValues.n_rows; i++)
@@ -52,7 +52,7 @@ int main()
 
 	// from this point on you can delete the BMass1D object if managing memory dinamically
 
-	massMatrix.print("Mass Matrix:");
+	massMatrix.Print("Mass Matrix:", std::cout, EFormatted);
 }
 
 // sample function
