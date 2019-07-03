@@ -4,7 +4,6 @@ project(BernsteinFEM CXX)
 
 find_package(PZ REQUIRED)
 
-#append blas and lapack libraries into armadillo
 set (LIBRARIES ${PZ_LIBRARIES})
 
 #adds directories

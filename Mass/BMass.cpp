@@ -1,7 +1,7 @@
 #include "MassM.h"
 
 BMass::BMass(uint q, uint n)
-    : Matrix(), BinomialMat(n + 1, n + 1, arma::fill::ones)
+    : Matrix(), BinomialMat(n + 1, n + 1)
 {
     this->q = q;
     this->n = n;
@@ -39,7 +39,7 @@ void BMass::computeBinomials()
     {
         for (uint l = 1; l < lenBinomialMat; l++)
         {
-            BinomialMat.at(k, l) = BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
+            BinomialMat(k, l) = BinomialMat(k, l - 1) + BinomialMat(k - 1, l);
         }
     }
 }
@@ -58,7 +58,7 @@ uint BMass::getPOrder()
 }
 
 // returns a reference to the Mass Matrix
-const arma::mat &BMass::getMatrix()
+const TPZFMatrix<REAL> &BMass::getMatrix()
 {
     return Matrix;
 }
@@ -73,7 +73,7 @@ double BMass::getMatrixValue(uint i, uint j)
     catch (std::logic_error &e)
     {
         std::cerr << e.what() << std::endl;
-        std::cerr << "Max value for arguments: " << Matrix.n_cols << std::endl;
+        std::cerr << "Max value for arguments: " << Matrix.Cols() << std::endl;
         throw std::logic_error(e);
     }
 };

@@ -1,22 +1,39 @@
 #include "Permutations.h"
 #include <numeric>
+#include <vector>
+
+using std::vector;
 
 // generic implementations
 
 template <Element_t El> 
-Permutation<El>::Permutation() { this->idxVec = new arma::ivec({ 0,1,2,3 }); }
-
-template <Element_t El>
-Permutation<El>::Permutation(const uint &n, arma::ivec &idxVec) : n(n), idxVec(new arma::ivec(idxVec)) 
+Permutation<El>::Permutation() 
 {
-    computePermVec();
+	this->idxVec = new std::vector({ 0,1,2,3 })); 
+	idxVecInstantiated = true;
 }
 
 template <Element_t El>
-Permutation<El>::Permutation(arma::ivec &idxVec) : idxVec(&idxVec) { }
+Permutation<El>::Permutation(const uint &n, std::vector<uint> &idxVec) : n(n), idxVec(&idxVec)
+{
+    computePermVec();
+	idxVecInstantiated = false;
+}
 
 template <Element_t El>
-Permutation<El>::Permutation(Permutation const &cp) : n(cp.n), idxVec(cp.idxVec) { }
+Permutation<El>::Permutation(vector<uint> &idxVec) : idxVec(&idxVec), idxVecInstantiated(false) { }
+
+template <Element_t El>
+Permutation<El>::Permutation(Permutation const &cp) : n(cp.n), idxVec(cp.idxVec), idxVecInstantiated(false) { }
+
+template <Element_t El>
+Permutation<El>::~Permutation()
+{
+	if (idxVecInstantiated)
+	{
+		free(idxVec);
+	}
+}
 
 template <Element_t El>
 uint Permutation<El>::getPOrder()
@@ -25,7 +42,7 @@ uint Permutation<El>::getPOrder()
 }
 
 template <Element_t El>
-arma::ivec &Permutation<El>::getIndexVector()
+vector<uint> &Permutation<El>::getIndexVector()
 {
     return *idxVec;
 }
@@ -57,7 +74,7 @@ void Permutation<El>::setPOrder(uint n)
 }
 
 template <Element_t El>
-void Permutation<El>::setIndexVector(arma::ivec &idxVec)
+void Permutation<El>::setIndexVector(vector<uint> &idxVec)
 {
     this->idxVec = &idxVec;
 }

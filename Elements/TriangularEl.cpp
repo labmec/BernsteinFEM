@@ -3,12 +3,12 @@
 #define TEL Element_t::TriangularEl
 
 template <>
-arma::mat Element<TEL>::jac(2, 2, arma::fill::zeros);
+TPZFMatrix<REAL> Element<TEL>::jac(2, 2, 0);
 
 template <>
 Element<TEL>::Element()
-	: vertices(3, 2, arma::fill::none),
-	coordinates(1, 2, arma::fill::none),
+	: vertices(3, 2),
+	coordinates(1, 2),
 	idxVec({ 0,1,2 }),
 	perm(idxVec)
 {
@@ -18,13 +18,13 @@ Element<TEL>::Element()
 }
 
 template <>
-Element<TEL>::Element(const arma::mat &v)
-	: vertices(3, 2, arma::fill::none),
-	coordinates(1, 2, arma::fill::none),
+Element<TEL>::Element(const TPZFMatrix<REAL> &v)
+	: vertices(3, 2),
+	coordinates(1, 2),
 	idxVec({ 0,1,2 }),
 	perm(idxVec)
 {
-    if (v.n_rows < 3 || v.n_cols < 2)
+    if (v.Rows() < 3 || v.Cols() < 2)
     {
         throw std::invalid_argument("TriangularEl vertices constructor: not enough size in matrix (at least 3x2)");
     }
@@ -39,7 +39,7 @@ Element<TEL>::Element(const arma::mat &v)
 template <>
 Element<TEL>::Element(const Element<TEL> &cp)
 	: vertices(cp.vertices),
-	coordinates(1, 2, arma::fill::none),
+	coordinates(1, 2),
 	idxVec(cp.idxVec),
 	perm(cp.perm) 
 {}
@@ -56,7 +56,7 @@ uint Element<TEL>::position(const std::vector<uint> &point)
 
 // Duffy Transform
 template <>
-const arma::mat &Element<TEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)
+const TPZFMatrix<REAL> &Element<TEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     try 
     {
@@ -66,8 +66,8 @@ const arma::mat &Element<TEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
         double b3 = 1 - b2 - b1;
         
         // convert from barycentric coordinates to cartesian
-        coordinates(0) = b1 * vertices.at(0, 0) + b2 * vertices.at(1, 0) + b3 * vertices.at(2, 0);
-        coordinates(1) = b1 * vertices.at(0, 1) + b2 * vertices.at(1, 1) + b3 * vertices.at(2, 1);
+        coordinates(0) = b1 * vertices(0, 0) + b2 * vertices(1, 0) + b3 * vertices(2, 0);
+        coordinates(1) = b1 * vertices(0, 1) + b2 * vertices(1, 1) + b3 * vertices(2, 1);
     }
     catch(std::logic_error &e)
     {

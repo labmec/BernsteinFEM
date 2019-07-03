@@ -1,6 +1,12 @@
 #pragma once
-#include <armadillo>
+
+#define REALdouble // TODO: find a way to better define this
+#include "Common/pzreal.h"	 // REAL, STATE
+#include "Util/pzvec.h"		 // Vec
+#include "Matrix/pzmatrix.h" // TPZFMatrix
 #include "Elements.h"
+#include <vector>
+#include <functional>
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
@@ -8,19 +14,19 @@
 template <typename _signature, Element_t EL>
 class BMoment
 {
-  protected:
-    uint q;                // number of quadrature points in one dimension
-    uint n;                // Bernstein polynomial order
-    uint lenMoments;       // length of the Bmoment vector
-    uint lenCval;          // length of the Cval array
-    arma::mat Bmoment;    // vector where the b-moments are stored
-    arma::mat Cval;       // vector where the function values are stored
-    bool fValSet = false; // is true if the function value is set
-    bool fDefSet = false; // is true if the function definition is set
-    bool functVal = true; // determines if will use function value or function definition (use function value by default)
-    uint nb_Array;         // dimension of function Image (function is scalar valued by default)
-    Element<EL> element;  // element to be used (either 1D, quadrilater, triangle, etc.)
-    arma::mat quadraWN;   // quadrature points and weights
+protected:
+    uint q;                       // number of quadrature points in one dimension
+    uint n;                       // Bernstein polynomial order
+    uint lenMoments;              // length of the Bmoment vector
+    uint lenCval;                 // length of the Cval array
+    TPZVec<REAL> Bmoment;	      // vector where the b-moments are stored
+    TPZVec<REAL> Cval;            // vector where the function values are stored
+    bool fValSet = false;         // is true if the function value is set
+    bool fDefSet = false;         // is true if the function definition is set
+    bool functVal = true;         // determines if will use function value or function definition (use function value by default)
+    Element<EL> element;          // element to be used (either 1D, quadrilater, triangle, etc.)
+    TPZVec<REAL> intPoints;       // quadrature points
+    TPZVec<REAL> intWeights;      // quadrature weights
 
     // function definition for the computation of the b-moments
     std::function<_signature> f;
@@ -32,9 +38,9 @@ class BMoment
     // loads the function definition values at quadrature points into Cval
     virtual void loadFunctionDef() = 0;
 
-  public:
+public:
     // constructors
-    BMoment(uint q, uint n, const Element<EL> &element = Element<EL>(), uint nb_Array = 1);
+    BMoment(uint q, uint n, const Element<EL> &element = Element<EL>());
 
     // copy constructor
     BMoment(const BMoment<_signature, EL> &cp);
@@ -68,7 +74,7 @@ class BMoment
     Element<EL> &getElement();
 
     // returns the whole Bmoment matrix
-    const arma::mat &getMoments();
+    const TPZVec<REAL> &getMoments();
 
     // setters
     // sets number of integration points
@@ -80,9 +86,7 @@ class BMoment
     // sets the dimension of function Image (function is scalar valued by default)
     void setNbArray(uint nb_Array);
 
-    void setFunctionValues(const arma::vec &Cval);
-
-    void setFunctionValues(const arma::mat &Cval);
+    void setFunctionValues(const TPZVec<REAL> &Cval);
 
     void setFunctionDefinition(std::function<_signature> f);
 
@@ -98,13 +102,13 @@ class BMoment
 
     void computeMoments(std::function<_signature> f);
 
-    void computeMoments(const arma::mat &Cval);
+    void computeMoments(const TPZVec<REAL> &Cval);
 
     // returns the vector with the integration points over the object's element, following the moments organization
-    virtual arma::mat getIntegrationPoints() = 0; // TODO: consider changing this to const arma::mat &
+    virtual TPZFMatrix<REAL> getIntegrationPoints() = 0; // TODO: consider changing this to const TPZVec<REAL> &
 
     // computes the moments and store it in the Bmoment array, use getBMoment to get it
-    virtual arma::mat &computeMoments() = 0;
+    virtual TPZVec<REAL> &computeMoments() = 0;
 };
 
 /*****************************************************************************
@@ -112,14 +116,14 @@ class BMoment
  *****************************************************************************/
 class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
 {
-  protected:
+protected:
     void assignQuadra() final;
 
     void loadFunctionDef() final;
 
-  public:
+public:
     // constructors
-    BMoment1D(uint q, uint n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>(), uint nb_Array = 1);
+    BMoment1D(uint q, uint n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
 
     // copy constructor
     BMoment1D(const BMoment1D &cp);
@@ -131,15 +135,12 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
     ~BMoment1D();
 
     // returns the value of the i-th indexed B-moment
-    double getBMoment(uint i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment[i]; }
 
-    // returns the value of the i-th indexed B-moment at the specified dimension 'dim'
-    double getBMoment(uint i, int dim) { return Bmoment(i, dim - 1); }
-
-    arma::mat getIntegrationPoints();
+    TPZFMatrix<REAL> getIntegrationPoints();
 
     // compute the B-moments using the values already assigned in the object
-    arma::mat &computeMoments() final;
+    TPZVec<REAL> &computeMoments() final;
 };
 
 /*****************************************************************************
@@ -147,17 +148,17 @@ class BMoment1D : public BMoment<double(double), Element_t::LinearEl>
  *****************************************************************************/
 class BMoment2DTri : public BMoment<double(double, double), Element_t::TriangularEl>
 {
-    arma::mat BMomentInter;
+    TPZVec<REAL> BMomentInter;
 
-  protected:
+protected:
     // map to obtain Gauss-Jacobi rule on unit interval
     void assignQuadra() final;
 
     void loadFunctionDef() final;
 
-  public:
+public:
     // default constructor
-    BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>(), uint nb_Array = 1);
+    BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
 
     // copy constructor
     BMoment2DTri(const BMoment2DTri &cp);
@@ -167,37 +168,17 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 
     ~BMoment2DTri();
 
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
-    double getBMoment(uint a1, uint a2, int dim)
-    {
-        try
-        {
-            return Bmoment(element.position({a1, a2}), dim);
-        }
-        catch (std::logic_error &e)
-        {
-            std::cerr << "at function: " << __func__ << std::endl;
-            std::cerr << "arguments values ot of range: " << std::endl;
-            std::cerr << "a1 = " << a1 << "; a2 = " << a2 << "; dim = " << dim << std::endl;
-            std::cerr << "a1 max: " << n << "a2 max:" << n - a1 << "dim max: " << nb_Array - 1 << std::endl;
-            throw std::logic_error(e);
-        }
-    }
-
     // get the i-th bmoment in the array, only use if you really know what you're doing
-    double getBMoment(uint i) { return Bmoment(i, 0); }
-
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i) { return Bmoment[i]; }
 
     // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
     // Assuming: points = getIntegrationPoints(); then
     // points(i, 0) == x i-th coordinate
     // points(i, 1) == y i-th coordinate
-    arma::mat getIntegrationPoints();
+    TPZFMatrix<REAL> getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    arma::mat &computeMoments() final;
+    TPZVec<REAL> &computeMoments() final;
 };
 
 /*****************************************************************************
@@ -208,21 +189,21 @@ class BMoment2DTri : public BMoment<double(double, double), Element_t::Triangula
 // add the second order of polynomial degree to computation
 class BMoment2DQuad : public BMoment<double(double, double), Element_t::QuadrilateralEl>
 {
-    uint m;                  // second polynomial order
-    arma::mat BMomentInter; // auxiliary matrix to compute moments
+    uint m;                        // second polynomial order
+    TPZVec<REAL> BMomentInter; // auxiliary matrix to compute moments
 
-  protected:
+protected:
     // map to obtain Gauss-Jacobi rule on unit interval
     void assignQuadra() final;
 
     // computes the function by the definition and stores it in Cval
     void loadFunctionDef() final;
 
-  public:
+public:
     // default constructor
-    BMoment2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), uint nb_Array = 1);
+    BMoment2DQuad(uint q, uint n, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
-    BMoment2DQuad(uint q, uint n, uint m, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>(), uint nb_Array = 1);
+    BMoment2DQuad(uint q, uint n, uint m, const Element<Element_t::QuadrilateralEl> &element = Element<Element_t::QuadrilateralEl>());
 
     // copy constructor
     BMoment2DQuad(const BMoment2DQuad &cp);
@@ -230,43 +211,40 @@ class BMoment2DQuad : public BMoment<double(double, double), Element_t::Quadrila
     // copy assignment operator
     BMoment2DQuad &operator=(const BMoment2DQuad &cp);
 
-    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
-
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(uint a1, uint a2, int dim) { return Bmoment(element.position({a1, a2}), dim); }
+    double getBMoment(uint a1, uint a2, int dim) { return Bmoment[element.position({a1, a2})]; }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-    double getBMoment(uint i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment[i]; }
 
     // returns the vector with the integration points (x, y) over the object's element, following the moments organization
     // points(i, 0) == x i-th coordinate
     // points(i, 1) == y i-th coordinate
-    arma::mat getIntegrationPoints();
+    TPZFMatrix<REAL> getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    arma::mat &computeMoments() final;
+    TPZVec<REAL> &computeMoments() final;
 };
 
 // Future class definition
 class BMoment3DCube : public BMoment<double(double, double, double), Element_t::CubeEl>
 {
-    uint m;                  // second polynomial order
-    uint p;                  // third polynomial order
-    arma::mat BMomentInter; // auxiliary matrix to compute moments
+    uint m;                        // second polynomial order
+    uint p;                        // third polynomial order
+    TPZVec<REAL> BMomentInter; // auxiliary matrix to compute moments
 
-  protected:
+protected:
     // map to obtain Gauss-Jacobi rule on unit interval
     void assignQuadra() final;
 
     // computes the function by the definition and stores it in Cval
     void loadFunctionDef() final;
 
-  public:
+public:
     // default constructor
-    BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), uint nb_Array = 1);
+    BMoment3DCube(uint q, uint n, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>());
 
-    BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>(), uint nb_Array = 1);
+    BMoment3DCube(uint q, uint n, uint m, uint p, const Element<Element_t::CubeEl> &element = Element<Element_t::CubeEl>());
 
     // copy constructor
     BMoment3DCube(const BMoment3DCube &cp);
@@ -274,37 +252,34 @@ class BMoment3DCube : public BMoment<double(double, double, double), Element_t::
     // copy assignment operator
     BMoment3DCube &operator=(const BMoment3DCube &cp);
 
-    // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral on the specified dimension
-    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
-
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 on the specified dimension
-    double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment(element.position({a1, a2, a3}), dim); }
+    double getBMoment(uint a1, uint a2, uint a3, int dim) { return Bmoment[element.position({a1, a2, a3})]; }
 
     // get the i-th Bmoment in the array, associated with the i-th node of the quadrilateral
-    double getBMoment(uint i) { return Bmoment(i, 0); }
+    double getBMoment(uint i) { return Bmoment[i]; }
 
     // returns the vector with the integration points (x, y) over the object's element, following the moments organization
     // points(i, 0) == x i-th coordinate
     // points(i, 1) == y i-th coordinate
-    arma::mat getIntegrationPoints();
+    TPZFMatrix<REAL> getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    arma::mat &computeMoments() final;
+    TPZVec<REAL> &computeMoments() final;
 };
 
 class BMoment3DTetra : public BMoment<double(double, double, double), Element_t::TetrahedronEl>
 {
-    arma::mat BMomentInter;
+    TPZVec<REAL> BMomentInter;
 
-  protected:
+protected:
     // map to obtain Gauss-Jacobi rule on unit interval
     void assignQuadra() final;
 
     void loadFunctionDef() final;
 
-  public:
+public:
     // default constructor
-    BMoment3DTetra(uint q, uint n, const Element<Element_t::TetrahedronEl> &element = Element<Element_t::TetrahedronEl>(), uint nb_Array = 1);
+    BMoment3DTetra(uint q, uint n, const Element<Element_t::TetrahedronEl> &element = Element<Element_t::TetrahedronEl>());
 
     // copy constructor
     BMoment3DTetra(const BMoment3DTetra &cp);
@@ -317,32 +292,18 @@ class BMoment3DTetra : public BMoment<double(double, double, double), Element_t:
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
     double getBMoment(uint a1, uint a2, uint a3, int dim)
     {
-        try
-        {
-            return Bmoment(element.position({a1, a2, a3}), dim);
-        }
-        catch (std::logic_error &e)
-        {
-            std::cerr << "at function: " << __func__ << std::endl;
-            std::cerr << "arguments values ot of range: " << std::endl;
-            std::cerr << "a1 = " << a1 << "; a2 = " << a2 << "; dim = " << dim << std::endl;
-            std::cerr << "a1 max: " << n << "a2 max:" << n - a1 << "dim max: " << nb_Array - 1 << std::endl;
-            throw std::logic_error(e);
-        }
+            return Bmoment[element.position({a1, a2, a3})];
     }
 
     // get the i-th bmoment in the array, only use if you really know what you're doing
-    double getBMoment(uint i) { return Bmoment(i, 0); }
-
-    // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1)
-    double getBMoment(uint i, int dim) { return Bmoment(i, dim); }
+    double getBMoment(uint i) { return Bmoment[i]; }
 
     // returns the vectors with the integration points (x, y) over the object's element, following the moments organization
     // Assuming: points = getIntegrationPoints(); then
     // points(i, 0) == x i-th coordinate
     // points(i, 1) == y i-th coordinate
-    arma::mat getIntegrationPoints();
+    TPZFMatrix<REAL> getIntegrationPoints();
 
     // compute the b-moments using the values already assigned in the object
-    arma::mat &computeMoments() final;
+    TPZVec<REAL> &computeMoments() final;
 };

@@ -6,12 +6,12 @@ BMass2DQuad::BMass2DQuad(uint q, uint n, Element<Element_t::QuadrilateralEl> con
     : BMass(q, n), BMoment2DQuad(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = LEN(n);
-    Matrix.set_size(lenMass, lenMass);
+    Matrix.Resize(lenMass, lenMass);
 }
 
 BMass2DQuad::BMass2DQuad(const BMass2DQuad &cp)
     : BMass(cp.BMass::q, cp.BMass::n),
-    BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element, cp.nb_Array),
+    BMoment2DQuad(cp.BMoment2DQuad::q, cp.BMoment2DQuad::n, cp.element),
     perm(cp.BMass::n, element.getIndexVector())
 {
     lenMass = cp.lenMass;
@@ -47,7 +47,7 @@ void BMass2DQuad::computeMatrix()
     uint n = BMass::n;
     computeMoments();
 
-    double Const = 1.0 / (BinomialMat.at(n, n) * BinomialMat.at(n, n)); // constant due to integration
+    double Const = 1.0 / (BinomialMat(n, n) * BinomialMat(n, n)); // constant due to integration
 
     // since it is a simple tensor product, this is just like in the 1D case
     // except for indexing
@@ -60,10 +60,10 @@ void BMass2DQuad::computeMatrix()
             {
                 for (uint b2 = 0; b2 <= n; b2++)
                 {
-                    double w = Const * BinomialMat.at(a1, b1) * BinomialMat.at(a2, b2);
-                    w *= (BinomialMat.at(n - a1, n - b1) * BinomialMat.at(n - a2, n - b2));
+                    double w = Const * BinomialMat(a1, b1) * BinomialMat(a2, b2);
+                    w *= (BinomialMat(n - a1, n - b1) * BinomialMat(n - a2, n - b2));
                     uint j = perm.getPermutationVector()[b1 * n + b2];
-                    Matrix.at(i, j) = w * getBMoment(a1 + b1, a2 + b2, 0);
+                    Matrix(i, j) = w * getBMoment(a1 + b1, a2 + b2, 0);
                 }
             }
         }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Elements.h"
-#include <armadillo>
 
 // abstract class
 template <Element_t EL>

@@ -49,7 +49,7 @@ int main ()
 
 	// from this point on you can delete the BLoad1D object if managing memory dinamically
 
-    // prints the vector using the built-in armadillo output
+    // prints the vector using the built-in output
     loadVector.print("Load Vector");
 }
 

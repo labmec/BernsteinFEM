@@ -6,12 +6,12 @@
 #define CEL Element_t::CubeEl
 
 template <>
-arma::mat Element<CEL>::jac(3, 3, arma::fill::zeros);
+TPZFMatrix<REAL> Element<CEL>::jac(3, 3, 0);
 
 template <>
 Element<CEL>::Element()
-	: vertices(8, 3, arma::fill::none),
-	coordinates(1, 3, arma::fill::none),
+	: vertices(8, 3),
+	coordinates(1, 3),
 	idxVec({ 0,1,2,3,4,5 }),
 	perm(idxVec)
 {
@@ -26,13 +26,13 @@ Element<CEL>::Element()
 }
 
 template <>
-Element<CEL>::Element(const arma::mat &v)
-	: vertices(8, 3, arma::fill::none),
-	coordinates(1, 3, arma::fill::none),
+Element<CEL>::Element(const TPZFMatrix<REAL> &v)
+	: vertices(8, 3),
+	coordinates(1, 3),
 	idxVec({ 0,1,2,3,4,5 }),
 	perm(idxVec)
 {
-    if (v.n_rows < 8 || v.n_cols < 3)
+    if (v.Rows() < 8 || v.Cols() < 3)
     {
         throw std::invalid_argument("CubeEl vertices constructor: not enough size in argument (at least 8x3)");
     }
@@ -45,7 +45,7 @@ Element<CEL>::Element(const arma::mat &v)
 template <>
 Element<CEL>::Element(const Element<CEL> &cp)
 	: vertices(cp.vertices),
-	coordinates(1, 3, arma::fill::none),
+	coordinates(1, 3),
 	idxVec(cp.idxVec),
 	perm(cp.perm)
 {}
@@ -62,7 +62,7 @@ uint Element<CEL>::position(const std::vector<uint> &point)
 
 // implemented using nodal shape function
 template <>
-const arma::mat &Element<CEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)
+const TPZFMatrix<REAL> &Element<CEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     double xi_ = xi(0);
     double eta_ = xi(1);
@@ -78,12 +78,12 @@ const arma::mat &Element<CEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
         double N7 = (1.0 - xi_) * eta_ * z_;
 
 
-        coordinates(0) = N0 * vertices.at(0, 0) + N1 * vertices.at(1, 0) + N2 * vertices.at(2, 0) + N3 * vertices.at(3, 0) +
-            N4 * vertices.at(4, 0) + N5 * vertices.at(5, 0) + N6 * vertices.at(6, 0) + N7 * vertices.at(7, 0);
-        coordinates(1) = N0 * vertices.at(0, 1) + N1 * vertices.at(1, 1) + N2 * vertices.at(2, 1) + N3 * vertices.at(3, 1) +
-            N4 * vertices.at(4, 1) + N5 * vertices.at(5, 1) + N6 * vertices.at(6, 1) + N7 * vertices.at(7, 1);
-        coordinates(2) = N0 * vertices.at(0, 2) + N1 * vertices.at(1, 2) + N2 * vertices.at(2, 2) + N3 * vertices.at(3, 2) +
-            N4 * vertices.at(4, 2) + N5 * vertices.at(5, 2) + N6 * vertices.at(6, 2) + N7 * vertices.at(7, 2);
+        coordinates(0) = N0 * vertices(0, 0) + N1 * vertices(1, 0) + N2 * vertices(2, 0) + N3 * vertices(3, 0) +
+            N4 * vertices(4, 0) + N5 * vertices(5, 0) + N6 * vertices(6, 0) + N7 * vertices(7, 0);
+        coordinates(1) = N0 * vertices(0, 1) + N1 * vertices(1, 1) + N2 * vertices(2, 1) + N3 * vertices(3, 1) +
+            N4 * vertices(4, 1) + N5 * vertices(5, 1) + N6 * vertices(6, 1) + N7 * vertices(7, 1);
+        coordinates(2) = N0 * vertices(0, 2) + N1 * vertices(1, 2) + N2 * vertices(2, 2) + N3 * vertices(3, 2) +
+            N4 * vertices(4, 2) + N5 * vertices(5, 2) + N6 * vertices(6, 2) + N7 * vertices(7, 2);
     }
 
     // TODO: implement jacobian

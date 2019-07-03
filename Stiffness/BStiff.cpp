@@ -1,8 +1,8 @@
 #include "StiffM.h"
 
 // default constructor
-BStiff::BStiff(uint q, uint n)
-    : Matrix(), BinomialMat(n + 1, n + 1, arma::fill::ones)
+BStiff::BStiff(uint32_t q, uint32_t n)
+    : Matrix(), BinomialMat(n + 1, n + 1)
 {
     this->q = q;
     this->n = n;
@@ -38,29 +38,34 @@ BStiff &BStiff::operator=(const BStiff &cp)
 
 void BStiff::computeBinomials()
 {
-    for (uint k = 1; k < lenBinomialMat; k++)
+    for (uint32_t k = 1; k < lenBinomialMat; k++)
     {
-        for (uint l = 1; l < lenBinomialMat; l++)
+        for (uint32_t l = 1; l < lenBinomialMat; l++)
         {
-            BinomialMat.at(k, l) = BinomialMat.at(k, l - 1) + BinomialMat.at(k - 1, l);
+            BinomialMat(k, l) = BinomialMat(k, l - 1) + BinomialMat(k - 1, l);
         }
     }
 }
 
 // returns the length of the matrix
-uint BStiff::length()
+uint32_t BStiff::length()
 {
     return lenStiff;
 }
 
+uint32_t BStiff::getPOrder()
+{
+	return n;
+}
+
 // returns the value of Matrix[i][j]
-double BStiff::getMatrixValue(uint i, uint j)
+double BStiff::getMatrixValue(uint32_t i, uint32_t j)
 {
     return Matrix(i, j);
 }
 
 // returns the matrix
-const arma::mat &BStiff::getMatrix()
+const TPZFMatrix<REAL> &BStiff::getMatrix()
 {
     return Matrix;
 }
@@ -70,5 +75,5 @@ const arma::mat &BStiff::getMatrix()
 // assign 0 to all elements of the matrix
 void BStiff::zero()
 {
-    Matrix.zeros();
+	Matrix.Zero();
 }

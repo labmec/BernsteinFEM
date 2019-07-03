@@ -3,12 +3,12 @@
 #define QEL Element_t::QuadrilateralEl
 
 template <>
-arma::mat Element<QEL>::jac(2, 2, arma::fill::zeros);
+TPZFMatrix<REAL> Element<QEL>::jac(2, 2, 0);
 
 template <>
 Element<QEL>::Element()
-    : vertices(4, 2, arma::fill::none),
-    coordinates(1, 2, arma::fill::none),
+    : vertices(4, 2),
+    coordinates(1, 2),
 	idxVec({ 0, 1, 2, 3 }),
     perm(idxVec)
 {
@@ -19,13 +19,13 @@ Element<QEL>::Element()
 }
 
 template <>
-Element<QEL>::Element(const arma::mat &v)
-    : vertices(4, 2, arma::fill::none),
-    coordinates(1, 2, arma::fill::none),
+Element<QEL>::Element(const TPZFMatrix<REAL> &v)
+    : vertices(4, 2),
+    coordinates(1, 2),
 	idxVec({ 0, 1, 2, 3 }),
     perm(idxVec)
 {
-    if (v.n_rows < 4 || v.n_cols < 2)
+    if (v.Rows() < 4 || v.Cols() < 2)
     {
         throw std::invalid_argument("QuadrilateralEl vertices constructor: not enough size in argument (at least 4x2)");
     }
@@ -45,7 +45,7 @@ Element<QEL>::Element(const arma::mat &v)
 template <>
 Element<QEL>::Element(const Element<QEL> &cp)
 	: vertices(cp.vertices),
-	coordinates(1, 2, arma::fill::none),
+	coordinates(1, 2),
 	idxVec(cp.idxVec),
 	perm(cp.perm)
 {}
@@ -62,7 +62,7 @@ uint Element<QEL>::position(const std::vector<uint> &point)
 
 // implemented using nodal shape function
 template <>
-const arma::mat &Element<QEL>::mapToElement(const arma::mat &xi, arma::mat &jacobian)
+const TPZFMatrix<REAL> &Element<QEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     double xi_ = xi(0);
     double eta_ = xi(1);
@@ -72,14 +72,14 @@ const arma::mat &Element<QEL>::mapToElement(const arma::mat &xi, arma::mat &jaco
         double N2 = xi_ * eta_;
         double N3 = (1.0 - xi_) * eta_;
 
-        coordinates(0) = N0 * vertices.at(0, 0) + N1 * vertices.at(1, 0) + N2 * vertices.at(2, 0) + N3 * vertices.at(3, 0);
-        coordinates(1) = N0 * vertices.at(0, 1) + N1 * vertices.at(1, 1) + N2 * vertices.at(2, 1) + N3 * vertices.at(3, 1);
+        coordinates(0) = N0 * vertices(0, 0) + N1 * vertices(1, 0) + N2 * vertices(2, 0) + N3 * vertices(3, 0);
+        coordinates(1) = N0 * vertices(0, 1) + N1 * vertices(1, 1) + N2 * vertices(2, 1) + N3 * vertices(3, 1);
     }
 
-    jacobian.at(0, 0) = (1.0 - eta_) * (vertices.at(1, 0) - vertices.at(0, 0)) + eta_ * (vertices.at(2, 0) - vertices.at(3, 0));
-    jacobian.at(0, 1) = (1.0 - xi_) * (vertices.at(3, 0) - vertices.at(0, 0)) + xi_ * (vertices.at(2, 0) - vertices.at(1, 0));
-    jacobian.at(1, 0) = (1.0 - eta_) * (vertices.at(1, 1) - vertices.at(0, 1)) + eta_ * (vertices.at(2, 1) - vertices.at(3, 1));
-    jacobian.at(1, 1) = (1.0 - xi_) * (vertices.at(3, 1) - vertices.at(0, 1)) + xi_ * (vertices.at(2, 1) - vertices.at(1, 1));
+    jacobian(0, 0) = (1.0 - eta_) * (vertices(1, 0) - vertices(0, 0)) + eta_ * (vertices(2, 0) - vertices(3, 0));
+    jacobian(0, 1) = (1.0 - xi_) * (vertices(3, 0) - vertices(0, 0)) + xi_ * (vertices(2, 0) - vertices(1, 0));
+    jacobian(1, 0) = (1.0 - eta_) * (vertices(1, 1) - vertices(0, 1)) + eta_ * (vertices(2, 1) - vertices(3, 1));
+    jacobian(1, 1) = (1.0 - xi_) * (vertices(3, 1) - vertices(0, 1)) + xi_ * (vertices(2, 1) - vertices(1, 1));
 
     return coordinates;
 }

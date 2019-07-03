@@ -12,11 +12,11 @@ BMass1D::BMass1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
     : BMass(q, n), BMoment1D(q, 2 * n, el), perm(n, element.getIndexVector())
 {
     lenMass = n + 1;
-    Matrix.set_size(lenMass, lenMass);
+    Matrix.Resize(lenMass, lenMass);
 }
 
 BMass1D::BMass1D(const BMass1D &cp)
-    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element, cp.nb_Array), perm(cp.perm)
+    : BMass(cp.BMass::q, cp.BMass::n), BMoment1D(cp.BMoment1D::q, cp.BMoment1D::n, cp.element), perm(cp.perm)
 {
     lenMass = cp.lenMass;
     Matrix = cp.Matrix;
@@ -51,16 +51,16 @@ void BMass1D::computeMatrix()
     uint n = BMass::n;
     computeMoments();
 
-    double Const = 1.0 / BinomialMat.at(n, n);
+    double Const = 1.0 / BinomialMat(n, n);
 
     for (uint i = 0; i < lenMass; i++)
     {
         uint I = perm.getPermutationVector()[i];
         for (uint j = 0; j < lenMass; j++)
         {
-            double binom = Const * BinomialMat.at(i, j) * BinomialMat.at(n - i, n - j);
+            double binom = Const * BinomialMat(i, j) * BinomialMat(n - i, n - j);
             uint J = perm.getPermutationVector()[j];
-            Matrix.at(I, J) = binom * Bmoment(element.position({i + j}));
+            Matrix(I, J) = binom * Bmoment[element.position({i + j})];
         }
     }
 }

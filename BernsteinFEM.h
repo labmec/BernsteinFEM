@@ -3,8 +3,6 @@
  * needed to work with this library
  *********************************************/
 
-#include <armadillo>
-
 #include "Moments.h"
 #include "MassM.h"
 #include "StiffM.h"

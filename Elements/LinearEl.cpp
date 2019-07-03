@@ -3,27 +3,27 @@
 #define LEL Element_t::LinearEl
 
 template <>
-arma::mat Element<LEL>::jac(1, 1, arma::fill::zeros);
+TPZFMatrix<REAL> Element<LEL>::jac(1, 1, 0);
 
 template <>
 Element<LEL>::Element()
-	: vertices(2, 1, arma::fill::none),
-	coordinates(1, 1, arma::fill::none),
-	idxVec({ 0,1 }),
-	perm(idxVec)
+    : vertices(2),
+      coordinates(1),
+      idxVec({0, 1}),
+      perm(idxVec)
 {
     vertices(0) = 0.0;
     vertices(1) = 1.0;
 }
 
 template <>
-Element<LEL>::Element(const arma::mat &v)
-	: vertices(2, 1, arma::fill::none),
-	coordinates(1, 1, arma::fill::none),
-	idxVec({ 0,1 }),
-	perm(idxVec)
+Element<LEL>::Element(const TPZFMatrix<REAL> &v)
+    : vertices(2),
+      coordinates(1),
+      idxVec({0, 1}),
+      perm(idxVec)
 {
-    if (vertices.n_rows < 2)
+    if (vertices.Rows() < 2)
     {
         throw std::invalid_argument("LinearEl vertices constructor: not enough size in argument (at least 2)");
     }
@@ -36,13 +36,14 @@ Element<LEL>::Element(const arma::mat &v)
 
 template <>
 Element<LEL>::Element(const Element<LEL> &cp)
-	: vertices(cp.vertices),
-	coordinates(1, 1, arma::fill::none),
-	idxVec(cp.idxVec),
-	perm(cp.perm)
-{}
+    : vertices(cp.vertices),
+      coordinates(1),
+      idxVec(cp.idxVec),
+      perm(cp.perm)
+{
+}
 
-template<>
+template <>
 uint Element<LEL>::position(const std::vector<uint> &point)
 {
     if (point.size() >= 1)
@@ -52,7 +53,7 @@ uint Element<LEL>::position(const std::vector<uint> &point)
 }
 
 template <>
-const arma::mat &Element<LEL>::mapToElement(const arma::mat &coordinates, arma::mat &jacobian)
+const TPZFMatrix<REAL> &Element<LEL>::mapToElement(const TPZFMatrix<REAL> &coordinates, TPZFMatrix<REAL> &jacobian)
 {
     try
     {

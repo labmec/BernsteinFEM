@@ -1,6 +1,5 @@
 #pragma once
 
-#include <armadillo>
 #include <stdint.h>
 #include "Moments.h"
 
