@@ -64,9 +64,6 @@ public:
     // returns number
     uint getLenCval();
 
-    // return the dimension of function Image (function is scalar valued by default)
-    uint getNbArray();
-
     // returns wether you will be using function values or function definition (true for function values)
     bool getFunctVal();
 
@@ -82,9 +79,6 @@ public:
 
     // sets polynomial order
     void setPOder(uint n);
-
-    // sets the dimension of function Image (function is scalar valued by default)
-    void setNbArray(uint nb_Array);
 
     void setFunctionValues(const TPZVec<REAL> &Cval);
 

@@ -3,7 +3,7 @@
 
 uint position_q(uint i, uint j, uint k, uint q) { return i * q * q + j * q + k; }
 
-REAL det3(TPZFMatrix<REAL> const& mat)
+REAL det3(TPZFMatrix<REAL> & mat)
 {
 	// compute determinant by Laplace formula
 	REAL det = 0;

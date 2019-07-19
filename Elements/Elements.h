@@ -31,7 +31,7 @@ class Element
 {
     TPZFMatrix<REAL> vertices;    // vertices of the element
     TPZFMatrix<REAL> coordinates; // coordinates object to return from 'mapElement'
-    TPZVec<uint32_t> idxVec;     // stores index for each vertex
+    TPZVec<uint64_t> idxVec;     // stores index for each vertex
     static TPZFMatrix<REAL> jac;  // matrix to store the values of the jacobian when no arguments are passed
     Permutation<EL> perm;         // permutation vector for positioning
 
@@ -41,10 +41,10 @@ public:
     Element();
 
     // constructor by the vertices of the element
-    Element(const TPZFMatrix<REAL> &vertices);
+    Element(TPZFMatrix<REAL> &vertices);
 
     // constructor by the vertices and indices of the vertices of the element
-    Element(const TPZFMatrix<REAL> &vertices, std::vector<uint> &indexVector) : vertices(vertices), idxVec(indexVector), perm(indexVector)
+    Element(TPZFMatrix<REAL> &vertices, TPZVec<uint64_t> &indexVector) : vertices(vertices), idxVec(indexVector), perm(indexVector)
     {
     }
 
@@ -59,33 +59,39 @@ public:
         return *this;
     }
 
-    std::vector<uint> &getIndexVector() { return idxVec; }
+    TPZVec<uint64_t> &getIndexVector() { return idxVec; }
 
-    void setPermutationPOrder(uint n)
+    void setPermutationPOrder(uint64_t n)
     {
         perm.setPOrder(n);
         perm.computePermVec();
     }
 
-    void setIndexVector(arma::ivec &idxVec)
+    void setIndexVector(TPZVec<uint64_t> &idxVec)
     {
         this->idxVec = idxVec;
         perm.setIndexVector(idxVec);
     }
 
     // returns the vertices of the element object
-    const arma::mat &getVertices() { return vertices; }
+    TPZFMatrix<REAL> &getVertices() { return vertices; }
 
     // get last jacobian matrix that was computed
-    static const arma::mat &getLastJacobian() { return jac; }
+    static TPZFMatrix<REAL> &getLastJacobian() { return jac; }
 
     // maps the specified point of the element
     // to the position in which it should be
     // in the vectors and matrices throughout the computations
-    unsigned position(const std::vector<unsigned> &point);
+    uint64_t position(const TPZVec<uint64_t> &point);
+
+	// same as above but with initializer_list
+	uint64_t position(const std::initializer_list<uint64_t> &point);
 
     // Maps the element from the matrix element
     // Given the coordinates in the master element in [0,1],
     // returns the corresponding coordinates in the element
-    const TPZFMatrix<REAL> &mapToElement(const TPZFMatrix<REAL> &coordinates, TPZFMatrix<REAL> &jacobian = jac);
+    TPZFMatrix<REAL> &mapToElement(TPZFMatrix<REAL> &coordinates, TPZFMatrix<REAL> &jacobian = jac);
+
+	// same as above but with initializer list
+	TPZFMatrix<REAL> &mapToElement(const std::initializer_list<REAL> &coordinates, TPZFMatrix<REAL> &jacobian = jac);
 };

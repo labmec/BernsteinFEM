@@ -19,7 +19,7 @@ Element<TEL>::Element()
 }
 
 template <>
-Element<TEL>::Element(const TPZFMatrix<REAL> &v)
+Element<TEL>::Element(TPZFMatrix<REAL> &v)
 	: vertices(3, 2),
 	coordinates(1, 2),
 	idxVec({ 0,1,2,3 }),
@@ -39,9 +39,9 @@ Element<TEL>::Element(const TPZFMatrix<REAL> &v)
 }
 
 template <>
-uint Element<TEL>::position(const std::vector<uint> &point)
+uint64_t Element<TEL>::position(const TPZVec<uint64_t> &point)
 {
-    uint n = perm.getPOrder();
+    uint64_t n = perm.getPOrder();
     if (point.size() >= 3)
         return perm.getPermutationVector()[ point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2] ];
     else
@@ -59,7 +59,7 @@ Element<TEL>::Element(const Element<TEL> &cp)
 
 // Duffy Transform
 template <>
-const TPZFMatrix<REAL> &Element<TEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
+TPZFMatrix<REAL> &Element<TEL>::mapToElement(TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     try 
     {

@@ -19,7 +19,7 @@ Element<QEL>::Element()
 }
 
 template <>
-Element<QEL>::Element(const TPZFMatrix<REAL> &v)
+Element<QEL>::Element(TPZFMatrix<REAL> &v)
     : vertices(4, 2),
     coordinates(1, 2),
 	idxVec({ 0, 1, 2, 3 }),
@@ -51,9 +51,9 @@ Element<QEL>::Element(const Element<QEL> &cp)
 {}
 
 template <>
-uint Element<QEL>::position(const std::vector<uint> &point)
+uint64_t Element<QEL>::position(const TPZVec<uint64_t> &point)
 {
-    uint n = perm.getPOrder();
+    uint64_t n = perm.getPOrder();
     if (point.size() >= 2)
         return perm.getPermutationVector()[ point[0] * (n + 1) + point[1] ];
     else
@@ -62,7 +62,7 @@ uint Element<QEL>::position(const std::vector<uint> &point)
 
 // implemented using nodal shape function
 template <>
-const TPZFMatrix<REAL> &Element<QEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
+TPZFMatrix<REAL> &Element<QEL>::mapToElement(TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     double xi_ = xi(0);
     double eta_ = xi(1);
@@ -82,4 +82,29 @@ const TPZFMatrix<REAL> &Element<QEL>::mapToElement(const TPZFMatrix<REAL> &xi, T
     jacobian(1, 1) = (1.0 - xi_) * (vertices(3, 1) - vertices(0, 1)) + xi_ * (vertices(2, 1) - vertices(1, 1));
 
     return coordinates;
+}
+
+template <>
+TPZFMatrix<REAL>& Element<QEL>::mapToElement(const std::initializer_list<REAL>& xi, TPZFMatrix<REAL>& jacobian)
+{
+	auto it = xi.begin();
+
+	double xi_ = *it;
+	double eta_ = *(++it);
+	{
+		double N0 = (1.0 - xi_) * (1.0 - eta_);
+		double N1 = xi_ * (1.0 - eta_);
+		double N2 = xi_ * eta_;
+		double N3 = (1.0 - xi_) * eta_;
+
+		coordinates(0) = N0 * vertices(0, 0) + N1 * vertices(1, 0) + N2 * vertices(2, 0) + N3 * vertices(3, 0);
+		coordinates(1) = N0 * vertices(0, 1) + N1 * vertices(1, 1) + N2 * vertices(2, 1) + N3 * vertices(3, 1);
+	}
+
+	jacobian(0, 0) = (1.0 - eta_) * (vertices(1, 0) - vertices(0, 0)) + eta_ * (vertices(2, 0) - vertices(3, 0));
+	jacobian(0, 1) = (1.0 - xi_) * (vertices(3, 0) - vertices(0, 0)) + xi_ * (vertices(2, 0) - vertices(1, 0));
+	jacobian(1, 0) = (1.0 - eta_) * (vertices(1, 1) - vertices(0, 1)) + eta_ * (vertices(2, 1) - vertices(3, 1));
+	jacobian(1, 1) = (1.0 - xi_) * (vertices(3, 1) - vertices(0, 1)) + xi_ * (vertices(2, 1) - vertices(1, 1));
+
+	return coordinates;
 }

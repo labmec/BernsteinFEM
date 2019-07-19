@@ -16,7 +16,7 @@ using std::vector;
 uint position_q(uint i, uint j, uint q) { return i * q + j; }
 // jacobian determinant of Duffy transform is a multiple of the area of the triangle
 double Area2d(double v1[2], double v2[2], double v3[2]);
-double Area2d(const TPZFMatrix<REAL> &vertices);
+double Area2d(TPZFMatrix<REAL> &vertices);
 
 BMoment2DTri::BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element)
     : BMoment(q, n, element),
@@ -197,7 +197,7 @@ double Area2d(double v1[2], double v2[2], double v3[2])
 }
 
 // computes area of triangle defined by vertices
-double Area2d(const TPZFMatrix<REAL> &vertices)
+double Area2d(TPZFMatrix<REAL> &vertices)
 {
     double x1 = vertices(0, 0);
     double y1 = vertices(0, 1);

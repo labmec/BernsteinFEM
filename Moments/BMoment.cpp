@@ -8,7 +8,6 @@ BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element)
 {
     this->q = q;
     this->n = n;
-    this->nb_Array = nb_Array;
     this->element.setPermutationPOrder(n);
 }
 
@@ -19,7 +18,6 @@ BMoment<_s, EL>::BMoment(const BMoment<_s, EL> &cp)
 {
     this->q = cp.q;
     this->n = cp.n;
-    this->nb_Array = cp.nb_Array;
     this->element.setPermutationPOrder(n);
 }
 
@@ -31,7 +29,6 @@ BMoment<_s, EL> &BMoment<_s, EL>::operator=(const BMoment &cp)
     {
         this->q = cp.q;
         this->n = cp.n;
-        this->nb_Array = cp.nb_Array;
     }
     return *this;
 }
@@ -57,10 +54,6 @@ uint BMoment<_s, EL>::getLenMoments() { return lenMoments; }
 template <typename _s, Element_t EL>
 uint BMoment<_s, EL>::getLenCval() { return lenCval; }
 
-// return the dimension of function Image (function is scalar valued by default)
-template <typename _s, Element_t EL>
-uint BMoment<_s, EL>::getNbArray() { return nb_Array; }
-
 // returns wether you will be using function values or function definition (true for function values)
 template <typename _s, Element_t EL>
 bool BMoment<_s, EL>::getFunctVal() { return functVal; }
@@ -82,15 +75,6 @@ void BMoment<_s, EL>::setNumIntegrationPoints(uint q) { this->q = q; }
 template <typename _s, Element_t EL>
 void BMoment<_s, EL>::setPOder(uint n) { this->n = n; }
 
-// sets the dimension of function Image (function is scalar valued by default)
-template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setNbArray(uint nb_Array)
-{
-    this->nb_Array = nb_Array;
-    Bmoment.resize(lenMoments, nb_Array);
-    Cval.resize(lenCval, nb_Array);
-}
-
 template <typename _s, Element_t EL>
 void BMoment<_s, EL>::setFunctionValues(const TPZVec<REAL> &Cval)
 {
@@ -105,7 +89,7 @@ template <typename _s, Element_t EL>
 void BMoment<_s, EL>::setElement(Element<EL> element) { this->element = element; }
 
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::zero() { Bmoment.zeros(); }
+void BMoment<_s, EL>::zero() { for (int i = 0; i < Bmoment.size(); Bmoment[i++] = 0); }
 
 template <typename _s, Element_t EL>
 void BMoment<_s, EL>::useFunctionDef() { functVal = false; }

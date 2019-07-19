@@ -17,7 +17,7 @@ Element<LEL>::Element()
 }
 
 template <>
-Element<LEL>::Element(const TPZFMatrix<REAL> &v)
+Element<LEL>::Element(TPZFMatrix<REAL> &v)
     : vertices(2),
       coordinates(1),
       idxVec({0, 1}),
@@ -44,7 +44,7 @@ Element<LEL>::Element(const Element<LEL> &cp)
 }
 
 template <>
-uint Element<LEL>::position(const std::vector<uint> &point)
+uint64_t Element<LEL>::position(const TPZVec<uint64_t> &point)
 {
     if (point.size() >= 1)
         return perm.getPermutationVector()[point[0]];
@@ -52,8 +52,17 @@ uint Element<LEL>::position(const std::vector<uint> &point)
         throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
 }
 
+template<>
+uint64_t Element<LEL>::position(const std::initializer_list<uint64_t>& point)
+{
+	if (point.size() >= 1)
+		return perm.getPermutationVector()[*point.begin()];
+	else
+		throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
+}
+
 template <>
-const TPZFMatrix<REAL> &Element<LEL>::mapToElement(const TPZFMatrix<REAL> &coordinates, TPZFMatrix<REAL> &jacobian)
+TPZFMatrix<REAL> &Element<LEL>::mapToElement(TPZFMatrix<REAL> &coordinates, TPZFMatrix<REAL> &jacobian)
 {
     try
     {
@@ -67,4 +76,22 @@ const TPZFMatrix<REAL> &Element<LEL>::mapToElement(const TPZFMatrix<REAL> &coord
     }
 
     return coordinates;
+}
+
+template <>
+TPZFMatrix<REAL>& Element<LEL>::mapToElement(const std::initializer_list<REAL>& coord, TPZFMatrix<REAL>& jacobian)
+{
+	try
+	{
+		auto it = coord.begin();
+		this->coordinates(0) = (*it + vertices(0)) * (vertices(1) - vertices(0));
+		jacobian(0) = vertices(1) - vertices(0);
+	}
+	catch (std::logic_error& e)
+	{
+		std::cerr << e.what() << std::endl;
+		std::cerr << "invalid arguments (probably the size) in 'mapToElement' method call" << std::endl;
+	}
+
+	return coordinates;
 }

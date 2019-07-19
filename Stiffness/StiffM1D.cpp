@@ -14,9 +14,9 @@ BStiff1D::~BStiff1D()
 REAL BStiff1D::grad(int k, int l)
 {
 	if (k == l)
-		return element.getVertices()[0] - element.getVertices()[1]; // 1.0 (when default element)
+		return element.getVertices()(0) - element.getVertices()(1); // 1.0 (when default element)
 	else
-		return element.getVertices()[1] - element.getVertices()[0]; // -1.0
+		return element.getVertices()(1) - element.getVertices()(0); // -1.0
 }
 
 void BStiff1D::computeMatrix()

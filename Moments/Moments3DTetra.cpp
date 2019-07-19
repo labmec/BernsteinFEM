@@ -218,5 +218,6 @@ TPZVec<REAL> &BMoment3DTetra::computeMoments()
 // computes volume of tetrahedron defined by vertices v
 REAL Volume(TPZFMatrix<REAL> const &v)
 {
+	return 0;
     // TODO: calc new volume
 }

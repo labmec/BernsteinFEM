@@ -1,27 +1,23 @@
 #include "Permutations.h"
-#include <numeric>
-#include <vector>
-
-using std::vector;
 
 // generic implementations
 
 template <Element_t El> 
 Permutation<El>::Permutation() 
 {
-	this->idxVec = new std::vector({ 0,1,2,3 })); 
+	this->idxVec = new TPZVec<uint64_t>({ 0,1,2,3 }); 
 	idxVecInstantiated = true;
 }
 
 template <Element_t El>
-Permutation<El>::Permutation(const uint &n, std::vector<uint> &idxVec) : n(n), idxVec(&idxVec)
+Permutation<El>::Permutation(const uint64_t &n, TPZVec<uint64_t> &idxVec) : n(n), idxVec(&idxVec)
 {
     computePermVec();
 	idxVecInstantiated = false;
 }
 
 template <Element_t El>
-Permutation<El>::Permutation(vector<uint> &idxVec) : idxVec(&idxVec), idxVecInstantiated(false) { }
+Permutation<El>::Permutation(TPZVec<uint64_t> &idxVec) : idxVec(&idxVec), idxVecInstantiated(false) { }
 
 template <Element_t El>
 Permutation<El>::Permutation(Permutation const &cp) : n(cp.n), idxVec(cp.idxVec), idxVecInstantiated(false) { }
@@ -36,25 +32,25 @@ Permutation<El>::~Permutation()
 }
 
 template <Element_t El>
-uint Permutation<El>::getPOrder()
+uint64_t Permutation<El>::getPOrder()
 {
     return n;
 }
 
 template <Element_t El>
-vector<uint> &Permutation<El>::getIndexVector()
+TPZVec<uint64_t> &Permutation<El>::getIndexVector()
 {
     return *idxVec;
 }
 
 template <Element_t El>
-std::vector<uint> &Permutation<El>::getPermutationVector()
+TPZVec<uint64_t> &Permutation<El>::getPermutationVector()
 {
     return permutationVec;
 }
 
 template <Element_t El>
-std::vector<uint> &Permutation<El>::getInvPermutationVec()
+TPZVec<uint64_t> &Permutation<El>::getInvPermutationVec()
 {
     if (!i_pVecComputed)
         computeInvPermVec();
@@ -63,7 +59,7 @@ std::vector<uint> &Permutation<El>::getInvPermutationVec()
 }
 
 template <Element_t El>
-void Permutation<El>::setPOrder(uint n)
+void Permutation<El>::setPOrder(uint64_t n)
 {
     if (this->n != n)
     {
@@ -74,7 +70,7 @@ void Permutation<El>::setPOrder(uint n)
 }
 
 template <Element_t El>
-void Permutation<El>::setIndexVector(vector<uint> &idxVec)
+void Permutation<El>::setIndexVector(TPZVec<uint64_t> &idxVec)
 {
     this->idxVec = &idxVec;
 }
@@ -97,7 +93,7 @@ void Permutation<Element_t::LinearEl>::computePermVec()
 {
     permutationVec.resize(n + 1);
 
-    std::iota(permutationVec.begin(), permutationVec.end(), 0);
+	for (unsigned i = 0; i < permutationVec.size(); permutationVec[i] = i++);
 
 	pVecComputed = true;
 }
@@ -107,7 +103,7 @@ void Permutation<Element_t::LinearEl>::computeInvPermVec()
 {
     inversePermVec.resize(n + 1);
 
-    std::iota(inversePermVec.begin(), inversePermVec.end(), 0);
+	for (unsigned i = 0; i < permutationVec.size(); permutationVec[i] = i++);
 
 	i_pVecComputed = true;
 }
@@ -119,7 +115,7 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
 {
     permutationVec.resize((n + 1) * (n + 1));
 
-    uint elAdded = 0;
+    uint64_t elAdded = 0;
 
     permutationVec[0] = 0;           // v0
     permutationVec[n * (n + 1)] = 1; // v1
@@ -129,16 +125,14 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
 
     // L0
     // TODO: check orientation
-    if (idxVec->at(0) < idxVec->at(1))
+    if (idxVec->operator[](0) < idxVec->operator[](1))
     {
-        for (uint a1 = 1; a1 < n; a1++)
+        for (uint64_t a1 = 1; a1 < n; a1++)
         {
             permutationVec[a1 * (n + 1)] = elAdded++;
         }
-    } else
-    {
-	#pragma ivdep
-        for (uint a1 = n - 1; a1 > 0; a1--)
+    } else {
+        for (uint64_t a1 = n - 1; a1 > 0; a1--)
         {
             permutationVec[a1 * (n + 1)] = elAdded++;
         }
@@ -147,19 +141,17 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
 
     // L1
     // TODO: check orientation
-    if (idxVec->at(1) < idxVec->at(2))
+    if (idxVec->operator[](1) < idxVec->operator[](2))
     {
-        for (uint a1 = 1; a1 < n; a1++)
+        for (uint64_t a1 = 1; a1 < n; a1++)
         {
-            uint a2 = n - a1;
+            uint64_t a2 = n - a1;
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
-    } else
-    {
-	#pragma ivdep
-        for (uint a1 = n - 1; a1 > 0; a1--)
+    } else {
+        for (uint64_t a1 = n - 1; a1 > 0; a1--)
         {
-            uint a2 = n - a1;
+            uint64_t a2 = n - a1;
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
     }
@@ -167,16 +159,14 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
 
     // L2
     // TODO: check orientation
-    if (idxVec->at(2) < idxVec->at(0))
+    if (idxVec->operator[](2) < idxVec->operator[](0))
     {
-        for (uint a2 = 1; a2 < n; a2++)
+        for (uint64_t a2 = 1; a2 < n; a2++)
         {
             permutationVec[a2] = elAdded++;
         }
-    } else
-    {
-	#pragma ivdep
-        for (uint a2 = n - 1; a2 > 0; a2--)
+    } else {
+        for (uint64_t a2 = n - 1; a2 > 0; a2--)
         {
             permutationVec[a2] = elAdded++;
         }
@@ -184,9 +174,9 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
     
 
     // Middle points
-    for (uint a1 = 1; a1 < n; a1++)
+    for (uint64_t a1 = 1; a1 < n; a1++)
     {
-        for (uint a2 = 1; a2 < n - a1; a2++)
+        for (uint64_t a2 = 1; a2 < n - a1; a2++)
         {
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
@@ -197,7 +187,7 @@ void Permutation<Element_t::TriangularEl>::computePermVec()
     // std::cout << "Number of elements that were not computed for permutation: " << ((n + 1) * (n + 2) * 0.5) - elAdded << std::endl;
 
     // std::cout << "Permutation vector:" << std::endl;
-    // for (uint i : permutationVec)
+    // for (uint64_t i : permutationVec)
     // {
     //     std::cout << i << " ";
     // }
@@ -209,7 +199,7 @@ void Permutation<Element_t::TriangularEl>::computeInvPermVec()
 {
     inversePermVec.resize((n + 1) * (n + 2) * 0.5);
 
-    // uint elAdded = 0;
+    // uint64_t elAdded = 0;
 }
 
 // QuadrilateralEl
@@ -230,16 +220,15 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
 
     // L0
     // TODO: check orientation
-    if (idxVec->at(0) < idxVec->at(1))
+    if (idxVec->operator[](0) < idxVec->operator[](1))
     {
-        for (uint i = 1; i < n; i++)
+        for (uint64_t i = 1; i < n; i++)
         {
             // permutationVec[i + 1] = 4 + i;
             permutationVec[i] = elAdded++;
         }
-    } else
-    {
-        for (uint i = n - 1; i > 0; i--)
+    } else {
+        for (uint64_t i = n - 1; i > 0; i--)
         {
             permutationVec[i] = elAdded++;
         }
@@ -248,16 +237,14 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
 
     // L1
     // TODO: check orientation
-    if (idxVec->at(1) < idxVec->at(2))
+    if (idxVec->operator[](1) < idxVec->operator[](2))
     {
-        for (uint i = 2; i <= n; i++)
+        for (uint64_t i = 2; i <= n; i++)
         {
             permutationVec[i * (n + 1) - 1] = elAdded++;
         }
-    } else
-    {
-	#pragma ivdep
-        for (uint i = n; i > 2; i--)
+    } else {
+        for (uint64_t i = n; i > 2; i--)
         {
             permutationVec[i * (n + 1) - 1] = elAdded++;
         }
@@ -266,16 +253,15 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
 
     // L2
     // TODO: check orientation
-    uint ini = (n + 1) * n;
-    if (idxVec->at(2) >= idxVec->at(3))
+    uint64_t ini = (n + 1) * n;
+    if (idxVec->operator[](2) >= idxVec->operator[](3))
     {
-        for (uint i = 1; i < n; i++)
+        for (uint64_t i = 1; i < n; i++)
         {
             permutationVec[ini + i] = elAdded++;
         }
-    } else
-    {
-        for (uint i = n - 1; i > 0; i--)
+    } else {
+        for (uint64_t i = n - 1; i > 0; i--)
         {
             permutationVec[ini + i] = elAdded++;
         }
@@ -284,16 +270,14 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
 
     // L3
     // TODO: check orientation
-    if (idxVec->at(3) >= idxVec->at(0))
+    if (idxVec->operator[](3) >= idxVec->operator[](0))
     {
-        for (uint i = 1; i < n; i++)
+        for (uint64_t i = 1; i < n; i++)
         {
             permutationVec[i * (n + 1)] = elAdded++;
         }
-    } else
-    {
-	#pragma ivdep
-        for (uint i = n - 1; i > 0; i--)
+    } else {
+        for (uint64_t i = n - 1; i > 0; i--)
         {
             permutationVec[i * (n + 1)] = elAdded++;
         }
@@ -301,9 +285,9 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
     
 
     // Middle points
-    for (uint a1 = 1; a1 < n; a1++)
+    for (uint64_t a1 = 1; a1 < n; a1++)
     {
-        for (uint a2 = 1; a2 < n; a2++)
+        for (uint64_t a2 = 1; a2 < n; a2++)
         {
             permutationVec[a1 * (n + 1) + a2] = elAdded++;
         }
@@ -314,7 +298,7 @@ void Permutation<Element_t::QuadrilateralEl>::computePermVec()
     // std::cout << "Number of elements that were not computed for permutation: " << permutationVec.size() - elAdded << std::endl;
 
     // std::cout << "Permutation vector:" << std::endl;
-    // for (uint i : permutationVec)
+    // for (uint64_t i : permutationVec)
     // {
     //     std::cout << i << " ";
     // }
@@ -331,6 +315,7 @@ void Permutation<Element_t::QuadrilateralEl>::computeInvPermVec()
     inversePermVec[2] = (n + 1) * n + n;
     inversePermVec[3] = (n + 1) * n;
     // NOTE: not implemented because we are doing permutation in-place
+	// NOTE2: might be faster to not do in-place, although
 }
 
 template <>

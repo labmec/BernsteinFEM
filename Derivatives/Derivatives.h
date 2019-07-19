@@ -8,16 +8,16 @@ namespace QuadD
 // abstract class -- do not instantiate
 class QuadDerivative
 {
-  void compute_binomials(arma::Mat<int64_t> &BinomialMat, uint lenBinom);
+  void compute_binomials(TPZFMatrix<int64_t> &BinomialMat, uint lenBinom);
 
 protected:
   uint q;                          // number of quadrature nodes
   uint n;                          // polynomial order
   uint len;                        // length of the matrix
-  arma::mat Matrix;               // matrix containing coefficients
+  TPZFMatrix<REAL> Matrix;               // matrix containing coefficients
   uint lenBinom;                   // length of the binomial (Pascal) matrix
-  arma::Mat<int64_t> BinomialMat; // Pascal matrix
-  arma::vec Fval;                 // function values at quadrature nodes
+  TPZFMatrix<int64_t> BinomialMat; // Pascal matrix
+  TPZVec<REAL> Fval;                 // function values at quadrature nodes
 
 public:
   // constructor
@@ -27,20 +27,20 @@ public:
   uint Len() { return len; }
 
   // returns a reference to the Matrix
-  const arma::mat &getMatrix() { return Matrix; }
+  const TPZMatrix<REAL> &getMatrix() { return Matrix; }
 
   // returns the Matrix[i][j] value
   double getMatrixValue(uint i, uint j) { return Matrix(i, j); }
 
   // zeroes the Matrix
-  void Zero() { Matrix.zeros(); }
+  void Zero() { Matrix.Zero(); }
 
   // returns the integration points to the quadrilateral
-  arma::mat getIntegrationPoints();
+  TPZFMatrix<REAL> getIntegrationPoints();
 
-  void setFunction(const arma::vec &Fval);
+  void setFunction(const TPZVec<REAL> &Fval);
 
-  void compute_matrix(const arma::vec &Fval)
+  void compute_matrix(const TPZVec<REAL> &Fval)
   {
     setFunction(Fval);
     compute_matrix();
@@ -62,7 +62,7 @@ class dXi_dXi : private BMoment2DQuad, public QuadDerivative // does not inherit
 public:
   dXi_dXi(uint q, uint n);
 
-  void setFunction(const arma::vec &Fval)
+  void setFunction(const TPZVec<REAL> &Fval)
   {
     BMoment2DQuad::setFunctionValues(Fval);
   }
@@ -76,7 +76,7 @@ class dEta_dEta : private BMoment2DQuad, public QuadDerivative // does not inher
 public:
   dEta_dEta(uint q, uint n);
 
-  void setFunction(const arma::vec &Fval)
+  void setFunction(const TPZVec<REAL> &Fval)
   {
     BMoment2DQuad::setFunctionValues(Fval);
   }
@@ -90,7 +90,7 @@ class dXi_dEta : private BMoment2DQuad, public QuadDerivative
 public:
   dXi_dEta(uint q, uint n);
 
-  void setFunction(const arma::vec &Fval)
+  void setFunction(const TPZVec<REAL> &Fval)
   {
     BMoment2DQuad::setFunctionValues(Fval);
   }
@@ -118,11 +118,11 @@ public:
     QuadDerivative::Zero();
   }
 
-  void setFunction(const arma::vec &Fval);
+  void setFunction(const TPZVec<REAL> &Fval);
 
-  void setQuadrilateral(const arma::mat &vertices);
+  void setQuadrilateral(TPZFMatrix<REAL> &vertices);
 
-  arma::mat getIntegrationPoints();
+  TPZFMatrix<REAL> getIntegrationPoints();
 
   // compute matrix coefficients
   void compute_matrix();

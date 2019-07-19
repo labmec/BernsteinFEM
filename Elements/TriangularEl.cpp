@@ -18,7 +18,7 @@ Element<TEL>::Element()
 }
 
 template <>
-Element<TEL>::Element(const TPZFMatrix<REAL> &v)
+Element<TEL>::Element(TPZFMatrix<REAL> &v)
 	: vertices(3, 2),
 	coordinates(1, 2),
 	idxVec({ 0,1,2 }),
@@ -45,18 +45,32 @@ Element<TEL>::Element(const Element<TEL> &cp)
 {}
 
 template <>
-uint Element<TEL>::position(const std::vector<uint> &point)
+uint64_t Element<TEL>::position(const TPZVec<uint64_t> &point)
 {
-    int n = perm.getPOrder();
+    uint64_t n = perm.getPOrder();
     if (point.size() >= 2)
         return perm.getPermutationVector()[ point[0] * (n + 1) + point[1] ];
     else
         throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
 }
 
+template <>
+uint64_t Element<TEL>::position(const std::initializer_list<uint64_t>& point)
+{
+	uint64_t n = perm.getPOrder();
+	if (point.size() >= 2)
+	{
+		auto it = point.begin();
+		uint64_t a1 = *it, a2 = *(++it);
+		return perm.getPermutationVector()[a1 * (n + 1) + a2];
+	} else {
+		throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
+	}
+}
+
 // Duffy Transform
 template <>
-const TPZFMatrix<REAL> &Element<TEL>::mapToElement(const TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
+TPZFMatrix<REAL> &Element<TEL>::mapToElement(TPZFMatrix<REAL> &xi, TPZFMatrix<REAL> &jacobian)
 {
     try 
     {
@@ -69,7 +83,7 @@ const TPZFMatrix<REAL> &Element<TEL>::mapToElement(const TPZFMatrix<REAL> &xi, T
         coordinates(0) = b1 * vertices(0, 0) + b2 * vertices(1, 0) + b3 * vertices(2, 0);
         coordinates(1) = b1 * vertices(0, 1) + b2 * vertices(1, 1) + b3 * vertices(2, 1);
     }
-    catch(std::logic_error &e)
+    catch(std::logic_error)
     {
         throw std::invalid_argument("TriangularEl mapToElement first argument: not enough size (at least 2)");
     }
@@ -82,4 +96,32 @@ const TPZFMatrix<REAL> &Element<TEL>::mapToElement(const TPZFMatrix<REAL> &xi, T
     // TODO: implement jacobian
 
     return coordinates;
+}
+
+template <>
+TPZFMatrix<REAL>& Element<TEL>::mapToElement(const std::initializer_list<REAL> &xi, TPZFMatrix<REAL> &jacobian)
+{
+	try
+	{
+		auto it = xi.begin();
+		// treat these as barycentric coordinates
+		double b1 = *it;
+		double b2 = *(++it) * (1 - b1);
+		double b3 = 1 - b2 - b1;
+
+		// convert from barycentric coordinates to cartesian
+		coordinates(0) = b1 * vertices(0, 0) + b2 * vertices(1, 0) + b3 * vertices(2, 0);
+		coordinates(1) = b1 * vertices(0, 1) + b2 * vertices(1, 1) + b3 * vertices(2, 1);
+	}
+	catch (std::logic_error)
+	{
+		throw std::invalid_argument("TriangularEl mapToElement first argument: not enough size (at least 2)");
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << ", in method Element<TriangularEl>::mapToElement" << std::endl;
+		std::terminate();
+	}
+
+	return coordinates;
 }
