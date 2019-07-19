@@ -21,9 +21,9 @@ int main()
 	int polynomialOrder = 2;	// basis polynomial order
 	int numIntegrationPoints = 2 * polynomialOrder;	// number of integration points
 
-	TPZFMAtrix<REAL> vertices({ 0.0, 1.0 }); // vertices of the element (default: {0.0, 1.0})
+	TPZFMatrix<REAL> vertices({ 0.0, 1.0 }); // vertices of the element (default: {0.0, 1.0})
 
-	TPZVec<uint32_t> indexVector({ 0, 1 }); // vector with the indices of the element's vertices (default {0, 1})
+	TPZVec<uint64_t> indexVector({ 0, 1 }); // vector with the indices of the element's vertices (default {0, 1})
 
 	Element<Element_t::LinearEl> element(vertices, indexVector); // element in question
 
@@ -31,12 +31,12 @@ int main()
 
 	auto integrationPoints = MassMatrixComputer.getIntegrationPoints(); // gets the vector with integration points
 
-	TPZVec<REAL> functionValues(integrationPoints.n_rows);
+	TPZVec<REAL> functionValues(integrationPoints.Rows());
 	
 	// evaluate the function in integration points and store it in 'functionValues'
-	for (unsigned i = 0; i < functionValues.n_rows; i++)
+	for (unsigned i = 0; i < functionValues.size(); i++)
 	{
-		functionValues(i) = function(integrationPoints(i));
+		functionValues[i] = function(integrationPoints(i));
 	}
 
 	// pass the values to the MassMatrixComputer
