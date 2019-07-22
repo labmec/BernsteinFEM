@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 3.0.0)
+target_include_directories(pz PUBLIC 
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+						   $<INSTALL_INTERFACE:.> 
+						  )
 
 file(GLOB sources ./*.cpp)
 

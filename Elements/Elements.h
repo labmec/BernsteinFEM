@@ -11,10 +11,9 @@
 
 #pragma once
 
-#define REALdouble
-#include "Common/pzreal.h"   // REAL, STATE
-#include "Matrix/pzmatrix.h" // TPZFMatrix
-#include "Util/pzvec.h"      // TPZVec
+#include "pzreal.h"     // REAL, STATE
+#include "pzmatrix.h"   // TPZFMatrix
+#include "pzvec.h"      // TPZVec
 #include "Permutations.h"
 #include "Element_t.h"
 
@@ -31,7 +30,7 @@ class Element
 {
     TPZFMatrix<REAL> vertices;    // vertices of the element
     TPZFMatrix<REAL> coordinates; // coordinates object to return from 'mapElement'
-    TPZVec<uint64_t> idxVec;     // stores index for each vertex
+    TPZVec<uint64_t> idxVec;      // stores index for each vertex
     static TPZFMatrix<REAL> jac;  // matrix to store the values of the jacobian when no arguments are passed
     Permutation<EL> perm;         // permutation vector for positioning
 

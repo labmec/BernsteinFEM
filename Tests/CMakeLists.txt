@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+
 
 # this file specifies projects to test and run the routines defined by this library
 

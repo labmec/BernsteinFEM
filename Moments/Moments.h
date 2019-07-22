@@ -1,9 +1,8 @@
 #pragma once
 
-#define REALdouble // TODO: find a way to better define this
-#include "Common/pzreal.h"	 // REAL, STATE
-#include "Util/pzvec.h"		 // Vec
-#include "Matrix/pzmatrix.h" // TPZFMatrix
+#include "pzreal.h"	  // REAL, STATE
+#include "pzvec.h"	  // Vec
+#include "pzmatrix.h" // TPZFMatrix
 #include "Elements.h"
 #include <vector>
 #include <functional>
@@ -15,18 +14,18 @@ template <typename _signature, Element_t EL>
 class BMoment
 {
 protected:
-    uint q;                       // number of quadrature points in one dimension
-    uint n;                       // Bernstein polynomial order
-    uint lenMoments;              // length of the Bmoment vector
-    uint lenCval;                 // length of the Cval array
-    TPZVec<REAL> Bmoment;	      // vector where the b-moments are stored
-    TPZVec<REAL> Cval;            // vector where the function values are stored
-    bool fValSet = false;         // is true if the function value is set
-    bool fDefSet = false;         // is true if the function definition is set
-    bool functVal = true;         // determines if will use function value or function definition (use function value by default)
-    Element<EL> element;          // element to be used (either 1D, quadrilater, triangle, etc.)
-    TPZVec<REAL> intPoints;       // quadrature points
-    TPZVec<REAL> intWeights;      // quadrature weights
+    uint q;                  // number of quadrature points in one dimension
+    uint n;                  // Bernstein polynomial order
+    uint lenMoments;         // length of the Bmoment vector
+    uint lenCval;            // length of the Cval array
+    TPZVec<REAL> Bmoment;	 // vector where the b-moments are stored
+    TPZVec<REAL> Cval;       // vector where the function values are stored
+    bool fValSet = false;    // is true if the function value is set
+    bool fDefSet = false;    // is true if the function definition is set
+    bool functVal = true;    // determines if will use function value or function definition (use function value by default)
+    Element<EL> element;     // element to be used (either 1D, quadrilater, triangle, etc.)
+    TPZVec<REAL> intPoints;  // quadrature points
+    TPZVec<REAL> intWeights; // quadrature weights
 
     // function definition for the computation of the b-moments
     std::function<_signature> f;

@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 3.0.0)
+target_include_directories(pz PUBLIC 
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+						   $<INSTALL_INTERFACE:.> 
+						  )
 
 file(GLOB sources *.cpp)
 
-file(GLOB headers Elem.h)
+file(GLOB headers *.h)
 
 set(lib_sources ${lib_sources} ${sources} PARENT_SCOPE)
 set(lib_headers ${lib_headers} ${headers} PARENT_SCOPE)
