@@ -68,7 +68,7 @@ TPZFMatrix<REAL> BMoment1D::getIntegrationPoints()
 	TPZFMatrix<REAL> points(q);
 	for (uint i = 0; i < q; i++)
 	{
-		points(q) = intPoints[q];
+		points(i) = intPoints[i];
 	}
 	return points;
 }
