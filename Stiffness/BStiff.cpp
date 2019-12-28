@@ -38,6 +38,7 @@ BStiff &BStiff::operator=(const BStiff &cp)
 
 void BStiff::computeBinomials()
 {
+    BinomialMat(0, 0) = BinomialMat(0, 1) = BinomialMat(1, 0) = 1;
     for (uint32_t k = 1; k < lenBinomialMat; k++)
     {
         for (uint32_t l = 1; l < lenBinomialMat; l++)
