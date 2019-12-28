@@ -5,6 +5,7 @@ BStiff1D::BStiff1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
 {
     lenStiff = n + 1;
 	Matrix.Resize(lenStiff, lenStiff);
+    element.setPermutationPOrder(n);
 }
 
 BStiff1D::~BStiff1D()
