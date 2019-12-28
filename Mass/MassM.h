@@ -14,7 +14,7 @@ class BMass
     uint lenMass;                    // length of the mass matrix
     TPZFMatrix<REAL> Matrix;                // mass matrix
     uint lenBinomialMat;             // length of the binomial matrix
-    TPZFMatrix<uint64_t> BinomialMat; // Pascal Matrix
+    TPZFMatrix<int64_t> BinomialMat; // Pascal Matrix
 
     std::shared_ptr<PascalMat> pascalMat; // Pascal matrix auxiliary obj
 
