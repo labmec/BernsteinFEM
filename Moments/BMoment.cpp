@@ -69,7 +69,13 @@ const TPZVec<REAL> &BMoment<_s, EL>::getMoments() { return Bmoment; }
 // setters
 // sets number of integration points
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::setNumIntegrationPoints(uint q) { this->q = q; }
+void BMoment<_s, EL>::setNumIntegrationPoints(uint q)
+{
+	this->q = q;
+    this->intPoints.Resize(q);
+    this->intWeights.Resize(q);
+    assignQuadra();
+}
 
 // sets polynomial order
 template <typename _s, Element_t EL>
