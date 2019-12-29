@@ -49,7 +49,7 @@ uint64_t Element<LEL>::position(const TPZVec<uint64_t> &point)
     if (point.size() >= 1)
         return perm.getPermutationVector()[point[0]];
     else
-        throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
+        throw std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
 }
 
 template<>
@@ -58,7 +58,7 @@ uint64_t Element<LEL>::position(const std::initializer_list<uint64_t>& point)
 	if (point.size() >= 1)
 		return perm.getPermutationVector()[*point.begin()];
 	else
-		throw new std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
+		throw std::logic_error("Linear Element 'position' method called with too few vector elements\n\t1 required");
 }
 
 template <>
