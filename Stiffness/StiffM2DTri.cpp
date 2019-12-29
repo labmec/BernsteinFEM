@@ -5,10 +5,6 @@
 #endif
 #define LEN(n) ((n + 1) * (n + 1))
 
-// functions implemented in another file (Moments/Moments2DTri.cpp)
-extern double Area2d(double v1[2], double v2[2], double v3[2]);
-extern double Area2d(const TPZFMatrix<REAL> &vertices);
-
 BStiff2DTri::BStiff2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
     : BStiff(q, n), BMoment2DTri(q, 2 * (n - 1), el), normalMat(3, 2)
 {
@@ -69,9 +65,9 @@ void BStiff2DTri::computeMatrix()
     // transform_BmomentC_Stiff2d(Moments, normalMat);
 
     Matrix.Zero();
-    uint n = BStiff::n;
-    double area = Area2d(element.getVertices());
-    double Const = n * n / 4. / area / area / BinomialMat(n - 1, n - 1); // taking account of scaling between normals and gradients
+    const auto n = BStiff::n;
+    const auto area = triangle_area(element.getVertices());
+    const auto Const = n * n / 4. / area / area / BinomialMat(n - 1, n - 1); // taking account of scaling between normals and gradients
     
     // compute stiffness matrix
     for (uint a1 = 0; a1 < n; a1++)

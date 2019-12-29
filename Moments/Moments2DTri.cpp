@@ -15,8 +15,6 @@ using std::vector;
 // helps indexing quadrature points vectors
 uint position_q(uint i, uint j, uint q) { return i * q + j; }
 // jacobian determinant of Duffy transform is a multiple of the area of the triangle
-double Area2d(double v1[2], double v2[2], double v3[2]);
-double Area2d(TPZFMatrix<REAL> &vertices);
 
 BMoment2DTri::BMoment2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &element)
     : BMoment(q, n, element),
@@ -57,8 +55,6 @@ BMoment2DTri &BMoment2DTri::operator=(const BMoment2DTri &cp)
     }
     return *this;
 }
-
-BMoment2DTri::~BMoment2DTri() {}
 
 inline
 void BMoment2DTri::assignQuadra()
@@ -130,7 +126,7 @@ TPZVec<REAL> &BMoment2DTri::computeMoments()
         if (!functVal)
             loadFunctionDef();
 
-        const double scalingConst = Area2d(element.getVertices()); // NEED this scaling constant, as result depends on Area2d(v1,v2,v3)
+        const double scalingConst = triangle_area(element.getVertices()); // NEED this scaling constant, as result depends on triangle_area(v1,v2,v3)
         
         // convert first index (l=2)
         for (uint i = 0; i < q; i++)
@@ -181,30 +177,4 @@ TPZVec<REAL> &BMoment2DTri::computeMoments()
         }
     }
     return Bmoment;
-}
-
-// computes area of triangle < v1,v2,v3 >
-double Area2d(double v1[2], double v2[2], double v3[2])
-{
-    double x1 = v1[0];
-    double y1 = v1[1];
-    double x2 = v2[0];
-    double y2 = v2[1];
-    double x3 = v3[0];
-    double y3 = v3[1];
-
-    return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
-}
-
-// computes area of triangle defined by vertices
-double Area2d(TPZFMatrix<REAL> &vertices)
-{
-    double x1 = vertices(0, 0);
-    double y1 = vertices(0, 1);
-    double x2 = vertices(1, 0);
-    double y2 = vertices(1, 1);
-    double x3 = vertices(2, 0);
-    double y3 = vertices(2, 1);
-
-    return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
 }

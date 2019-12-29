@@ -9,9 +9,99 @@
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
-// Abstract class
+// auxiliary functions
+// computes area of triangle < v1,v2,v3 >
+inline
+double triangle_area(double v1[2], double v2[2], double v3[2])
+{
+	double x1 = v1[0];
+	double y1 = v1[1];
+	double x2 = v2[0];
+	double y2 = v2[1];
+	double x3 = v3[0];
+	double y3 = v3[1];
+
+	return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
+}
+
+// computes area of triangle defined by vertices
+inline
+double triangle_area(TPZFMatrix<REAL>& vertices)
+{
+	double x1 = vertices(0, 0);
+	double y1 = vertices(0, 1);
+	double x2 = vertices(1, 0);
+	double y2 = vertices(1, 1);
+	double x3 = vertices(2, 0);
+	double y3 = vertices(2, 1);
+
+	return fabs(x2 * y3 - x1 * y3 - x3 * y2 + x1 * y2 + x3 * y1 - x2 * y1) / 2.;
+}
+
+// BMoment Interface
+class BMomentT
+{
+protected:
+	// protected virtual methods
+	// assign the quadrature points and weights
+	virtual void assignQuadra() = 0;
+
+	// loads the function definition values at quadrature points into Cval
+	virtual void loadFunctionDef() = 0;
+
+public:
+	// getters
+	// returns number of integration points
+	virtual uint getNumIntegrationPoints() = 0;
+
+	// returns polynomial order
+	virtual uint getPOrder() = 0;
+
+	// returns moments array length
+	virtual uint getLenMoments() = 0;
+
+	// returns number
+	virtual uint getLenCval() = 0;
+
+	// returns wether you will be using function values or function definition (true for function values)
+	virtual bool getFunctVal() = 0;
+
+	// returns the whole Bmoment matrix
+	virtual const TPZVec<REAL>& getMoments() = 0;
+
+	// setters
+	// sets number of integration points
+	virtual void setNumIntegrationPoints(uint q) = 0;
+
+	// sets polynomial order
+	virtual void setPOder(uint n) = 0;
+
+    // copies values of the load function evaluated at the integration points into this object
+	virtual void setFunctionValues(const TPZVec<REAL>& Cval) = 0;
+
+    // moves vector pointer instead of copying the values
+    virtual void setFunctionValues(TPZVec<REAL> &&Cval) = 0;
+
+	// inline methods
+
+	virtual void zero() = 0;
+
+	virtual void useFunctionDef() = 0;
+
+	virtual void useFunctionValue() = 0;
+
+	virtual void computeMoments(const TPZVec<REAL>& Cval) = 0;
+
+	// returns the vector with the integration points over the object's element, following the moments organization
+	virtual TPZFMatrix<REAL> getIntegrationPoints() = 0; // TODO: consider changing this to const TPZVec<REAL> &
+
+	// computes the moments and store it in the Bmoment array, use getBMoment to get it
+	virtual TPZVec<REAL>& computeMoments() = 0;
+};
+
+// BMoment Abstract templated class
 template <typename _signature, Element_t EL>
-class BMoment
+class BMoment : public BMomentT
 {
 protected:
     uint q;                  // number of quadrature points in one dimension
@@ -48,7 +138,7 @@ public:
     BMoment &operator=(const BMoment &cp);
 
     // destructor
-    ~BMoment();
+    virtual ~BMoment() = default;
 
     // getters
     // returns number of integration points
@@ -125,7 +215,7 @@ public:
     BMoment1D &operator=(const BMoment1D &cp);
 
     // destructor
-    ~BMoment1D();
+    virtual ~BMoment1D() = default;
 
     // returns the value of the i-th indexed B-moment
     double getBMoment(uint i) { return Bmoment[i]; }
@@ -159,7 +249,7 @@ public:
     // copy assignment operator
     BMoment2DTri &operator=(const BMoment2DTri &cp);
 
-    ~BMoment2DTri();
+    virtual ~BMoment2DTri() = default;
 
     // get the i-th bmoment in the array, only use if you really know what you're doing
     double getBMoment(uint i) { return Bmoment[i]; }
@@ -200,6 +290,8 @@ public:
 
     // copy constructor
     BMoment2DQuad(const BMoment2DQuad &cp);
+
+	virtual ~BMoment2DQuad() = default;
 
     // copy assignment operator
     BMoment2DQuad &operator=(const BMoment2DQuad &cp);

@@ -40,8 +40,6 @@ BMoment1D &BMoment1D::operator=(const BMoment1D &cp)
     return *this;
 }
 
-BMoment1D::~BMoment1D() {}
-
 inline
 void BMoment1D::assignQuadra()
 {
