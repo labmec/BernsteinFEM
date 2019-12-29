@@ -38,10 +38,6 @@ BMass2DQuad &BMass2DQuad::operator=(const BMass2DQuad &cp)
     return *this;
 }
 
-BMass2DQuad::~BMass2DQuad()
-{
-}
-
 void BMass2DQuad::computeMatrix()
 {
     uint n = BMass::n;

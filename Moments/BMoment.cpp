@@ -4,20 +4,16 @@
 // constructors
 template <typename _s, Element_t EL>
 BMoment<_s, EL>::BMoment(uint q, uint n, const Element<EL> &element)
-    : Bmoment(), Cval(), element(element), f()
+	: q(q), n(n), lenMoments(0), lenCval(0), element(element), f()
 {
-    this->q = q;
-    this->n = n;
     this->element.setPermutationPOrder(n);
 }
 
 // copy constructor
 template <typename _s, Element_t EL>
 BMoment<_s, EL>::BMoment(const BMoment<_s, EL> &cp)
-    : Bmoment(cp.Bmoment), Cval(cp.Cval), element(cp.element), f(cp.f)
+    : q(cp.q), n(cp.n), lenMoments(cp.lenMoments), lenCval(cp.lenCval), Bmoment(cp.Bmoment), Cval(cp.Cval), element(cp.element), f(cp.f)
 {
-    this->q = cp.q;
-    this->n = cp.n;
     this->element.setPermutationPOrder(n);
 }
 
@@ -32,10 +28,6 @@ BMoment<_s, EL> &BMoment<_s, EL>::operator=(const BMoment &cp)
     }
     return *this;
 }
-
-// destructor
-template <typename _s, Element_t EL>
-BMoment<_s, EL>::~BMoment() {}
 
 // getters
 // returns number of integration points
@@ -89,13 +81,20 @@ void BMoment<_s, EL>::setFunctionValues(const TPZVec<REAL> &Cval)
 }
 
 template <typename _s, Element_t EL>
+void BMoment<_s, EL>::setFunctionValues(TPZVec<REAL> &&Cval)
+{
+    this->Cval = std::move(Cval);
+    fValSet = true;
+}
+
+template <typename _s, Element_t EL>
 void BMoment<_s, EL>::setFunctionDefinition(std::function<_s> f) { this->f = f; }
 
 template <typename _s, Element_t EL>
 void BMoment<_s, EL>::setElement(Element<EL> element) { this->element = element; }
 
 template <typename _s, Element_t EL>
-void BMoment<_s, EL>::zero() { for (int i = 0; i < Bmoment.size(); Bmoment[i++] = 0); }
+void BMoment<_s, EL>::zero() { for (int64_t i = 0; i < Bmoment.size(); Bmoment[i] = 0, i++); }
 
 template <typename _s, Element_t EL>
 void BMoment<_s, EL>::useFunctionDef() { functVal = false; }

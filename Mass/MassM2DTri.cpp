@@ -46,10 +46,6 @@ BMass2DTri &BMass2DTri::operator=(const BMass2DTri &cp)
     return *this;
 }
 
-BMass2DTri::~BMass2DTri()
-{
-}
-
 void BMass2DTri::computeMatrix()
 {
     uint n = BMass::n;

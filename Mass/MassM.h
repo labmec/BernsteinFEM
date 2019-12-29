@@ -66,7 +66,7 @@ class BMass1D : public BMass, public BMoment1D
     // copy assignment operator
     BMass1D &operator=(const BMass1D &cp);
 
-    ~BMass1D();
+    virtual ~BMass1D() = default;
 
     // compute the mass matrix
     void computeMatrix();
@@ -78,6 +78,8 @@ class BMass1D : public BMass, public BMoment1D
 class BMass2DTri : public BMass, public BMoment2DTri
 {
     Permutation<Element_t::TriangularEl> perm;
+
+  public:
     // default constructor
     BMass2DTri(uint NIntPoint, uint PolOrder, const Element<Element_t::TriangularEl> &element = Element<Element_t::TriangularEl>());
 
@@ -87,7 +89,7 @@ class BMass2DTri : public BMass, public BMoment2DTri
     // copy assignment operator
     BMass2DTri &operator=(const BMass2DTri &cp);
 
-    ~BMass2DTri();
+    virtual ~BMass2DTri() = default;
 
     // compute the mass matrix
     void computeMatrix();
@@ -110,7 +112,7 @@ class BMass2DQuad : public BMass, public BMoment2DQuad
     //copy assignment operator
     BMass2DQuad &operator=(const BMass2DQuad &cp);
 
-    ~BMass2DQuad();
+    virtual ~BMass2DQuad() = default;
 
     // compute the mass matrix
     void computeMatrix();

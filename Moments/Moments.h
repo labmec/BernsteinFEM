@@ -171,6 +171,8 @@ public:
 
     void setFunctionValues(const TPZVec<REAL> &Cval);
 
+    void setFunctionValues(TPZVec<REAL> &&Cval);
+
     void setFunctionDefinition(std::function<_signature> f);
 
     void setElement(Element<EL> element);

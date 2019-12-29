@@ -42,10 +42,6 @@ BMass1D &BMass1D::operator=(const BMass1D &cp)
     return *this;
 }
 
-BMass1D::~BMass1D()
-{
-}
-
 void BMass1D::computeMatrix()
 {
     uint n = BMass::n;

@@ -12,8 +12,6 @@ BStiff2DTri::BStiff2DTri(uint q, uint n, const Element<Element_t::TriangularEl> 
     Matrix.Resize(lenStiff, lenStiff);
 }
 
-BStiff2DTri::~BStiff2DTri() { }
-
 void BStiff2DTri::compute_normals()
 {
     auto vertices = element.getVertices();
@@ -31,9 +29,9 @@ void BStiff2DTri::compute_normals()
 
 void BStiff2DTri::normalize_normals()
 {
-    double norm0 = sqrt(normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1));
-    double norm1 = sqrt(normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1));
-    double norm2 = sqrt(normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1));
+    const auto norm0 = sqrt(normalMat(0, 0) * normalMat(0, 0) + normalMat(0, 1) * normalMat(0, 1));
+    const auto norm1 = sqrt(normalMat(1, 0) * normalMat(1, 0) + normalMat(1, 1) * normalMat(1, 1));
+    const auto norm2 = sqrt(normalMat(2, 0) * normalMat(2, 0) + normalMat(2, 1) * normalMat(2, 1));
 
     normalMat(0, 0) = normalMat(0, 0) / norm0;
     normalMat(0, 1) = normalMat(0, 1) / norm0;
@@ -74,37 +72,37 @@ void BStiff2DTri::computeMatrix()
     {
         for (uint b1 = 0; b1 < n; b1++)
         {
-            double w1 = Const * BinomialMat(a1, b1);
+            const auto w1 = Const * BinomialMat(a1, b1);
             for (uint a2 = 0; a2 < n - a1; a2++)
             {
                 for (uint b2 = 0; b2 < n - b1; b2++)
                 {
-                    double w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1);
+                    auto w2 = w1 * BinomialMat(a2, b2) * BinomialMat(n - a1 - a2 - 1, n - b1 - b2 - 1);
                     
-                    uint i = element.position({a1, b1});
-                    uint j = element.position({a2, b2});
-                    uint I = element.position({a1 + 1, b1 + 1});
-                    uint J = element.position({a2 + 1, b2 + 1});
-                    uint I_a = element.position({a1 + 1, b1});
-                    uint J_a = element.position({a2 + 1, b2});
-                    uint I_b = element.position({a1, b1 + 1});
-                    uint J_b = element.position({a2, b2 + 1});
+                    const uint i = element.position({a1, b1});
+                    const uint j = element.position({a2, b2});
+                    const uint I = element.position({a1 + 1, b1 + 1});
+                    const uint J = element.position({a2 + 1, b2 + 1});
+                    const uint I_a = element.position({a1 + 1, b1});
+                    const uint J_a = element.position({a2 + 1, b2});
+                    const uint I_b = element.position({a1, b1 + 1});
+                    const uint J_b = element.position({a2, b2 + 1});
 
 					w2 *= Bmoment[j]; // TODO: check this value
 
-                    double n1n2 = w2 * N[1];
-                    double n1n3 = w2 * N[2];
-                    double n2n3 = w2 * N[4];
+                    const auto n1_n2 = w2 * N[1];
+                    const auto n1_n3 = w2 * N[2];
+                    const auto n2_n3 = w2 * N[4];
 
-                    Matrix(I, j)     += w2 * N[0]; // n1 . n1
-                    Matrix(I_a, J_b) += n1n2;      // n1 . n2
-                    Matrix(I_b, J_a) += n1n2;      // n2 . n1
-                    Matrix(I_a, j)   += n1n3;      // n1 . n3
-                    Matrix(I_b, j)   += n1n3;      // n3 . n1
-                    Matrix(i, J)     += w2 * N[3]; // n2 . n2
-                    Matrix(i, J_a)   += n2n3;      // n2 . n3
-                    Matrix(i, J_b)   += n2n3;      // n3 . n2
-                    Matrix(i, j)     += w2 * N[5]; // n3 . n3
+                    Matrix(I, j)     += w2 * N[0];  // n1 . n1
+                    Matrix(I_a, J_b) += n1_n2;      // n1 . n2
+                    Matrix(I_b, J_a) += n1_n2;      // n2 . n1
+                    Matrix(I_a, j)   += n1_n3;      // n1 . n3
+                    Matrix(I_b, j)   += n1_n3;      // n3 . n1
+                    Matrix(i, J)     += w2 * N[3];  // n2 . n2
+                    Matrix(i, J_a)   += n2_n3;      // n2 . n3
+                    Matrix(i, J_b)   += n2_n3;      // n3 . n2
+                    Matrix(i, j)     += w2 * N[5];  // n3 . n3
                 }
             }
         }

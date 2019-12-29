@@ -56,9 +56,6 @@ class BStiff
  *****************************************************************************/
 class BStiff1D : public BStiff, public BMoment1D
 {
-    // computes the normalized moment, 
-	REAL grad(int k, int l);
-    
   public:
     // default constructor
     BStiff1D(uint32_t q, uint32_t n, const Element<Element_t::LinearEl> &element = Element<Element_t::LinearEl>());
@@ -69,16 +66,16 @@ class BStiff1D : public BStiff, public BMoment1D
     // copy assignment operator
     BStiff1D &operator=(const BStiff1D &cp);
 
-    ~BStiff1D();
+    virtual ~BStiff1D() = default;
 
     // zeroes the stiffness matrix
-    inline void zero()
+    inline void zero() override
     {
         BStiff::zero();
         BMoment1D::zero();
     }
 
-    void computeMatrix();
+    void computeMatrix() override;
 };
 
 /*****************************************************************************
@@ -107,16 +104,16 @@ class BStiff2DTri : public BStiff, public BMoment2DTri
     // copy assignment operator
     BStiff2DTri &operator=(const BStiff2DTri &cp);
 
-    ~BStiff2DTri();
+    virtual ~BStiff2DTri() = default;
 
     // zeroes the stiffness matrix
-    inline void zero()
+    inline void zero() override
     {
         BStiff::zero();
         BMoment2DTri::zero();
     }
 
-    void computeMatrix();
+    void computeMatrix() override;
 };
 
 /*****************************************************************************
