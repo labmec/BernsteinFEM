@@ -60,6 +60,7 @@ uint64_t Element<QEL>::position(const TPZVec<uint64_t> &point)
         throw std::logic_error("Quadrilateral Element 'position' method called with too few vector elements\n\t2 required");
 }
 
+template <>
 uint64_t Element<QEL>::position(const std::initializer_list<uint64_t> &point) {
 	uint64_t n = perm.getPOrder();
 	if (point.size() >= 2) {
