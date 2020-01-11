@@ -104,3 +104,37 @@ TPZFMatrix<REAL> &Element<TEL>::mapToElement(TPZFMatrix<REAL> &xi, TPZFMatrix<RE
 
     return coordinates;
 }
+
+template <>
+TPZFMatrix<REAL> &Element<TEL>::mapToElement(const std::initializer_list<REAL> &xi, TPZFMatrix<REAL> &jacobian) {
+	try
+    {
+		auto it = xi.begin();
+        // treat these as barycentric coordinates
+        double b1 = *it;
+        double b2 = *(++it) * (1 - b1);
+        double b3 = *(++it) * (1 - b2) * (1 - b1);
+        double b4 = 1 - b3 - b2 - b1;
+        
+        // convert from barycentric coordinates to cartesian
+        coordinates(0) = b1 * vertices(0, 0) + b2 * vertices(1, 0) +
+            b3 * vertices(2, 0) + b4 * vertices(3, 0);
+        coordinates(1) = b1 * vertices(0, 1) + b2 * vertices(1, 1) +
+            b3 * vertices(2, 1) + b4 * vertices(3, 1);
+        coordinates(2) = b1 * vertices(0, 2) + b2 * vertices(1, 2) +
+            b3 * vertices(2, 2) + b4 * vertices(3, 2);
+    }
+    catch(std::logic_error &e)
+    {
+        throw;
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << e.what() << ", in method Element<TriangularEl>::mapToElement" << std::endl;
+        std::terminate();
+    }
+
+    // TODO: implement jacobian
+
+    return coordinates;
+}
