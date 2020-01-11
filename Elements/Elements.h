@@ -58,6 +58,8 @@ public:
         return *this;
     }
 
+	~Element() = default;
+
     TPZVec<uint64_t> &getIndexVector() { return idxVec; }
 
     void setPermutationPOrder(uint64_t n)
