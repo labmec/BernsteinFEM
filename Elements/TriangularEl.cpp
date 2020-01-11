@@ -51,7 +51,7 @@ uint64_t Element<TEL>::position(const TPZVec<uint64_t> &point)
     if (point.size() >= 2)
         return perm.getPermutationVector()[ point[0] * (n + 1) + point[1] ];
     else
-        throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
+        throw std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
 }
 
 template <>
@@ -64,7 +64,7 @@ uint64_t Element<TEL>::position(const std::initializer_list<uint64_t>& point)
 		uint64_t a1 = *it, a2 = *(++it);
 		return perm.getPermutationVector()[a1 * (n + 1) + a2];
 	} else {
-		throw new std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
+		throw std::logic_error("Triangular Element 'position' method called with too few vector elements\n\t2 required");
 	}
 }
 
