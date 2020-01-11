@@ -57,7 +57,18 @@ uint64_t Element<QEL>::position(const TPZVec<uint64_t> &point)
     if (point.size() >= 2)
         return perm.getPermutationVector()[ point[0] * (n + 1) + point[1] ];
     else
-        throw new std::logic_error("Quadrilateral Element 'position' method called with too few vector elements\n\t2 required");
+        throw std::logic_error("Quadrilateral Element 'position' method called with too few vector elements\n\t2 required");
+}
+
+uint64_t Element<QEL>::position(const std::initializer_list<uint64_t> &point) {
+	uint64_t n = perm.getPOrder();
+	if (point.size() >= 2) {
+		auto it = point.begin();
+		const uint64_t a1 = *it, a2 = *(++it);
+		return perm.getInvPermutationVec()[ a1 * (n + 1) + a2 ];
+	} else {
+		throw std::logic_error("Quadrilateral Element 'position' method called with too few vector elements\n\t2 required");
+	}
 }
 
 // implemented using nodal shape function

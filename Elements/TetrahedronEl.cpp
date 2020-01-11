@@ -41,12 +41,25 @@ Element<TEL>::Element(TPZFMatrix<REAL> &v)
 template <>
 uint64_t Element<TEL>::position(const TPZVec<uint64_t> &point)
 {
-    uint64_t n = perm.getPOrder();
+    const uint64_t n = perm.getPOrder();
     if (point.size() >= 3)
         return perm.getPermutationVector()[ point[0] * (n + 1) * (n + 1) + point[1] * (n + 1) + point[2] ];
     else
-        throw new std::logic_error("Tetrahedron Element 'position' method called with too few vector elements\n\t3 required");
+        throw std::logic_error("Tetrahedron Element 'position' method called with too few vector elements\n\t3 required");
     ;
+}
+
+template <>
+uint64_t Element<TEL>::position(const std::initializer_list<uint64_t> &point)
+{
+    const uint64_t n = perm.getPOrder();
+    if (point.size() >= 3) {
+	    auto it = point.begin();
+    	const uint64_t a1 = *it, a2 = *(++it), a3 = *(++it);
+        return perm.getPermutationVector()[ a1 * (n + 1) * (n + 1) + a2 * (n + 1) + a3 ];
+    } else {
+        throw std::logic_error("Tetrahedron Element 'position' method called with too few vector elements\n\t3 required");
+    }
 }
 
 template <>
