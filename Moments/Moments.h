@@ -336,6 +336,8 @@ public:
     // copy constructor
     BMoment3DCube(const BMoment3DCube &cp);
 
+	virtual ~BMoment3DCube() = default;
+
     // copy assignment operator
     BMoment3DCube &operator=(const BMoment3DCube &cp);
 
@@ -374,7 +376,7 @@ public:
     // copy assignment operator
     BMoment3DTetra &operator=(const BMoment3DTetra &cp);
 
-    ~BMoment3DTetra();
+    virtual ~BMoment3DTetra() = default;
 
     // get the bmoment value of the Bernstein polynomial with indexes a1 and a2 (a3 = n - a2 - a1) on the specified dimension
     double getBMoment(uint a1, uint a2, uint a3, int dim)
