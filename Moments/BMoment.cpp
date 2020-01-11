@@ -122,3 +122,29 @@ template class BMoment<double (double, double), Element_t::TriangularEl>;
 template class BMoment<double (double, double), Element_t::QuadrilateralEl>;
 template class BMoment<double(double, double, double), Element_t::CubeEl>;
 template class BMoment<double(double, double, double), Element_t::TetrahedronEl>;
+
+// copyBMoment implementations
+template <>
+BMomentT* copyBMoment<Element_t::LinearEl>(BMomentT const& copy) {
+	return new BMoment1D(dynamic_cast<BMoment1D const&>(copy));
+}
+
+template<>
+BMomentT* copyBMoment<Element_t::TriangularEl>(BMomentT const& copy) {
+	return new BMoment2DTri(dynamic_cast<BMoment2DTri const&>(copy));
+}
+
+template<>
+BMomentT* copyBMoment<Element_t::QuadrilateralEl>(BMomentT const& copy) {
+	return new BMoment2DQuad(dynamic_cast<BMoment2DQuad const&>(copy));
+}
+
+template<>
+BMomentT* copyBMoment<Element_t::TetrahedronEl>(BMomentT const& copy) {
+	return new BMoment3DTetra(dynamic_cast<BMoment3DTetra const&>(copy));
+}
+
+template<>
+BMomentT* copyBMoment<Element_t::CubeEl>(BMomentT const& copy) {
+	return new BMoment3DCube(dynamic_cast<BMoment3DCube const&>(copy));
+}

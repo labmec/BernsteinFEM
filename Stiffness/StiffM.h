@@ -149,3 +149,7 @@ class BStiff3DTetra : public BMoment3DTetra
 {
 
 };
+
+// BStiff copy factory
+template<Element_t EL>
+BStiff* copyBStiff(BStiff const& copy);

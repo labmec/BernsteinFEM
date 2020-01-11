@@ -394,3 +394,7 @@ public:
     // compute the b-moments using the values already assigned in the object
     TPZVec<REAL> &computeMoments() final;
 };
+
+// BMomentT copy factory
+template<Element_t EL>
+BMomentT* copyBMoment(BMomentT const& copy);

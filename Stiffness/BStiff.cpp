@@ -78,3 +78,32 @@ void BStiff::zero()
 {
 	Matrix.Zero();
 }
+
+// copyBStiff implementations
+template<>
+BStiff* copyBStiff<Element_t::LinearEl>(BStiff const& copy) {
+	return new BStiff1D(dynamic_cast<BStiff1D const&>(copy));
+}
+
+template<>
+BStiff* copyBStiff<Element_t::TriangularEl>(BStiff const& copy) {
+	return new BStiff2DTri(dynamic_cast<BStiff2DTri const&>(copy));
+}
+
+template<>
+BStiff* copyBStiff<Element_t::QuadrilateralEl>(BStiff const& copy) {
+	//return new BStiff2DQuad(dynamic_cast<BStiff2DQuad const&>(copy));
+	return nullptr;
+}
+
+template<>
+BStiff* copyBStiff<Element_t::TetrahedronEl>(BStiff const& copy) {
+	//return new BStiff3DTetra(dynamic_cast<BStiff3DTetra const&>(copy));
+	return nullptr;
+}
+
+template<>
+BStiff* copyBStiff<Element_t::CubeEl>(BStiff const& copy) {
+	//return new BStiff3DCube(dynamic_cast<BStiff3DTetra const&>(copy));
+	return nullptr;
+}

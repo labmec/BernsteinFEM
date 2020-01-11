@@ -77,3 +77,31 @@ double BMass::getMatrixValue(uint i, uint j)
         throw std::logic_error(e);
     }
 };
+
+// copyBMass implementation
+template<>
+BMass* copyBMass<Element_t::LinearEl>(BMass const& copy) {
+	return new BMass1D(dynamic_cast<BMass1D const&>(copy));
+}
+
+template<>
+BMass* copyBMass<Element_t::TriangularEl>(BMass const& copy) {
+	return new BMass2DTri(dynamic_cast<BMass2DTri const&>(copy));
+}
+
+template<>
+BMass* copyBMass<Element_t::QuadrilateralEl>(BMass const& copy) {
+	return new BMass2DQuad(dynamic_cast<BMass2DQuad const&>(copy));
+}
+
+template<>
+BMass* copyBMass<Element_t::TetrahedronEl>(BMass const& copy) {
+	//return new BMass3DTetra(dynamic_cast<BMass3DTetra const&>(copy));
+	return nullptr;
+}
+
+template<>
+BMass* copyBMass<Element_t::CubeEl>(BMass const& copy) {
+	//return new BMass3DCube(dynamic_cast<BMass3DCube const&>(copy));
+	return nullptr;
+}

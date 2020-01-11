@@ -156,3 +156,7 @@ class BMass3DTetra : public BMass, public BMoment3DTetra
 
     void computeMatrix();
 };
+
+// BMass copy factory
+template<Element_t EL>
+BMass* copyBMass(BMass const& copy);
