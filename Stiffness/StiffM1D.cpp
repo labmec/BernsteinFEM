@@ -1,11 +1,26 @@
 #include "StiffM.h"
 
-BStiff1D::BStiff1D(uint q, uint n, const Element<Element_t::LinearEl> &el)
-    : BStiff(q, n), BMoment1D(q, 2 * (n - 1), el)
+BStiff1D::BStiff1D(uint32_t q, uint32_t n, const Element<Element_t::LinearEl> &element)
+    : BStiff(q, n), BMoment1D(q, 2 * (n - 1), element)
 {
     lenStiff = n + 1;
 	Matrix.Resize(lenStiff, lenStiff);
-    element.setPermutationPOrder(n);
+    this->element.setPermutationPOrder(n);
+}
+
+BStiff1D::BStiff1D(const BStiff1D& cp) :
+	BStiff(cp),	BMoment1D(cp) {
+	lenStiff = cp.lenStiff;
+	Matrix = cp.Matrix;
+	element = cp.element;
+}
+
+BStiff1D& BStiff1D::operator=(const BStiff1D& cp) {
+	if (this != &cp) {
+		BStiff::operator=(cp);
+		BMoment1D::operator=(cp);
+	}
+	return *this;
 }
 
 void BStiff1D::computeMatrix()
