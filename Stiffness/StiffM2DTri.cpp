@@ -5,11 +5,26 @@
 #endif
 #define LEN(n) ((n + 1) * (n + 1))
 
-BStiff2DTri::BStiff2DTri(uint q, uint n, const Element<Element_t::TriangularEl> &el)
+BStiff2DTri::BStiff2DTri(uint32_t q, uint32_t n, const Element<Element_t::TriangularEl> &el)
     : BStiff(q, n), BMoment2DTri(q, 2 * (n - 1), el), normalMat(3, 2)
 {
     lenStiff = (n + 1) * (n + 1);
     Matrix.Resize(lenStiff, lenStiff);
+}
+
+BStiff2DTri::BStiff2DTri(const BStiff2DTri& cp) :
+	BStiff(cp),
+	BMoment2DTri(cp),
+	normalMat(cp.normalMat)
+{}
+
+BStiff2DTri& BStiff2DTri::operator=(const BStiff2DTri& cp) {
+    if (this != &cp) {
+        BStiff::operator=(cp);
+        BMoment2DTri::operator=(cp);
+        normalMat = cp.normalMat;
+    }
+    return *this;
 }
 
 void BStiff2DTri::compute_normals()
