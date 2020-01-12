@@ -17,14 +17,14 @@
 #include "pzvec.h"
 #include "Element_t.h"
 
-template <Element_t El>
+template <Element_t EL>
 class Permutation
 {
 private:
   uint64_t n;                       // polynomial order, in order to compute the vectors
   TPZVec<uint64_t> permutationVec;  // permutation vector to organize elements of the matrices
   TPZVec<uint64_t> inversePermVec;  // inverse permutation vector
-  TPZVec<uint64_t> *idxVec;         // index vector for each vertex (the same as in the element which holds this object)
+  TPZVec<int64_t> *idxVec;         // index vector for each vertex (the same as in the element which holds this object)
   bool idxVecInstantiated;          // indicates whether we instantiated a new idxVec or just referenced an object
   bool pVecComputed = false;        // indicates whether the permutation vector is computed or not
   bool i_pVecComputed = false;      // indicates whether the inverse permutation vector is computed or not
@@ -32,9 +32,9 @@ private:
 public:
   Permutation();
 
-  Permutation(const uint64_t &pOrder, TPZVec<uint64_t> &idxVec);
+  Permutation(const uint64_t &pOrder, TPZVec<int64_t> &idxVec);
 
-  Permutation(TPZVec<uint64_t> &idxVec);
+  Permutation(TPZVec<int64_t> &idxVec);
 
   Permutation(Permutation const &cp);
 
@@ -43,7 +43,7 @@ public:
   // getters
 
   uint64_t getPOrder();
-  TPZVec<uint64_t> &getIndexVector();
+  TPZVec<int64_t> &getIndexVector();
   TPZVec<uint64_t> &getPermutationVector();
   TPZVec<uint64_t> &getInvPermutationVec();
 
@@ -51,7 +51,7 @@ public:
   void setPOrder(uint64_t n);
 
   // sets the index vector of the object, according to the indices of the vertices of an element
-  void setIndexVector(TPZVec<uint64_t> &idxVector);
+  void setIndexVector(TPZVec<int64_t> &idxVector);
 
   // computes the permutation vector
   void computePermVec();

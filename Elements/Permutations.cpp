@@ -5,19 +5,19 @@
 template <Element_t El> 
 Permutation<El>::Permutation() 
 {
-	this->idxVec = new TPZVec<uint64_t>({ 0,1,2,3 }); 
+	this->idxVec = new TPZVec<int64_t>({ 0,1,2,3 }); 
 	idxVecInstantiated = true;
 }
 
 template <Element_t El>
-Permutation<El>::Permutation(const uint64_t &n, TPZVec<uint64_t> &idxVec) : n(n), idxVec(&idxVec)
+Permutation<El>::Permutation(const uint64_t &n, TPZVec<int64_t> &idxVec) : n(n), idxVec(&idxVec)
 {
     computePermVec();
 	idxVecInstantiated = false;
 }
 
 template <Element_t El>
-Permutation<El>::Permutation(TPZVec<uint64_t> &idxVec) : idxVec(&idxVec), idxVecInstantiated(false) { }
+Permutation<El>::Permutation(TPZVec<int64_t> &idxVec) : idxVec(&idxVec), idxVecInstantiated(false) { }
 
 template <Element_t El>
 Permutation<El>::Permutation(Permutation const &cp) : n(cp.n), idxVec(cp.idxVec), idxVecInstantiated(false) { }
@@ -38,7 +38,7 @@ uint64_t Permutation<El>::getPOrder()
 }
 
 template <Element_t El>
-TPZVec<uint64_t> &Permutation<El>::getIndexVector()
+TPZVec<int64_t> &Permutation<El>::getIndexVector()
 {
     return *idxVec;
 }
@@ -70,7 +70,7 @@ void Permutation<El>::setPOrder(uint64_t n)
 }
 
 template <Element_t El>
-void Permutation<El>::setIndexVector(TPZVec<uint64_t> &idxVec)
+void Permutation<El>::setIndexVector(TPZVec<int64_t> &idxVec)
 {
     this->idxVec = &idxVec;
 }

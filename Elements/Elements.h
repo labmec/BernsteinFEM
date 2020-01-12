@@ -30,7 +30,7 @@ class Element
 {
     TPZFMatrix<REAL> vertices;    // vertices of the element
     TPZFMatrix<REAL> coordinates; // coordinates object to return from 'mapElement'
-    TPZVec<uint64_t> idxVec;      // stores index for each vertex
+    TPZVec<int64_t> idxVec;      // stores index for each vertex
     static TPZFMatrix<REAL> jac;  // matrix to store the values of the jacobian when no arguments are passed
     Permutation<EL> perm;         // permutation vector for positioning
 
@@ -43,7 +43,7 @@ public:
     Element(TPZFMatrix<REAL> &vertices);
 
     // constructor by the vertices and indices of the vertices of the element
-    Element(TPZFMatrix<REAL> &vertices, TPZVec<uint64_t> &indexVector) : vertices(vertices), idxVec(indexVector), perm(indexVector)
+    Element(TPZFMatrix<REAL> &vertices, TPZVec<int64_t> &indexVector) : vertices(vertices), idxVec(indexVector), perm(indexVector)
     {
     }
 
@@ -60,7 +60,7 @@ public:
 
 	~Element() = default;
 
-    TPZVec<uint64_t> &getIndexVector() { return idxVec; }
+    TPZVec<int64_t> &getIndexVector() { return idxVec; }
 
     void setPermutationPOrder(uint64_t n)
     {
@@ -68,7 +68,7 @@ public:
         perm.computePermVec();
     }
 
-    void setIndexVector(TPZVec<uint64_t> &idxVec)
+    void setIndexVector(TPZVec<int64_t> &idxVec)
     {
         this->idxVec = idxVec;
         perm.setIndexVector(idxVec);
