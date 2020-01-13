@@ -66,7 +66,7 @@ TPZFMatrix<REAL> &Element<LEL>::mapToElement(TPZFMatrix<REAL> &coordinates, TPZF
 {
     try
     {
-        this->coordinates(0) = (coordinates(0) + vertices(0)) * (vertices(1) - vertices(0));
+        this->coordinates(0) = coordinates(0) * (vertices(1) - vertices(0)) + vertices(0);
         jacobian(0) = vertices(1) - vertices(0);
     }
     catch (std::logic_error &e)
@@ -84,7 +84,7 @@ TPZFMatrix<REAL>& Element<LEL>::mapToElement(const std::initializer_list<REAL>& 
 	try
 	{
 		auto it = coord.begin();
-		this->coordinates(0) = (*it + vertices(0)) * (vertices(1) - vertices(0));
+		this->coordinates(0) = (*it) * (vertices(1) - vertices(0)) + vertices(0);
 		jacobian(0) = vertices(1) - vertices(0);
 	}
 	catch (std::logic_error& e)
